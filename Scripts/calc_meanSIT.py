@@ -14,7 +14,9 @@ import matplotlib.pyplot as plt
 import datetime
 import read_SeaIceThick_PIOMAS as CT
 import read_SeaIceConc_PIOMAS as CC
+import calc_PiomasArea as CA
 import statsmodels.api as sm
+from mpl_toolkits.basemap import Basemap
 
 ### Define directories
 directorydata = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/'   
@@ -37,12 +39,12 @@ years = np.arange(yearmin,yearmax+1,1)
 
 ### Call functions
 lats,lons,sit = CT.readPiomas(directorydata,years,0.15)
-lats,lons,sic = CC.readPiomas(directorydata,years,0.15)
+area = CA.readPiomasArea(directorydata)
 
 ###########################################################################
 ###########################################################################
 ###########################################################################
-### Rough calculation for mean (no area weighting!)
+### Calculating temporal sit
 def aveThick(sit):
     """
     Only calculates ave thickness for min and max time... no area weighting
@@ -50,10 +52,30 @@ def aveThick(sit):
     minSep = np.squeeze(np.apply_over_axes(np.nanmean,sit[:,9,:,:],(1,2)))
     minMar = np.squeeze(np.apply_over_axes(np.nanmean,sit[:,3,:,:],(1,2)))
     
-    print 'Completed: Calculated average for Sept/Mar!'
+    print '\nCompleted: Calculated average for Sept/Mar (no weight)!'
     return minSep,minMar
     
-minSep,minMar = aveThick(sit)  
+def weightThick(var,area):
+    """
+    Area weights sit array 4d [year,month,lat,lon] into [year,month]
+    """
+    sityr = np.empty((var.shape[0],var.shape[1]))
+    for i in xrange(var.shape[0]):
+        for j in xrange(var.shape[1]):
+            varq = var[i,j,:,:]
+            mask = np.isfinite(varq) & np.isfinite(area)
+            varmask = varq[mask]
+            areamask = area[mask]
+            sityr[i,j] = np.nansum(varmask*areamask)/np.sum(areamask)
+     
+    print '\nCompleted: Yearly weighted SIT average!' 
+    return sityr
+     
+sitave = weightThick(sit,area)
+sitave = weightThick(sit,area)
+
+minMar = sitave[:,2]
+minSep = sitave[:,8]
 
 ### Plot Sep/Mar time series
 fig = plt.figure()
@@ -90,7 +112,6 @@ plt.grid(color='w',zorder=1,alpha=0.2)
 ### Plot figure
 plt.plot(years,minMar,linestyle='-',marker='^',linewidth=2,
          markersize=4,color='steelblue',label=r'March',
-gm
          zorder=4)
 plt.plot(years,minSep,linestyle='-',marker='o',linewidth=2,
          markersize=4,color='darkolivegreen',label='September',
@@ -101,21 +122,28 @@ smoothedMar = sm.nonparametric.lowess(minMar,years,it=0,frac=0.5)
 smoothedSep = sm.nonparametric.lowess(minSep,years,it=0,frac=0.5)
 
 ### Plot lowess smoothing
-plt.plot(smoothedMar[:,0],smoothedMar[:,1],color='r',zorder=1)
-plt.plot(smoothedSep[:,0],smoothedSep[:,1],color='r',zorder=2)
+plt.plot(smoothedMar[:,0],smoothedMar[:,1],color='r',zorder=1,
+         label=r'LOWESS Mar')
+plt.plot(smoothedSep[:,0],smoothedSep[:,1],color='r',zorder=2,
+         label=r'LOWESS Sep')
 
 ### Adjust axes
 xlabels = map(str,np.arange(1979,2017,5))
 plt.xticks(np.arange(1979,2017,5),xlabels)
-plt.xlim([1978,2017])
+plt.xlim([1979,2017])
 
 ylabels = map(str,np.arange(0,3.1,0.5))
 plt.yticks(np.arange(0,3.1,0.5),ylabels)
 plt.ylim([0,3])
 plt.ylabel('Sea Ice Thickness (m)')
 
+ax.tick_params('both',length=6,width=1.5,which='major')
+ax.spines['bottom'].set_linewidth(1.5)
+ax.spines['left'].set_linewidth(1.5)
+
 ### Add legend
-le = plt.legend(shadow=False,fontsize=8,loc='upper right',fancybox=True)
+le = plt.legend(shadow=False,fontsize=8,loc='upper right',frameon=False,
+                ncol=2)
 
 ### Save Figure
 plt.savefig(directoryfigure + 'aveSIT_year.png',dpi=400)
@@ -153,53 +181,28 @@ smoothedSepanom = sm.nonparametric.lowess(anomSep,years,it=0,frac=0.5)
 
 ### Plot lowess smoothing
 plt.plot(smoothedMaranom[:,0],smoothedMaranom[:,1],color='r',
-         zorder=4)
+         zorder=4,label=r'LOWESS Mar')
 plt.plot(smoothedSepanom[:,0],smoothedSepanom[:,1],color='peru',
-         zorder=5)
+         zorder=5,label=r'LOWESS Sep')
 
 ### Adjust axes
 xlabels = map(str,np.arange(1979,2017,5))
 plt.xticks(np.arange(1979,2017,5),xlabels)
-plt.xlim([1978,2017])
+plt.xlim([1979,2017])
 
-ylabels = map(str,np.arange(-0.5,0.6,0.25))
-plt.yticks(np.arange(-0.5,0.6,0.25),ylabels)
-plt.ylim([-0.5,0.5])
+ylabels = map(str,np.arange(-1,1.1,0.5))
+plt.yticks(np.arange(-1,1.1,0.5),ylabels)
+plt.ylim([-1,1])
 plt.ylabel('Sea Ice Thickness (m)')
 
+ax.tick_params('both',length=6,width=1.5,which='major')
+ax.spines['bottom'].set_linewidth(1.5)
+ax.spines['left'].set_linewidth(1.5)
+
 ### Add legend
-le = plt.legend(shadow=False,fontsize=8,loc='upper right',fancybox=True)
+le = plt.legend(shadow=False,fontsize=8,loc='upper right',frameon=False,
+                ncol=2)
 
 ### Save figure
 plt.savefig(directoryfigure + 'aveSIT_anoms_year.png',dpi=400)
-
-###########################################################################
-###########################################################################
-###########################################################################
-### Check grid file
-### Retrieve Grid
-grid = np.genfromtxt(directorydata + 'griddata.txt')
-grid2 = np.genfromtxt(directorydata + 'grid.txt')
-grid = np.reshape(grid,(grid.size))  
-grid2 = np.reshape(grid2,(grid2.size)) 
-
-#### Define Lat/Lon
-lon = grid[:43200]   
-lons = np.reshape(lon,(120,360))
-lat = grid[43200:43200*2]
-lats = np.reshape(lat,(120,360))
-
-htn = grid[86400:86400+43200]
-htn = np.reshape(htn,(120,360))
-hte = grid[86400+43200:86400+43200+43200]
-hte = np.reshape(hte,(120,360))
-
-area = htn*hte
-
-volume = sit*sic*area
-volume = np.squeeze(np.apply_over_axes(np.nansum,volume[:,9,:,:],(1,2)))
-volume = volume/1000.
-
-a = np.empty((years.shape[0]))
-for i in xrange(years.shape[0]):
-    a[i] = np.nansum(sit[i,3,:,:]*area)/np.nansum(area)
+    
