@@ -49,7 +49,7 @@ years2 = np.arange(yearmin2,yearmax2+1,1)
 #lats,lons,sic = CC.readPiomas(directorydata,years,0.01)
 #area = CA.readPiomasArea(directorydata)
 #sivq = CV.sivGrid(sit,sic,area,True)
-#
+
 #lats,lons,sit2 = CT.readPiomas(directorydata,years2,0.15)
 #lats,lons,sic2 = CC.readPiomas(directorydata,years2,0.01)
 #sivq2 = CV.sivGrid(sit2,sic2,area,True)
@@ -136,8 +136,8 @@ plt.rcParams['font.sans-serif'] = 'Avant Garde'
 #### Save figure
 #plt.savefig(directoryfigure +'largegrid_vol.png',dpi=500)
 
-#slopesiv1 = np.nanmean(slopesiv1,axis=0)
-#slopesiv2 = np.nanmean(slopesiv2,axis=0)
+slopesiv1 = np.nanmean(slopesiv1,axis=0)
+slopesiv2 = np.nanmean(slopesiv2,axis=0)
 
 fig = plt.figure()   
 ax = plt.subplot(1,2,1)
@@ -151,7 +151,7 @@ m.drawparallels(parallels,labels=[False,False,False,False],
                 linewidth=0.35,color='k',fontsize=5)
 m.drawmeridians(meridians,labels=[False,False,False,False],
                 linewidth=0.35,color='k',fontsize=5)
-m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+m.drawlsmask(land_color='dimgrey',ocean_color='mintcream')
 
 ### Adjust maximum limits
 values = np.arange(-1000,1001,50)  
@@ -178,7 +178,7 @@ m.drawparallels(parallels,labels=[False,False,False,False],
                 linewidth=0.35,color='k',fontsize=5)
 m.drawmeridians(meridians,labels=[False,False,False,False],
                 linewidth=0.35,color='k',fontsize=5)
-m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+m.drawlsmask(land_color='dimgrey',ocean_color='mintcream')
 
 ### Adjust maximum limits
 values = np.arange(-1000,1001,50)  

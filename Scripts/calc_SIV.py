@@ -286,11 +286,22 @@ ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
 plt.grid(color='k',zorder=1,alpha=0.4)
 
-color = iter(plt.cm.plasma(np.linspace(0,1,sivyr.shape[0])))
+color = iter(plt.cm.viridis(np.linspace(0,1,sivyr.shape[0])))
 for i in xrange(sivyr.shape[0]):
     cma = next(color)
-    plt.plot(np.arange(0,12,1),sivyr[i,:],c=cma,linewidth=2,linestyle='-',
-         label='%s' % years[i],zorder=2)
+    z = 2
+    l = 1.3    
+    
+    if years[i] == 2012:
+        cma = 'r'
+        z = 3
+        l = 1.5
+    elif years[i] == 2007:
+        cma = 'saddlebrown'
+        z = 3 
+        l = 1.5
+    plt.plot(np.arange(0,12,1),sivyr[i,:],c=cma,linewidth=l,linestyle='-',
+         label='%s' % years[i],zorder=z)
 
     plt.plot(np.arange(0,12,1),np.nanmean(sivyr,axis=0),linewidth=3,
             color='k',linestyle='-',marker='o')
@@ -305,4 +316,50 @@ for i in xrange(sivyr.shape[0]):
               
              
 plt.savefig(directoryfigure + 'siv_years.png',dpi=300)
+
+###########################################################################
+###########################################################################
+###########################################################################
+
+siva = sivyr - np.nanmean(sivyr,axis=0)
+zero = [0]*12
+
+fig = plt.figure()
+ax = plt.subplot(111)
+
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+plt.grid(color='k',zorder=1,alpha=0.4)
+
+color = iter(plt.cm.viridis(np.linspace(0,1,sivyr.shape[0])))
+for i in xrange(sivyr.shape[0]):
+    cma = next(color)
+    z = 2
+    l = 1.3    
+    
+    if years[i] == 2012:
+        cma = 'r'
+        z = 3
+        l = 1.5
+    elif years[i] == 2007:
+        cma = 'saddlebrown'
+        z = 3 
+        l = 1.5
+    plt.plot(np.arange(0,12,1),siva[i,:],c=cma,linewidth=l,linestyle='-',
+         label='%s' % years[i],zorder=z)
+        
+    plt.plot(np.arange(0,12,1),zero,linewidth=3,color='k',zorder=4,
+             linestyle='--')
+    
+    plt.xlim([0,11])       
+    plt.xticks(np.arange(0,12,1),months[1:]) 
+    plt.yticks(np.arange(-10,9,2),map(str,(np.arange(-10,9,2)))) 
+    plt.ylabel(r'Sea Ice Volume ($\times$1000 km$^{3}$)')
+    
+    l = plt.legend(shadow=False,fontsize=4,loc='upper right',
+               fancybox=True,ncol=8,bbox_to_anchor = [1.05, 1.08])
+              
+plt.text(0.1,-9.7,r'\textbf{Anomalies, 1979-2015}',fontsize=13)             
+plt.savefig(directoryfigure + 'siv_years_anoms.png',dpi=300)
     

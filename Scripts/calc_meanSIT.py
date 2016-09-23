@@ -36,6 +36,8 @@ print '\n' '----Plot Mean Sea Ice Thickness - %s----' % titletime
 yearmin = 1979
 yearmax = 2016
 years = np.arange(yearmin,yearmax+1,1)
+months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
+          r'Sep',r'Oct',r'Nov',r'Dec']
 
 ### Call functions
 lats,lons,sit = CT.readPiomas(directorydata,years,0.15)
@@ -205,4 +207,92 @@ le = plt.legend(shadow=False,fontsize=8,loc='upper right',frameon=False,
 
 ### Save figure
 plt.savefig(directoryfigure + 'aveSIT_anoms_year.png',dpi=400)
+
+###########################################################################
+###########################################################################
+###########################################################################
+fig = plt.figure()
+ax = plt.subplot(111)
+
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+plt.grid(color='k',zorder=1,alpha=0.4)
+
+color = iter(plt.cm.magma(np.linspace(0,1,sitave.shape[0])))
+for i in xrange(sitave.shape[0]):
+    cma = next(color)
+    z = 2
+    l = 1.3    
+    
+    if years[i] == 2012:
+        cma = 'r'
+        z = 3
+        l = 1.5
+    elif years[i] == 2007:
+        cma = 'lime'
+        z = 3 
+        l = 1.5
+    plt.plot(np.arange(0,12,1),sitave[i,:],c=cma,linewidth=l,linestyle='-',
+         label='%s' % years[i],zorder=z)
+
+    plt.plot(np.arange(0,12,1),np.nanmean(sitave,axis=0),linewidth=3,
+            color='k',linestyle='-',marker='o')
+    
+    plt.xlim([0,11])       
+    plt.xticks(np.arange(0,12,1),months[1:]) 
+    plt.yticks(np.arange(0,3.1,0.5),map(str,(np.arange(0,3.1,0.5)))) 
+    plt.ylabel(r'Sea Ice Thickness (m)')
+    
+    l = plt.legend(shadow=False,fontsize=4,loc='upper right',
+               fancybox=True,ncol=8,bbox_to_anchor = [1.05, 1.08])
+              
+             
+plt.savefig(directoryfigure + 'sit_years.png',dpi=300)
+
+###########################################################################
+###########################################################################
+###########################################################################
+
+sita = sitave - np.nanmean(sitave,axis=0)
+zero = [0]*12
+
+fig = plt.figure()
+ax = plt.subplot(111)
+
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+plt.grid(color='k',zorder=1,alpha=0.4)
+
+color = iter(plt.cm.magma(np.linspace(0,1,sita.shape[0])))
+for i in xrange(sita.shape[0]):
+    cma = next(color)
+    z = 2
+    l = 1.3    
+    
+    if years[i] == 2012:
+        cma = 'r'
+        z = 3
+        l = 1.5
+    elif years[i] == 2007:
+        cma = 'g'
+        z = 3 
+        l = 1.5
+    plt.plot(np.arange(0,12,1),sita[i,:],c=cma,linewidth=l,linestyle='-',
+         label='%s' % years[i],zorder=z)
+        
+    plt.plot(np.arange(0,12,1),zero,linewidth=3,color='k',zorder=4,
+             linestyle='--')
+    
+    plt.xlim([0,11])       
+    plt.xticks(np.arange(0,12,1),months[1:]) 
+    plt.yticks(np.arange(-1,1.1,0.5),map(str,(np.arange(-1,1.1,0.5)))) 
+    plt.ylabel(r'Sea Ice Thickness (m)')
+    
+    l = plt.legend(shadow=False,fontsize=4,loc='upper right',
+               fancybox=True,ncol=8,bbox_to_anchor = [1.05, 1.08])
+              
+plt.text(0.1,-0.97,r'\textbf{Anomalies, 1979-2015}',fontsize=13)             
+plt.savefig(directoryfigure + 'sit_years_anoms.png',dpi=300)
     

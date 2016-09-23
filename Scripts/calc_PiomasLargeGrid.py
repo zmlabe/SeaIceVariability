@@ -68,7 +68,9 @@ lo = 1
 sitq = transformGrid(sit,la,lo)
 sitq[np.where(sitq < 0.05)] = np.nan
 
+r = np.zeros((sitq.shape[1],sitq.shape[2]))
 slopesit = np.zeros((sitq.shape[1],sitq.shape[2]))
+intercept = np.zeros((sitq.shape[1],sitq.shape[2]))
 for i in xrange(0,sitq.shape[1]-la,la):
     for j in xrange(0,sitq.shape[2]-lo,lo):
         varyy = np.ravel(sitq[:,i,j])
@@ -77,13 +79,18 @@ for i in xrange(0,sitq.shape[1]-la,la):
         
         varyymean = np.nanmean(varyy)
         if np.isfinite(varyymean):
-            slopesit[i:i+la,j:j+lo],intercept,r,p_value,std_err = sts.stats.linregress(varxx[mask],
+            slopesit[i:i+la,j:j+lo],intercept[i:i+la,j:j+lo],r[i:i+la,j:j+lo],p_value,std_err = sts.stats.linregress(varxx[mask],
                                                               varyy[mask])
         else:
-            slopesit[i:i+la,j:j+lo] = np.nan                                         
+            slopesit[i:i+la,j:j+lo] = np.nan   
+            r[i:i+la,j:j+lo] = np.nan
+            intercept[i:i+la,j:j+lo] = np.nan
+                                      
 print 'Completed: Script done!'
 
-slopesit = slopesit*10.
+#val = slopesit
+#val = abs(r)
+val = intercept
 
 ### Call parameters
 plt.rcParams['text.usetex']=True
@@ -100,33 +107,30 @@ m.drawcoastlines(color='k',linewidth=0.5)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
 m.drawparallels(parallels,labels=[False,False,False,False],
-                linewidth=0.5,color='k',fontsize=9)
+                linewidth=0.5,color='k',fontsize=6)
 m.drawmeridians(meridians,labels=[True,True,False,False],
-                linewidth=0.5,color='k',fontsize=9)
+                linewidth=0.5,color='k',fontsize=6)
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 ### Adjust maximum limits
-values = np.arange(-1,1.1,0.1)  
+values = np.arange(0,6.1,0.5)  
 
 ### Plot filled contours    
-cs = m.contourf(lons[:,:],lats[:,:],slopesit[:,:],
+cs = m.contourf(lons[:,:],lats[:,:],val[:,:],
                 values,latlon=True,extend='both')
                   
 ### Set colormap     
 #cmap = plt.cm.get_cmap('brewer_RdBu_11')      
-cmap = plt.cm.get_cmap('seismic_r')                      
+cmap = plt.cm.get_cmap('viridis')                      
 cs.set_cmap(cmap)
                           
-cbar = m.colorbar(cs,location='right',pad='10%',
-                    extend='both',extendfrac=0.07,drawedges=True)
+cbar = m.colorbar(cs,location='bottom',pad='10%',
+                    extend='both',drawedges=True)
 
-cbar.set_label(r'decadal trend (m)')
-cbar.set_ticks(np.arange(-1,1.1,0.25))
-cbar.set_ticklabels(map(str,np.arange(-1,1.1,0.25))) 
-#cbar.tick_params(axis=u'both', which=u'both',length=0)
-
-fig.subplots_adjust(bottom=0.15)
+cbar.set_label(r'intercepts')
+cbar.set_ticks(np.arange(0,6.1,1))
+cbar.set_ticklabels(map(str,np.arange(0,6.1,1))) 
 
 ### Save figure
-plt.savefig(directoryfigure +'largegrid2.png',dpi=500)        
+plt.savefig(directoryfigure +'intercept_piomas.png',dpi=500)        
         
