@@ -34,13 +34,13 @@ titletime = currentmn + '/' + currentdy + '/' + currentyr
 print '\n' '----Calculate PIOMAS trends - %s----' % titletime 
 
 ### Alott time series
-yearmin = 1979
-yearmax = 1999
+yearmin = 1980
+yearmax = 1990
 years = np.arange(yearmin,yearmax+1,1)
 months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',r'Sep',
           r'Oct',r'Nov',r'Dec']
           
-yearmin2 = 2000
+yearmin2 = 2005
 yearmax2 = 2015
 years2 = np.arange(yearmin2,yearmax2+1,1)
 
@@ -49,7 +49,7 @@ years2 = np.arange(yearmin2,yearmax2+1,1)
 #lats,lons,sic = CC.readPiomas(directorydata,years,0.01)
 #area = CA.readPiomasArea(directorydata)
 #sivq = CV.sivGrid(sit,sic,area,True)
-
+#
 #lats,lons,sit2 = CT.readPiomas(directorydata,years2,0.15)
 #lats,lons,sic2 = CC.readPiomas(directorydata,years2,0.01)
 #sivq2 = CV.sivGrid(sit2,sic2,area,True)
@@ -85,7 +85,7 @@ plt.rcParams['text.usetex']=True
 plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['font.sans-serif'] = 'Avant Garde'
 
-#### Define figure
+### Define figure
 #fig = plt.figure()
 #for i in xrange(slopesiv.shape[0]):    
 #    ax = plt.subplot(3,4,i+1)
@@ -136,8 +136,8 @@ plt.rcParams['font.sans-serif'] = 'Avant Garde'
 #### Save figure
 #plt.savefig(directoryfigure +'largegrid_vol.png',dpi=500)
 
-slopesiv1 = np.nanmean(slopesiv1,axis=0)
-slopesiv2 = np.nanmean(slopesiv2,axis=0)
+#slopesiv1 = np.nanmean(slopesiv1[5:8],axis=0)
+#slopesiv2 = np.nanmean(slopesiv2[5:8],axis=0)
 
 fig = plt.figure()   
 ax = plt.subplot(1,2,1)
@@ -199,12 +199,12 @@ cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])
 cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
                     extend='both',extendfrac=0.07,drawedges=True)
 
-cbar.set_label(r'SIV( km$^{3}$ decade$^{-1}$ )')
+cbar.set_label(r'\textbf{SIV( km$^{3}$ decade$^{-1}$} )')
 cbar.set_ticks(np.arange(-1000,1001,500))
 cbar.set_ticklabels(map(str,np.arange(-1000,1001,500))) 
 
-plt.text(0.82,26,'2000-2015',fontsize=23)
-plt.text(-0.56,26,'1979-1999',fontsize=23)
+plt.text(0.82,26,'2005-2015',fontsize=23)
+plt.text(-0.56,26,'1980-1990',fontsize=23)
 
 #fig.subplots_adjust(bottom=0.15)
 #fig.subplots_adjust(wspace=-0.5)
