@@ -45,14 +45,14 @@ yearmax2 = 2015
 years2 = np.arange(yearmin2,yearmax2+1,1)
 
 ### Call functions
-#lats,lons,sit = CT.readPiomas(directorydata,years,0.15)
-#lats,lons,sic = CC.readPiomas(directorydata,years,0.01)
-#area = CA.readPiomasArea(directorydata)
-#sivq = CV.sivGrid(sit,sic,area,True)
-#
-#lats,lons,sit2 = CT.readPiomas(directorydata,years2,0.15)
-#lats,lons,sic2 = CC.readPiomas(directorydata,years2,0.01)
-#sivq2 = CV.sivGrid(sit2,sic2,area,True)
+lats,lons,sit = CT.readPiomas(directorydata,years,0.15)
+lats,lons,sic = CC.readPiomas(directorydata,years,0.01)
+area = CA.readPiomasArea(directorydata)
+sivq = CV.sivGrid(sit,sic,area,True)
+
+lats,lons,sit2 = CT.readPiomas(directorydata,years2,0.15)
+lats,lons,sic2 = CC.readPiomas(directorydata,years2,0.01)
+sivq2 = CV.sivGrid(sit2,sic2,area,True)
 
 ### Take monthly mean
 def monRegress(sivq,months):
@@ -78,7 +78,8 @@ def monRegress(sivq,months):
     return slopesiv
 
 #slopesiv1 = monRegress(sivq,months)  
-#slopesiv2 = monRegress(sivq2,months)  
+slopesiv = monRegress(sivq2,months)
+slopesiv = slopesiv*10**6  
 
 ### Call parameters
 plt.rcParams['text.usetex']=True
@@ -86,131 +87,134 @@ plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['font.sans-serif'] = 'Avant Garde'
 
 ### Define figure
-#fig = plt.figure()
-#for i in xrange(slopesiv.shape[0]):    
-#    ax = plt.subplot(3,4,i+1)
-#    
-#    m = Basemap(projection='npstere',boundinglat=66,lon_0=270,resolution='l',round =True)    
-#    m.drawmapboundary(fill_color='white')
-#    m.drawcoastlines(color='darkgrey',linewidth=0.1)
-#    parallels = np.arange(50,90,10)
-#    meridians = np.arange(-180,180,30)
-##    m.drawparallels(parallels,labels=[False,False,False,False],
-##                    linewidth=0.0,color='k',fontsize=5)
-##    m.drawmeridians(meridians,labels=[False,False,False,False],
-##                    linewidth=0.0,color='k',fontsize=5)
-#    m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
-#    
-#    ### Adjust maximum limits
-#    values = np.arange(-1000,1001,50)  
-#    
-#    ### Plot filled contours    
-#    cs = m.contourf(lons[:,:],lats[:,:],slopesiv[i,:,:],
-#                    values,latlon=True,extend='both')
-#    cs1 = m.contour(lons[:,:],lats[:,:],slopesiv[i,:,:],
-#                    values,latlon=True,linestyles='-',
-#                    colors='k',linewidths=0.05)
-#                      
-#    ### Set colormap     
-##    cmap = plt.cm.get_cmap('brewer_RdBu_11')      
-#    cmap = plt.cm.get_cmap('spectral')                      
-#    cs.set_cmap(cmap)
-#    
-#    ax.text(0.91,0.97,r'\textbf{%s}' % (months[i]),size='8',
-#                horizontalalignment='center',
-#                verticalalignment='center',transform=ax.transAxes)
-#                          
-#cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])                
-#cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
-#                    extend='both',extendfrac=0.07,drawedges=True)
-#
-#cbar.set_label(r'km$^{3}$ decade$^{-1}$')
-#cbar.set_ticks(np.arange(-1000,1001,500))
-#cbar.set_ticklabels(map(str,np.arange(-1000,1001,500))) 
-#
-#fig.suptitle(r'\textbf{PIOMAS, 1979-2015 SIV Trends}',fontsize=14)
-#fig.subplots_adjust(bottom=0.15)
-#fig.subplots_adjust(wspace=-0.5)
-##plt.tight_layout()
-#
-#### Save figure
-#plt.savefig(directoryfigure +'largegrid_vol.png',dpi=500)
-
-#slopesiv1 = np.nanmean(slopesiv1[5:8],axis=0)
-#slopesiv2 = np.nanmean(slopesiv2[5:8],axis=0)
-
-fig = plt.figure()   
-ax = plt.subplot(1,2,1)
-
-m = Basemap(projection='npstere',boundinglat=66,lon_0=270,resolution='l',round =True)    
-m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.3)
-parallels = np.arange(50,90,10)
-meridians = np.arange(-180,180,30)
-m.drawparallels(parallels,labels=[False,False,False,False],
-                linewidth=0.35,color='k',fontsize=5)
-m.drawmeridians(meridians,labels=[False,False,False,False],
-                linewidth=0.35,color='k',fontsize=5)
-m.drawlsmask(land_color='dimgrey',ocean_color='mintcream')
-
-### Adjust maximum limits
-values = np.arange(-1000,1001,50)  
-
-### Plot filled contours    
-cs = m.contourf(lons[:,:],lats[:,:],slopesiv1[:,:],
-                values,latlon=True,extend='both')
-cs1 = m.contour(lons[:,:],lats[:,:],slopesiv1[:,:],
-                values,latlon=True,linestyles='-',
-                colors='k',linewidths=0.05)
-                  
-### Set colormap         
-cmap = plt.cm.get_cmap('seismic_r')                      
-cs.set_cmap(cmap)
-
-ax = plt.subplot(1,2,2)
-
-m = Basemap(projection='npstere',boundinglat=66,lon_0=270,resolution='l',round =True)    
-m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.3)
-parallels = np.arange(50,90,10)
-meridians = np.arange(-180,180,30)
-m.drawparallels(parallels,labels=[False,False,False,False],
-                linewidth=0.35,color='k',fontsize=5)
-m.drawmeridians(meridians,labels=[False,False,False,False],
-                linewidth=0.35,color='k',fontsize=5)
-m.drawlsmask(land_color='dimgrey',ocean_color='mintcream')
-
-### Adjust maximum limits
-values = np.arange(-1000,1001,50)  
-
-### Plot filled contours    
-cs = m.contourf(lons[:,:],lats[:,:],slopesiv2[:,:],
-                values,latlon=True,extend='both')
-cs1 = m.contour(lons[:,:],lats[:,:],slopesiv2[:,:],
-                values,latlon=True,linestyles='-',
-                colors='k',linewidths=0.05)
-                  
-### Set colormap     
+fig = plt.figure()
+for i in xrange(slopesiv.shape[0]):    
+    ax = plt.subplot(3,4,i+1)
+    
+    m = Basemap(projection='npstere',boundinglat=66,lon_0=270,resolution='l',round =True)    
+    m.drawmapboundary(fill_color='white')
+    m.drawcoastlines(color='darkgrey',linewidth=0.1)
+    parallels = np.arange(50,90,10)
+    meridians = np.arange(-180,180,30)
+#    m.drawparallels(parallels,labels=[False,False,False,False],
+#                    linewidth=0.0,color='k',fontsize=5)
+#    m.drawmeridians(meridians,labels=[False,False,False,False],
+#                    linewidth=0.0,color='k',fontsize=5)
+    m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+    
+    ### Adjust maximum limits
+    values = np.arange(-1000,1001,50)  
+    
+    ### Plot filled contours    
+    cs = m.contourf(lons[:,:],lats[:,:],slopesiv[i,:,:],
+                    values,latlon=True,extend='both')
+    cs1 = m.contour(lons[:,:],lats[:,:],slopesiv[i,:,:],
+                    values,latlon=True,linestyles='-',
+                    colors='k',linewidths=0.05)
+                      
+    ### Set colormap     
 #    cmap = plt.cm.get_cmap('brewer_RdBu_11')      
-cmap = plt.cm.get_cmap('seismic_r')                      
-cs.set_cmap(cmap)
+    cmap = plt.cm.get_cmap('spectral')                      
+    cs.set_cmap(cmap)
+    
+    ax.text(0.91,0.97,r'\textbf{%s}' % (months[i]),size='8',
+                horizontalalignment='center',
+                verticalalignment='center',transform=ax.transAxes)
                           
 cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])                
 cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
                     extend='both',extendfrac=0.07,drawedges=True)
 
-cbar.set_label(r'\textbf{SIV( km$^{3}$ decade$^{-1}$} )')
+cbar.set_label(r'km$^{3}$ decade$^{-1}$')
 cbar.set_ticks(np.arange(-1000,1001,500))
 cbar.set_ticklabels(map(str,np.arange(-1000,1001,500))) 
 
-plt.text(0.82,26,'2005-2015',fontsize=23)
-plt.text(-0.56,26,'1980-1990',fontsize=23)
-
-#fig.subplots_adjust(bottom=0.15)
-#fig.subplots_adjust(wspace=-0.5)
-plt.tight_layout()
+fig.suptitle(r'\textbf{PIOMAS, 1979-2015 SIV Trends}',fontsize=14)
+fig.subplots_adjust(bottom=0.15)
+fig.subplots_adjust(wspace=-0.5)
+#plt.tight_layout()
 
 ### Save figure
-plt.savefig(directoryfigure +'largegrid_volsubs.png',dpi=500)
+plt.savefig(directoryfigure +'largegrid_vol1.png',dpi=500)
 
-print 'Completed: Script done!'
+#slopesiv1 = np.nanmean(slopesiv1[6:8],axis=0)
+#slopesiv2 = np.nanmean(slopesiv2[6:9],axis=0)
+
+#slopesiv1 = slopesiv1 * 10**6
+#slopesiv2 = slopesiv2 * 10**6
+#
+#fig = plt.figure()   
+#ax = plt.subplot(1,2,1)
+#
+#m = Basemap(projection='npstere',boundinglat=66,lon_0=270,resolution='l',round =True)    
+#m.drawmapboundary(fill_color='white')
+#m.drawcoastlines(color='k',linewidth=0.3)
+#parallels = np.arange(50,90,10)
+#meridians = np.arange(-180,180,30)
+#m.drawparallels(parallels,labels=[False,False,False,False],
+#                linewidth=0.35,color='k',fontsize=5)
+#m.drawmeridians(meridians,labels=[False,False,False,False],
+#                linewidth=0.35,color='k',fontsize=5)
+#m.drawlsmask(land_color='dimgrey',ocean_color='mintcream')
+#
+#### Adjust maximum limits
+#values = np.arange(-1000,1001,50)  
+#
+#### Plot filled contours    
+#cs = m.contourf(lons[:,:],lats[:,:],slopesiv1[:,:],
+#                values,latlon=True,extend='both')
+#cs1 = m.contour(lons[:,:],lats[:,:],slopesiv1[:,:],
+#                values,latlon=True,linestyles='-',
+#                colors='k',linewidths=0.05)
+#                  
+#### Set colormap         
+#cmap = plt.cm.get_cmap('seismic_r')                      
+#cs.set_cmap(cmap)
+#
+#ax = plt.subplot(1,2,2)
+#
+#m = Basemap(projection='npstere',boundinglat=66,lon_0=270,resolution='l',round =True)    
+#m.drawmapboundary(fill_color='white')
+#m.drawcoastlines(color='k',linewidth=0.3)
+#parallels = np.arange(50,90,10)
+#meridians = np.arange(-180,180,30)
+#m.drawparallels(parallels,labels=[False,False,False,False],
+#                linewidth=0.35,color='k',fontsize=5)
+#m.drawmeridians(meridians,labels=[False,False,False,False],
+#                linewidth=0.35,color='k',fontsize=5)
+#m.drawlsmask(land_color='dimgrey',ocean_color='mintcream')
+#
+#### Adjust maximum limits
+#values = np.arange(-1000,1001,50)  
+#
+#### Plot filled contours    
+#cs = m.contourf(lons[:,:],lats[:,:],slopesiv2[:,:],
+#                values,latlon=True,extend='both')
+#cs1 = m.contour(lons[:,:],lats[:,:],slopesiv2[:,:],
+#                values,latlon=True,linestyles='-',
+#                colors='k',linewidths=0.05)
+#                  
+#### Set colormap     
+##    cmap = plt.cm.get_cmap('brewer_RdBu_11')      
+#cmap = plt.cm.get_cmap('seismic_r')                      
+#cs.set_cmap(cmap)
+#                          
+#cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])                
+#cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
+#                    extend='both',extendfrac=0.07,drawedges=True)
+#
+#cbar.set_label(r'\textbf{SIV( km$^{3}$ decade$^{-1}$} )')
+#cbar.set_ticks(np.arange(-1000,1001,500))
+#cbar.set_ticklabels(map(str,np.arange(-1000,1001,500))) 
+#
+#plt.text(0.82,26,'2005-2015',fontsize=23)
+#plt.text(-0.56,26,'1980-1990',fontsize=23)
+#
+##fig.subplots_adjust(bottom=0.15)
+##fig.subplots_adjust(wspace=-0.5)
+#plt.tight_layout()
+#
+#### Save figure
+#plt.savefig(directoryfigure +'largegrid_volsubs.png',dpi=500)
+#
+#print 'Completed: Script done!'

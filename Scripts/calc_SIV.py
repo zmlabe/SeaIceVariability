@@ -128,7 +128,7 @@ def sivGrid(sit,sic,area,conc):
         RuntimeError('Did not use correct argument for function!')
         
     ### Correct units (I don't know why yet!!!!)
-    siv = siv                                  
+    siv = siv/10**6                                  
       
     print '*Completed: Calculated sea ice volume per grid cell!'
     return siv
@@ -362,4 +362,34 @@ for i in xrange(sivyr.shape[0]):
               
 plt.text(0.1,-9.7,r'\textbf{Anomalies, 1979-2015}',fontsize=13)             
 plt.savefig(directoryfigure + 'siv_years_anoms.png',dpi=300)
-    
+
+###########################################################################
+###########################################################################
+###########################################################################
+###########################################################################
+siv_w = np.nanmean(sivyr[:,0:3],axis=1)
+siv_sp = np.nanmean(sivyr[:,3:6],axis=1)
+siv_su = np.nanmean(sivyr[:,6:9],axis=1)
+siv_f = np.nanmean(sivyr[:,9:12],axis=1)   
+
+sivz_w = (siv_w - np.nanmean(siv_w))/np.std(siv_w)
+sivz_sp = (siv_sp - np.nanmean(siv_sp))/np.std(siv_sp)
+sivz_su = (siv_su - np.nanmean(siv_su))/np.std(siv_su)
+sivz_f = (siv_f - np.nanmean(siv_f))/np.std(siv_f)
+
+year1 = yearmin
+year2 = yearmax 
+
+### Create text files
+directorytext = '/home/zlabe/Documents/Research/SeaIceVariability/Data/'
+
+np.savetxt(directorytext + 'siv_JFM_%s%s.txt' % (year1,year2),
+           sivz_w)
+np.savetxt(directorytext + 'siv_AMJ_%s%s.txt' % (year1,year2),
+           sivz_sp)
+np.savetxt(directorytext + 'siv_JAS_%s%s.txt' % (year1,year2),
+           sivz_su)
+np.savetxt(directorytext + 'siv_OND_%s%s.txt' % (year1,year2),
+           sivz_f)  
+           
+print 'Completed: Script done!' 
