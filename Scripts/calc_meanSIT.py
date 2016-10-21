@@ -240,8 +240,8 @@ for i in xrange(sitave.shape[0]):
             color='k',linestyle='-',marker='o')
     
     plt.xlim([0,11])       
-    plt.xticks(np.arange(0,12,1),months[1:]) 
-    plt.yticks(np.arange(0,3.1,0.5),map(str,(np.arange(0,3.1,0.5)))) 
+    plt.xticks(np.arange(0,12,1),months[:]) 
+    plt.yticks(np.arange(0,4.5,0.5),map(str,(np.arange(0,4.5,0.5)))) 
     plt.ylabel(r'Sea Ice Thickness (m)')
     
     l = plt.legend(shadow=False,fontsize=4,loc='upper right',
@@ -286,7 +286,7 @@ for i in xrange(sita.shape[0]):
              linestyle='--')
     
     plt.xlim([0,11])       
-    plt.xticks(np.arange(0,12,1),months[1:]) 
+    plt.xticks(np.arange(0,12,1),months[:]) 
     plt.yticks(np.arange(-1,1.1,0.5),map(str,(np.arange(-1,1.1,0.5)))) 
     plt.ylabel(r'Sea Ice Thickness (m)')
     

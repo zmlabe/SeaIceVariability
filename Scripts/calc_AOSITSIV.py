@@ -237,7 +237,7 @@ def corr(sivgrq,adq):
     corr = np.empty((sivgrq.shape[1],sivgrq.shape[2]))
     for i in xrange(sivgrq.shape[1]):
         for j in xrange(sivgrq.shape[2]):
-            corr[i,j] = sts.stats.pearsonr(varx[:,i,j],vary)[1]
+            corr[i,j] = sts.stats.pearsonr(varx[:,i,j],vary)[0]
         
     corr[np.where(corr == 1.)] = np.nan
     return corr
@@ -268,8 +268,8 @@ m.drawmeridians(meridians,labels=[False,False,False,False],
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 # Make the plot continuous
-barlim = np.arange(0,1.1,.5)
-values = np.arange(0,1.1,0.1)
+barlim = np.arange(-1,1.1,.5)
+values = np.arange(-1,1.1,0.1)
 
 cs = m.contourf(lons,lats,corr_w,
                 values,extend='both',latlon=True)
@@ -277,7 +277,7 @@ cs1 = m.contour(lons,lats,corr_w,
                 values,linewidths=0.2,colors='k',
                 linestyles='-',latlon=True)
         
-cs.set_cmap('viridis')
+cs.set_cmap('RdBu_r')
 ax.annotate(r'\textbf{JFM}', xy=(0, 0), xytext=(-0.23, 0.9),
             xycoords='axes fraction',fontsize=22)
 
@@ -304,7 +304,7 @@ cs1 = m.contour(lons,lats,corr_sp,
                 values,linewidths=0.2,colors='k',
                 linestyles='-',latlon=True)
         
-cs.set_cmap('viridis')
+cs.set_cmap('RdBu_r')
 
 ax.annotate(r'\textbf{AMJ}', xy=(0, 0), xytext=(0.8, 0.9),
             xycoords='axes fraction',fontsize=22)
@@ -332,7 +332,7 @@ cs1 = m.contour(lons,lats,corr_su,
                 values,linewidths=0.2,colors='k',
                 linestyles='-',latlon=True)
         
-cs.set_cmap('viridis')
+cs.set_cmap('RdBu_r')
 ax.annotate(r'\textbf{JAS}', xy=(0, 0), xytext=(-0.23, 0.9),
             xycoords='axes fraction',fontsize=22)
 
@@ -359,7 +359,7 @@ cs1 = m.contour(lons,lats,corr_f,
                 values,linewidths=0.2,colors='k',
                 linestyles='-',latlon=True)
         
-cs.set_cmap('viridis')
+cs.set_cmap('RdBu_r')
 
 ax.annotate(r'\textbf{OND}', xy=(0, 0), xytext=(0.8, 0.9),
             xycoords='axes fraction',fontsize=22)

@@ -16,6 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 import scipy.stats as sts
+from scipy import signal
 import read_SeaIceThick_PIOMAS as CT
 import read_SeaIceConc_PIOMAS as CC
 import calc_PiomasArea as CA
@@ -105,9 +106,12 @@ timex = np.arange(len(years2))
 slope_w,intercept_w,r_w,p_value,std_err = sts.stats.linregress(timex,ad[0]) 
 line_w = slope_w*timex + intercept_w
 
+#siv_dt = signal.detrend(siv,type='linear')
+
 plt.plot(ad[0],marker='o',markersize=4,zorder=2,linewidth=2,
          color='steelblue')
 plt.plot(siv[0,1:],zorder=2,linewidth=2,color='darkorange')
+#plt.plot(siv_dt[0,1:],zorder=2,linewidth=2,color='y')
 plt.plot(timex,line_w,zorder=1,linewidth=1.3,color='r')
 
 plt.axvline(np.where(years2 == 2007)[0],color='k',linestyle='--')
@@ -232,21 +236,64 @@ ad_su = ad[2]
 sivgr_f = np.nanmean(sivgr[1:,9:12,:,:],axis=1)
 ad_f = ad[3]
 
+def deTrend(y):
+    x = np.arange(y.shape[0])
+    
+    slopes = np.empty((y.shape[1],y.shape[2]))
+    intercepts = np.empty((y.shape[1],y.shape[2]))
+    for i in xrange(y.shape[1]):
+        for j in xrange(y.shape[2]):
+            mask = np.isfinite(y[:,i,j])
+            yy = y[:,i,j]           
+            
+            if np.isfinite(np.nanmean(yy)):
+                slopes[i,j], intercepts[i,j], r_value, p_value, std_err = sts.linregress(x[mask],yy[mask])
+            else:
+                slopes[i,j] = np.nan
+                intercepts[i,j] = np.nan
+    
+    y_detrend = np.empty(y.shape)        
+    for i in xrange(y.shape[0]):
+        y_detrend[i,:,:] = y[i,:,:] - (slopes*x[i] + intercept)
+
+#    y_detrend = np.empty(y.shape)
+#    for i in xrange(y.shape[1]):
+#        for j in xrange(y.shape[2]):
+#            y_detrend[:,i,j] = signal.detrend(y[:,i,j],type='linear')
+     
+    print 'Completed: Detrended SIV data!' 
+    return y_detrend
+    
+sivgr_w_dt = deTrend(sivgr_w)
+sivgr_sp_dt = deTrend(sivgr_sp)
+sivgr_su_dt = deTrend(sivgr_su)
+sivgr_f_dt = deTrend(sivgr_f)
+        
+
 def corr(sivgrq,adq):
     varx = sivgrq
     vary = adq
     corr = np.empty((sivgrq.shape[1],sivgrq.shape[2]))
     for i in xrange(sivgrq.shape[1]):
         for j in xrange(sivgrq.shape[2]):
-            corr[i,j] = sts.stats.pearsonr(varx[:,i,j],vary)[1]
+            corr[i,j] = sts.stats.pearsonr(varx[:,i,j],vary)[0]
         
     corr[np.where(corr == 1.)] = np.nan
-    return corr
     
-corr_w = corr(sivgr_w,ad_w)
-corr_sp = corr(sivgr_sp,ad_sp)
-corr_su = corr(sivgr_su,ad_su)
-corr_f = corr(sivgr_f,ad_f)
+    print 'Completed: Correlated SIV and AD data!'
+    return corr
+
+### detrend    
+corr_w = corr(sivgr_w_dt,ad_w)
+corr_sp = corr(sivgr_sp_dt,ad_sp)
+corr_su = corr(sivgr_su_dt,ad_su)
+corr_f = corr(sivgr_f_dt,ad_f)
+
+#### normal
+#corr_w = corr(sivgr_w,ad_w)
+#corr_sp = corr(sivgr_sp,ad_sp)
+#corr_su = corr(sivgr_su,ad_su)
+#corr_f = corr(sivgr_f,ad_f)
 
 
 ### Plot figure
@@ -269,16 +316,16 @@ m.drawmeridians(meridians,labels=[False,False,False,False],
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 # Make the plot continuous
-barlim = np.arange(0,1.1,.5)
-values = np.arange(0,1.1,0.1)
+barlim = np.arange(-1,1.1,.5)
+values = np.arange(-1,1.1,0.1)
 
 cs = m.contourf(lons,lats,corr_w,
-                values,extend='both',latlon=True)
+                values,latlon=True)
 cs1 = m.contour(lons,lats,corr_w,
                 values,linewidths=0.2,colors='k',
                 linestyles='-',latlon=True)
         
-cs.set_cmap('viridis')
+cs.set_cmap('RdBu_r')
 ax.annotate(r'\textbf{JFM}', xy=(0, 0), xytext=(-0.23, 0.9),
             xycoords='axes fraction',fontsize=22)
 
@@ -300,12 +347,12 @@ m.drawmeridians(meridians,labels=[False,False,False,False],
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 cs = m.contourf(lons,lats,corr_sp,
-                values,extend='both',latlon=True)
+                values,latlon=True)
 cs1 = m.contour(lons,lats,corr_sp,
                 values,linewidths=0.2,colors='k',
                 linestyles='-',latlon=True)
         
-cs.set_cmap('viridis')
+cs.set_cmap('RdBu_r')
 
 ax.annotate(r'\textbf{AMJ}', xy=(0, 0), xytext=(0.8, 0.9),
             xycoords='axes fraction',fontsize=22)
@@ -328,12 +375,12 @@ m.drawmeridians(meridians,labels=[False,False,False,False],
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 cs = m.contourf(lons,lats,corr_su,
-                values,extend='both',latlon=True)
+                values,latlon=True)
 cs1 = m.contour(lons,lats,corr_su,
                 values,linewidths=0.2,colors='k',
                 linestyles='-',latlon=True)
         
-cs.set_cmap('viridis')
+cs.set_cmap('RdBu_r')
 ax.annotate(r'\textbf{JAS}', xy=(0, 0), xytext=(-0.23, 0.9),
             xycoords='axes fraction',fontsize=22)
 
@@ -355,19 +402,19 @@ m.drawmeridians(meridians,labels=[False,False,False,False],
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 cs = m.contourf(lons,lats,corr_f,
-                values,extend='both',latlon=True)
+                values,latlon=True)
 cs1 = m.contour(lons,lats,corr_f,
                 values,linewidths=0.2,colors='k',
                 linestyles='-',latlon=True)
         
-cs.set_cmap('viridis')
+cs.set_cmap('RdBu_r')
 
 ax.annotate(r'\textbf{OND}', xy=(0, 0), xytext=(0.8, 0.9),
             xycoords='axes fraction',fontsize=22)
 
 cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])                
 cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
-                    extend='both',extendfrac=0.07,drawedges=True)
+                    extend='Both',extendfrac=0.07,drawedges=True)
 
 cbar.set_label(r'\textbf{Correlation Coefficient}')
 cbar.set_ticks(barlim)
@@ -378,4 +425,4 @@ fig.subplots_adjust(top=0.95)
 fig.subplots_adjust(bottom=0.2)
 fig.subplots_adjust(wspace=-0.45)
 
-plt.savefig(directoryfigure + 'testcorrs',dpi=300)
+plt.savefig(directoryfigure + 'testcorrs_ad_dt',dpi=300)
