@@ -14,7 +14,7 @@ Usage
 
 def readLENS(directory,threshold):
     """
-    Function reads LENS netCDF4 data array
+    Function reads LENS control netCDF4 data array
 
     Parameters
     ----------
@@ -34,25 +34,24 @@ def readLENS(directory,threshold):
 
     Usage
     -----
-    lats,lons,sit = readPiomas(directory,years,threshold)
+    lats,lons,sit = readLENS(directory,years,threshold)
     """
     
-    print '\n>>> Using readPiomas function!'
+    print '\n>>> Using readLENS function!'
     
     ### Import modules
     import numpy as np
     from netCDF4 import Dataset
     
     ### Modify directory
-    directory = directory + 'CESM_large_ensemble/SIT/'
+    directory = directory + 'CESM_large_ensemble/SIT/interp_1deg/'
     files = 'SIT_control_0001-1800.nc'
-#    files = 'b.e11.B1850C5CN.f09_g16.005.cice.h.hi_nh.040001-049912.nc'
     filename = directory + files
     
     data = Dataset(filename)
-    lats = data.variables['latitude'][80:]
-    lons = data.variables['longitude'][:]
-    sitq = data.variables['SIT'][:,80:,:]
+    lats = data.variables['lat'][:]
+    lons = data.variables['lon'][:]
+    sitq = data.variables['SIT'][:,:,:]
     data.close()
     
     ### Test for slice lats > 60
@@ -73,6 +72,76 @@ def readLENS(directory,threshold):
     print '*Completed: Read SIT data!'   
     
     return lats,lons,sit
+    
+def readLENSEnsemble(directory,threshold):
+    """
+    Function reads LENS ensembles netCDF4 data array
+
+    Parameters
+    ----------
+    directory : string
+        working directory for stored PIOMAS files
+    threshold : float
+        mask sea ice thickness amounts < to this value
+
+    Returns
+    -------
+    lats : 1d array
+        latitudes
+    lons : 1d array
+        longitudes
+    sit : 5d array [ens,year,month,lat,lon]
+        sea ice thickness (m) 
+
+    Usage
+    -----
+    lats,lons,sit = readLENS(directory,years,threshold)
+    """
+    
+    print '\n>>> Using readLENS function!'
+    
+    ### Import modules
+    import numpy as np
+    from netCDF4 import Dataset
+    
+    ens = np.array(['02','03','04','05','06','07','08','09'])
+#    ens = np.array(['02','03','04','05','06','07','08','09']) + \
+#        map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
+    
+    ### Modify directory
+    directory = directory + 'CESM_large_ensemble/SIT/interp_1deg/'
+    
+    sitq = np.empty((len(ens),86*12,24,360))
+    for i in xrange(len(ens)):
+        files = 'b.e11.B20TRC5CNBDRD.f09_g16.0%s.cice.h.hi_nh.192001-200512.nc' % ens[i]
+        filename = directory + files
+        
+        data = Dataset(filename)
+        lats = data.variables['lat'][156:180]
+        lons = data.variables['lon'][:]
+        sitq[i,:,:,:] = data.variables['SIT'][:,156:180,:] # lats > 65
+        data.close()
+        
+        print 'Completed reading LENS ensemble #%s!' % ens[i]
+        
+    sit = np.reshape(sitq,(len(ens),sitq.shape[1]/12,12,
+                           lats.shape[0],lons.shape[0]))
+    sit = np.squeeze(np.asarray(sit))
+    
+    ### Mask out threshold values
+    if threshold == 'None':
+        sit[np.where(sit < 0)] = np.nan
+        sit[np.where(sit > 12)] = np.nan
+    else:
+        sit[np.where(sit < threshold)] = np.nan
+        sit[np.where(sit < 0)] = np.nan
+        sit[np.where(sit > 12)] = np.nan
+        
+    print 'Masking SIT data < %s m!' % threshold
+
+    print '*Completed: Read SIT data!' 
+    
+    return sit,lats,lons
     
 def meanThick(sit):
     """

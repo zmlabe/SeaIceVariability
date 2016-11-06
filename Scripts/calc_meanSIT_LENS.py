@@ -16,6 +16,7 @@ import datetime
 import read_SeaIceThick_LENS as LENSt
 import statsmodels.api as sm
 from mpl_toolkits.basemap import Basemap
+import nclcmaps as ncm
 
 ### Define directories
 directorydata = '/home/zlabe/Surtsey3/'
@@ -39,13 +40,13 @@ months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
 
 #### Call functions
-lats,lons,sit = LENSt.readLENS(directorydata,0.15)
+#lats,lons,sit = LENSt.readLENS(directorydata,0.15)
 
 
-weights = np.cos(np.deg2rad(lats))
-sit_zonalave = np.nanmean(sit,axis=2)
-
-lons,lats = np.meshgrid(lons,lats)
+#weights = np.cos(np.deg2rad(lats))
+#sit_zonalave = np.nanmean(sit,axis=2)
+#
+#lons,lats = np.meshgrid(lons,lats)
 
 def weightThick(var,lats):
     """
@@ -81,75 +82,81 @@ def adjust_spines(ax, spines):
         ax.xaxis.set_ticks_position('bottom')
     else:
         ax.xaxis.set_ticks([]) 
+
+var = sit[0,8,:,:]
+var[np.where(var > 10)] = np.nan
+
+### Plot figure
+plt.rc('text',usetex=True)
+plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
+
+def colormapSIT():
+    cmap1 = plt.get_cmap('BuPu')
+    cmap2 = plt.get_cmap('RdPu_r')
+    cmap3 = plt.get_cmap('gist_heat_r')
+    cmaplist1 = [cmap1(i) for i in xrange(cmap1.N-10)]
+    cmaplist2 = [cmap2(i) for i in xrange(15,cmap2.N)]
+    cmaplist3 = [cmap3(i) for i in xrange(cmap2.N)]
+    cms_sit = c.ListedColormap(cmaplist1 + cmaplist2 + cmaplist3)
+    return cms_sit
+    
+cmap = colormapSIT()
+#cmap = ncm.cmap('helix') 
+
+#fig = plt.figure()
+#ax = plt.subplot(111)
 #
-#var = sit[0,8,:,:]
-#var[np.where(var > 10)] = np.nan
+#m = Basemap(projection='npstere',boundinglat=62,lon_0=270,
+#            resolution='l',round =True)
+#m.drawmapboundary(fill_color='white')
+#m.drawcoastlines(color='k',linewidth=0.3)
+#parallels = np.arange(50,90,10)
+#meridians = np.arange(-180,180,30)
+#m.drawparallels(parallels,labels=[False,False,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
+#m.drawmeridians(meridians,labels=[True,True,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
+#m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 #
-#### Plot figure
-#plt.rc('text',usetex=True)
-#plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
+## Make the plot continuous
+#barlim = np.arange(0,8,1)
+#values = np.arange(0,7.1,.25)
 #
-#def colormapSIT():
-#    cmap1 = plt.get_cmap('BuPu')
-#    cmap2 = plt.get_cmap('RdPu_r')
-#    cmap3 = plt.get_cmap('gist_heat_r')
-#    cmaplist1 = [cmap1(i) for i in xrange(cmap1.N-10)]
-#    cmaplist2 = [cmap2(i) for i in xrange(15,cmap2.N)]
-#    cmaplist3 = [cmap3(i) for i in xrange(cmap2.N)]
-#    cms_sit = c.ListedColormap(cmaplist1 + cmaplist2 + cmaplist3)
-#    return cms_sit
+#cs = m.contourf(lons,lats,var[:,:],
+#                values,extend='max',latlon=True)
+#cs1 = m.contour(lons,lats,var[:,:],
+#                values,linewidths=0.2,colors='k',
+#                linestyles='-',latlon=True)                       
+#        
+#cs.set_cmap(cmap)
 #
-##fig = plt.figure()
-##ax = plt.subplot(111)
-##
-##m = Basemap(projection='npstere',boundinglat=62,lon_0=270,
-##            resolution='l',round =True)
-##m.drawmapboundary(fill_color='white')
-##m.drawcoastlines(color='k',linewidth=0.3)
-##parallels = np.arange(50,90,10)
-##meridians = np.arange(-180,180,30)
-##m.drawparallels(parallels,labels=[False,False,False,False],
-##                linewidth=0.3,color='k',fontsize=6)
-##m.drawmeridians(meridians,labels=[True,True,False,False],
-##                linewidth=0.3,color='k',fontsize=6)
-##m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
-##
-### Make the plot continuous
-##barlim = np.arange(0,8,1)
-##values = np.arange(0,7.1,.25)
-##
-##cs = m.contourf(lons,lats,var[:,:],
-##                values,extend='max',latlon=True)
-##cs1 = m.contour(lons,lats,var[:,:],
-##                values,linewidths=0.2,colors='k',
-##                linestyles='-',latlon=True)                       
-##        
-##cs.set_cmap(colormapSIT())
-##
-##cbar = m.colorbar(cs,location='right',pad='10%',drawedges=True)
-##cbar.set_ticks(barlim)
-##cbar.set_ticklabels(map(str,barlim))  
-##cbar.ax.tick_params(axis='x', size=.1)
-##cbar.set_label(r'\textbf{thickness (m)}')
-##
-##fig.suptitle(r'\textbf{LENS SIT 01/400')
-##
-##plt.savefig(directoryfigure + 'lens_sit.png',dpi=300)
-##'Completed: Script done!'
+#cbar = m.colorbar(cs,location='right',pad='10%',drawedges=True)
+#cbar.set_ticks(barlim)
+#cbar.set_ticklabels(map(str,barlim))  
+#cbar.ax.tick_params(axis='x', size=.1)
+#cbar.set_label(r'\textbf{thickness (m)}')
 #
+#fig.suptitle(r'\textbf{LENS SIT 01/400')
+#
+#plt.savefig(directoryfigure + 'lens_sit_1deg.png',dpi=300)
+#'Completed: Script done!'
+
 ############################################################################
 ############################################################################
 ############################################################################
-#sitmean = np.squeeze(np.apply_over_axes(np.nanmean,sit,[2,3]))
+sitmean = np.squeeze(np.apply_over_axes(np.nanmean,sit,[2,3]))
 
 sitm = np.ravel(sitave[-1000:,:])
 time = np.arange(0,sitm.shape[0]-1,600)
 
 fig = plt.figure()
 for i,times in enumerate(time):
-    adjax = i+1    
+    adjax = i+1  
+    
+    line3 = [3]*(50*12)
     
     ax = plt.subplot(5,4,i+1)
+    ax.plot(line3,color='k',linewidth=0.85)
     ax.plot(np.ravel(sitm[times:times+(50*12)]),linewidth=0.7,
             color='darkslateblue')
 
@@ -203,6 +210,42 @@ for i,times in enumerate(time):
     plt.subplots_adjust(hspace=0.4)
 plt.savefig(directoryfigure + 'timeseries_lens.png',dpi=300)
 
+############################################################################
+############################################################################
+############################################################################
+fig = plt.figure()
+ax = plt.subplot(111)
+
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['bottom'].set_linewidth(2)
+ax.spines['left'].set_linewidth(2)
+ax.tick_params('both',length=4.5,width=2,which='major')  
+#plt.grid(color='k',zorder=1,alpha=0.4)
+
+plt.plot(sitave.transpose(),color='darkslateblue',alpha=0.035,linewidth=0.7,
+         zorder=2)
+plt.plot(np.nanmean(sitave.transpose(),axis=1),color='r',linewidth=2,
+         marker='o',markeredgecolor='r',zorder=3)
+
+plt.ylabel('Sea Ice Thickness (m)')
+plt.xticks(np.arange(0,12,1),months) 
+plt.yticks(np.arange(0,4.5,0.5),map(str,np.arange(0,4.5,0.5))) 
+plt.xlim([0,11]) 
+plt.ylim([1.5,4])
+
+plt.savefig(directoryfigure + 'seasonalcycle_lens.png',dpi=300)
+
+############################################################################
+############################################################################
+############################################################################
+sitperiods = np.ravel(sitave)
+sitperiod30 = np.transpose(np.reshape(sitperiods,(sitperiods.shape[0]/(30*12),(30*12))))
+
+sitperiodmax = np.nanmax(sitperiod30,axis=1)
+sitperiodmin = np.nanmin(sitperiod30,axis=1)
+sitperiodmean = np.nanmean(sitperiod30,axis=1)
 
 fig = plt.figure()
 ax = plt.subplot(111)
@@ -213,16 +256,18 @@ ax.spines['right'].set_color('none')
 ax.spines['bottom'].set_linewidth(2)
 ax.spines['left'].set_linewidth(2)
 ax.tick_params('both',length=4.5,width=2,which='major')  
-plt.grid(color='k',zorder=1,alpha=0.4)
+#plt.grid(color='k',zorder=1,alpha=0.4)
 
-plt.plot(sitave.transpose(),color='darkslateblue',alpha=0.035,linewidth=0.7,
-         zorder=2)
-plt.plot(np.nanmean(sitave.transpose(),axis=1),color='r',linewidth=2,
-         marker='o',markeredgecolor='r',zorder=3)
+plt.plot(sitperiod30,color='dimgrey',alpha=0.2,
+         linewidth=0.7,zorder=3)
+plt.plot(sitperiodmean,color='darkslateblue',linewidth=1.5,zorder=4)
+plt.plot(sitperiodmax,color='indianred',linewidth=1,zorder=2)
+plt.plot(sitperiodmin,color='indianred',linewidth=1,zorder=1)
 
-plt.xticks(np.arange(0,12,1),months) 
-plt.yticks(np.arange(0,4.5,0.5),map(str,np.arange(0,4.5,0.5))) 
-plt.xlim([0,11]) 
-plt.ylim([0,4])
-
-plt.savefig(directoryfigure + 'seasonalcycle_lens.png',dpi=300)
+plt.xlabel(r'Years')
+plt.ylabel('Sea Ice Thickness (m)')
+plt.yticks(np.arange(1.5,4.5,0.5),map(str,np.arange(1.5,4.5,0.5)))         
+plt.xticks(np.arange(0,361,60),map(str,np.arange(0,31,5)))
+plt.xlim([0,360])
+         
+plt.savefig(directoryfigure + '30yearSIT_LENScontrol.png',dpi=300)

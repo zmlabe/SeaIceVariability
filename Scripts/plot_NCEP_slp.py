@@ -16,10 +16,11 @@ import datetime
 import scipy.stats as sts
 import read_NCEP as NP
 from mpl_toolkits.basemap import Basemap, addcyclic, shiftgrid
+import nclcmaps as ncm
 
 ### Define directories
 directorydata = '/home/zlabe/Surtsey/NCEP/'  
-directoryfigure = '/home/zlabe/Desktop/'
+directoryfigure = '/home/zlabe/Desktop/SLP/'
 
 ### Define time           
 now = datetime.datetime.now()
@@ -55,14 +56,16 @@ def climo(var,years,yearmin,yearmax):
 ### Calculate anomalies    
 meanslp = climo(slp,years,1981,2010)
 
-year1 = 2007
-year2 = 2007
+year1 = 1979
+year2 = 1988
 yrq = np.where((years >= year1) & (years <= year2))[0]  
 
-anomslp = slp[yrq,5:8,:,:] - meanslp[5:8,:,:]
+#months = 'AMJ'
+months = 'JAS'
+
+#anomslp = slp[yrq,3:6,:,:] - meanslp[3:6,:,:]
+anomslp = slp[yrq,6:9,:,:] - meanslp[6:9,:,:]
 summeranom = np.nanmean(np.nanmean(anomslp,axis=1),axis=0)
-
-
 
 var = summeranom
 
@@ -98,8 +101,9 @@ cs = m.contourf(x,y,var[:,:],
 cs1 = m.contour(x,y,var[:,:],
                 np.arange(-5,5.1,0.25),linewidths=0.2,colors='k',
                 linestyles='-')
-        
-cs.set_cmap('spectral')
+
+cmap = ncm.cmap('testcmap')        
+cs.set_cmap(cmap)
 
 cbar = m.colorbar(cs,location='right',pad='10%',drawedges=True)
 cbar.set_ticks(barlim)
@@ -107,7 +111,8 @@ cbar.set_ticklabels(map(str,barlim))
 cbar.ax.tick_params(axis='x', size=.1)
 cbar.set_label(r'SLP( mb )')
 
-fig.suptitle(r'\textbf{SLP anomalies - JJA 2007}')
+fig.suptitle(r'\textbf{SLP anomalies - %s %s-%s}' % (months,year1,year2))
 
-plt.savefig(directoryfigure + 'testslp3.png',dpi=300)
+plt.savefig(directoryfigure + 'slp_%s_%s%s.png' % (months,year1,year2),
+            dpi=300)
 'Completed: Script done!'

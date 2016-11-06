@@ -16,6 +16,7 @@ import datetime
 import scipy.stats as sts
 import read_NCEP_uvwind as NP
 from mpl_toolkits.basemap import Basemap, addcyclic, shiftgrid
+import nclcmaps as ncm
 
 ### Define directories
 directorydata = '/home/zlabe/Surtsey/NCEP/'  
@@ -38,8 +39,8 @@ months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
           
 ### Read in functions
-lats,lons,u = NP.readNCEPWind(directorydata,years,'u')     
-lats,lons,v = NP.readNCEPWind(directorydata,years,'v') 
+lats,lons,u = NP.readNCEPWind(directorydata,years,'925','u')     
+lats,lons,v = NP.readNCEPWind(directorydata,years,'925','v') 
 
 wind = np.sqrt(u**2+v**2)
 
@@ -58,11 +59,11 @@ def climo(var,years,yearmin,yearmax):
 ### Calculate anomalies    
 meanwind = climo(wind,years,1981,2010)
 
-year1 = 2005
-year2 = 2015
+year1 = 2007
+year2 = 2007
 yrq = np.where((years >= year1) & (years <= year2))[0]  
 
-anomwind = wind[yrq,5:8,:,:] - meanwind[5:8,:,:]
+anomwind = wind[yrq,6:9,:,:] - meanwind[6:9,:,:]
 summeranom = np.nanmean(np.nanmean(anomwind,axis=1),axis=0)
 
 u = np.nanmean(np.nanmean(u[yrq,5:8,:,:],axis=1),axis=0)
@@ -108,19 +109,20 @@ cs = m.contourf(x,y,var[:,:],
 #                values,linewidths=0.2,colors='k',
 #                linestyles='-')        
                 
-cs2 = m.quiver(x,y,u,v,scale=150) 
+cs2 = m.quiver(x,y,u,v,scale=150,color='k') 
 
-qk = plt.quiverkey(cs2, 1, 0.03, 5, r'5 m/s', labelpos='W')               
-        
-cs.set_cmap('RdBu_r')
+qk = plt.quiverkey(cs2, 1, 0.03, 10, r'10 m/s', labelpos='W')               
+ 
+cmap = ncm.cmap('testcmap')        
+cs.set_cmap(cmap)       
 
 cbar = m.colorbar(cs,location='right',pad='10%',drawedges=True)
 cbar.set_ticks(barlim)
 cbar.set_ticklabels(map(str,barlim))  
 cbar.ax.tick_params(axis='x', size=.1)
-cbar.set_label(r'\textbf{surface wind anomalies [m/s]}')
+cbar.set_label(r'\textbf{925mb wind anomalies [m/s]}')
 
-fig.suptitle(r'\textbf{JJA 2005-2015}')
+fig.suptitle(r'\textbf{JAS 2007}')
 
 plt.savefig(directoryfigure + 'testwind.png',dpi=300)
 'Completed: Script done!'

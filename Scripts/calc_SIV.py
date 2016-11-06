@@ -127,7 +127,7 @@ def sivGrid(sit,sic,area,conc):
     else:
         RuntimeError('Did not use correct argument for function!')
         
-    ### Correct units (I don't know why yet!!!!)
+    ### Correct units 
     siv = siv/10**6                                  
       
     print '*Completed: Calculated sea ice volume per grid cell!'

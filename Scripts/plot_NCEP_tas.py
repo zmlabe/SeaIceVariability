@@ -16,6 +16,7 @@ import datetime
 import scipy.stats as sts
 import read_NCEP as NP
 from mpl_toolkits.basemap import Basemap, addcyclic, shiftgrid
+import nclcmaps as ncm
 
 ### Define directories
 directorydata = '/home/zlabe/Surtsey/NCEP/'  
@@ -55,14 +56,17 @@ def climo(var,years,yearmin,yearmax):
 ### Calculate anomalies    
 meantas = climo(tas,years,1981,2010)
 
-year1 = 2005
+year1 = 1981
 year2 = 2015
 yrq = np.where((years >= year1) & (years <= year2))[0]  
 
-anomtas = tas[yrq,5:8,:,:] - meantas[5:8,:,:]
+months = 'AMJ'
+#months = 'JAS'
+
+anomtas = tas[yrq,3:6,:,:] - meantas[3:6,:,:]
+#anomtas = tas[yrq,6:9,:,:] - meantas[6:9,:,:]
+
 summeranom = np.nanmean(np.nanmean(anomtas,axis=1),axis=0)
-
-
 
 var = summeranom
 
@@ -98,8 +102,9 @@ cs = m.contourf(x,y,var[:,:],
 cs1 = m.contour(x,y,var[:,:],
                 np.arange(-5,5.1,0.25),linewidths=0.2,colors='k',
                 linestyles='-')
-        
-cs.set_cmap('seismic')
+
+cmap = ncm.cmap('BlueWhiteOrangeRed')         
+cs.set_cmap(cmap)
 
 cbar = m.colorbar(cs,location='right',pad='10%',drawedges=True)
 cbar.set_ticks(barlim)
@@ -107,7 +112,8 @@ cbar.set_ticklabels(map(str,barlim))
 cbar.ax.tick_params(axis='x', size=.1)
 cbar.set_label(r'\textbf{degrees C}')
 
-fig.suptitle(r'\textbf{925T anomalies - JJA 2005-2015}')
+fig.suptitle(r'\textbf{925T anomalies - %s %s-%s}' % (months,year1,year2))
 
-plt.savefig(directoryfigure + 'testtas.png',dpi=300)
+plt.savefig(directoryfigure + 'TAS/tas_%s_%s%s.png' % (months,year1,year2),
+            dpi=300)
 'Completed: Script done!'

@@ -160,7 +160,6 @@ def readNCEP(directory,years,name,height):
     ### Reshaping array
     var = np.reshape(varq,(varq.shape[0]/12.,12,
                            lats.shape[0],lons.shape[0]))
-    
-    
+        
     print '*Completed: NCEP data read!\n'
     return lats,lons,var
