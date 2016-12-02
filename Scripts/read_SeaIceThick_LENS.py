@@ -9,6 +9,7 @@ Notes
 Usage
 -----
     readLENS(directory,threshold)
+    lats,lons,sit = readLENS(directory,threshold,version)
     meanThick(yearmin,yearmax,years,sit)
 """
 
@@ -73,7 +74,7 @@ def readLENS(directory,threshold):
     
     return lats,lons,sit
     
-def readLENSEnsemble(directory,threshold):
+def readLENSEnsemble(directory,threshold,version):
     """
     Function reads LENS ensembles netCDF4 data array
 
@@ -83,6 +84,8 @@ def readLENSEnsemble(directory,threshold):
         working directory for stored PIOMAS files
     threshold : float
         mask sea ice thickness amounts < to this value
+    version : string
+        historical, rcp85
 
     Returns
     -------
@@ -95,7 +98,7 @@ def readLENSEnsemble(directory,threshold):
 
     Usage
     -----
-    lats,lons,sit = readLENS(directory,years,threshold)
+    lats,lons,sit = readLENS(directory,threshold,version)
     """
     
     print '\n>>> Using readLENS function!'
@@ -103,26 +106,60 @@ def readLENSEnsemble(directory,threshold):
     ### Import modules
     import numpy as np
     from netCDF4 import Dataset
-    
-    ens = np.array(['02','03','04','05','06','07','08','09'])
-#    ens = np.array(['02','03','04','05','06','07','08','09']) + \
-#        map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
+   
+    ens = ['02','03','04','05','06','07','08','09'] + \
+        map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
     
     ### Modify directory
     directory = directory + 'CESM_large_ensemble/SIT/interp_1deg/'
     
-    sitq = np.empty((len(ens),86*12,24,360))
-    for i in xrange(len(ens)):
-        files = 'b.e11.B20TRC5CNBDRD.f09_g16.0%s.cice.h.hi_nh.192001-200512.nc' % ens[i]
-        filename = directory + files
-        
-        data = Dataset(filename)
-        lats = data.variables['lat'][156:180]
-        lons = data.variables['lon'][:]
-        sitq[i,:,:,:] = data.variables['SIT'][:,156:180,:] # lats > 65
-        data.close()
-        
-        print 'Completed reading LENS ensemble #%s!' % ens[i]
+    if version == 'historical':   
+        sitq = np.empty((len(ens),86*12,24,360))
+        for i in xrange(len(ens)):
+            
+            files = 'b.e11.B20TRC5CNBDRD.f09_g16.0%s.cice.h.hi_nh.192001-200512.nc' % ens[i]
+            if int(ens[i]) >= 100:
+                files = 'b.e11.B20TRC5CNBDRD.f09_g16.%s.cice.h.hi_nh.192001-200512.nc' % ens[i]        
+            
+            filename = directory + files
+            
+            data = Dataset(filename)
+            lats = data.variables['lat'][156:180]
+            lons = data.variables['lon'][:]
+            sitq[i,:,:,:] = data.variables['SIT'][:,156:180,:] # lats > 65
+            data.close()
+            
+            print 'Completed reading historical LENS ensemble #%s!' % ens[i]
+            
+    elif version == 'rcp85':   
+        sitq = np.empty((len(ens),75*12,24,360))
+        for i in xrange(len(ens)):          
+            files = 'b.e11.BRCP85C5CNBDRD.f09_g16.0%s.cice.h.hi_nh.200601-208012.nc' % ens[i]
+            
+            if int(ens[i]) >= 34:
+                files = 'b.e11.BRCP85C5CNBDRD.f09_g16.0%s.cice.h.hi_nh.200601-210012.nc' % ens[i] 
+            if int(ens[i]) >= 100:
+                files = 'b.e11.BRCP85C5CNBDRD.f09_g16.%s.cice.h.hi_nh.200601-210012.nc' % ens[i]        
+            
+            filename = directory + files
+            data = Dataset(filename)
+            
+            if int(ens[i]) >= 34:
+                sitq[i,:,:,:] = data.variables['SIT'][:-20*12,156:180,:] # lats > 65 & chop 2080-2100
+                lats = data.variables['lat'][156:180]
+                lons = data.variables['lon'][:]
+            elif int(ens[i]) >= 100:
+                sitq[i,:,:,:] = data.variables['SIT'][:-20*12,156:180,:] # lats > 65 & chop 2080-2100
+                lats = data.variables['lat'][156:180]
+                lons = data.variables['lon'][:]
+            else:
+                lats = data.variables['lat'][156:180]
+                lons = data.variables['lon'][:]
+                sitq[i,:,:,:] = data.variables['SIT'][:,156:180,:] # lats > 65
+            
+            data.close()
+            
+            print 'Completed reading RCP8.5 LENS ensemble #%s!' % ens[i]
         
     sit = np.reshape(sitq,(len(ens),sitq.shape[1]/12,12,
                            lats.shape[0],lons.shape[0]))

@@ -40,9 +40,9 @@ yearmax = 2005
 years = np.arange(yearmin,yearmax+1,1)
 months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
-ensemble = np.array(['02','03','04','05','06','07','08','09'])
-#    ens = np.array(['02','03','04','05','06','07','08','09']) + \
-#        map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
+#ensemble = np.array(['02','03','04','05','06','07','08','09'])
+ensemble = ['02','03','04','05','06','07','08','09'] + \
+        map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
 
 def readPIOMAS(directorydata,threshold):
     files = 'piomas_regrid_sit_LENS_19792015.nc'
@@ -65,7 +65,7 @@ def readPIOMAS(directorydata,threshold):
     return sitp
 
 #### Call functions
-sit,lats,lons = lens.readLENSEnsemble(directorydatal,0.15)
+sit,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
 lons,lats = np.meshgrid(lons,lats)
 
 sitp = readPIOMAS(directorydatap,0.15)
@@ -129,12 +129,12 @@ def adjust_spines(ax, spines):
 ###########################################################################
 ###########################################################################
 ###########################################################################
-#sitave = np.reshape(sitave,(8,86*12))
+#sitave = np.reshape(sitave,(39,86*12))
 #sitavep = np.ravel(sitavep)  
-
+#
 #emptyp = np.array([np.nan] * ((1979-1920)*12))
 #newsitp = np.append(emptyp,sitavep,axis=0)
-      
+#      
 #fig = plt.figure()
 #ax = plt.subplot(111)
 #
