@@ -49,7 +49,7 @@ def readLENSEnsemble(directory,varq):
     ### Modify directory
     directory = directory + '%s/' % (varq)
     
-    varn = np.empty((len(ens),161*12,11,144))
+    varn = np.empty((len(ens),161*12,22,144)) # 96 for all
     for i in xrange(len(ens)):
         filename = '%s_0%s_1920-2100.nc' % (varq,ens[i])
         
@@ -57,9 +57,9 @@ def readLENSEnsemble(directory,varq):
             filename = '%s_%s_1920-2100.nc' % (varq,ens[i])
             
         data = Dataset(directory + filename)
-        lats = data.variables['latitude'][85:] # > 70N
+        lats = data.variables['latitude'][74:] # > 70N 85 11
         lons = data.variables['longitude'][:]
-        varn[i,:,:,:] = data.variables['%s' % varq][:-240,85:,:] # -2080
+        varn[i,:,:,:] = data.variables['%s' % varq][:-240,74:,:] # -2080
         data.close()
         
         print 'Completed: Read LENS Ensemble #%s - %s!' % (ens[i],varq)
@@ -76,3 +76,5 @@ def readLENSEnsemble(directory,varq):
     print '*Completed: Read %s data!' % varq
     
     return var,lats,lons
+    
+#var,lats,lons = readLENSEnsemble('/home/zlabe/Surtsey3/CESM_large_ensemble/' ,'SST')

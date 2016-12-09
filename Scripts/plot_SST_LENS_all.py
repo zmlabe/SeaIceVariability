@@ -13,10 +13,7 @@ Notes
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
-import scipy.stats as sts
 import read_var_LENS as LV
-from mpl_toolkits.basemap import Basemap, addcyclic, shiftgrid
-from eofs.standard import Eof
 
 ### Define directories
 directorydata = '/home/zlabe/Surtsey3/CESM_large_ensemble/' 
