@@ -40,9 +40,9 @@ yearmax = 2100
 years = np.arange(yearmin,yearmax+1,1)
 months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
-ensemble = ['02','03','04','05','06','07','08','09'] + map(str,np.arange(10,16))
-#ensemble = ['02','03','04','05','06','07','08','09'] + \
-#        map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
+#ensemble = ['02','03','04','05','06','07','08','09'] + map(str,np.arange(10,16))
+ensemble = ['02','03','04','05','06','07','08','09'] + \
+        map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
 
 def readPIOMAS(directorydata,threshold):
     files = 'piomas_regrid_sit_LENS_19792015.nc'

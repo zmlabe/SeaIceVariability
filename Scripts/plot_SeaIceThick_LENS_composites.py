@@ -15,14 +15,14 @@ import matplotlib.colors as c
 import datetime
 import read_SeaIceThick_LENS as lens
 import statsmodels.api as sm
-from mpl_toolkits.basemap import Basemap
+from mpl_toolkits.basemap import Basemap, addcyclic, shiftgrid
 import nclcmaps as ncm
 from netCDF4 import Dataset
 
 ### Define directories
 directorydatal = '/home/zlabe/Surtsey3/'
 directorydatap = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/Thickness/'  
-directoryfigure = '/home/zlabe/Desktop/LENS/'
+directoryfigure = '/home/zlabe/Desktop/'
 #directoryfigure = '/home/zlabe/Documents/Research/SeaIceVariability/Figures/'
 
 ### Define time           
@@ -36,12 +36,12 @@ print '\n' '----LENS Historical Mean Sea Ice Thickness - %s----' % titletime
 
 ### Alott time series
 yearmin = 2006
-yearmax = 2100
+yearmax = 2080
 years = np.arange(yearmin,yearmax+1,1)
 months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
 ensemble = ['02','03','04','05','06','07','08','09'] + \
-        map(str,np.arange(10,29,1)) #+ map(str,np.arange(101,106,1))
+        map(str,np.arange(10,29,1)) + map(str,np.arange(101,106,1))
 
 def readPIOMAS(directorydata,threshold):
     files = 'piomas_regrid_sit_LENS_19792015.nc'
@@ -64,31 +64,31 @@ def readPIOMAS(directorydata,threshold):
     return sitp
 
 #### Call functions
-#sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
-#sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
+sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
+sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
 #lons,lats = np.meshgrid(lons,lats)
-#
-#sitp = readPIOMAS(directorydatap,0.15)
-#
-#### September 
-#sith_mo = np.squeeze(np.apply_over_axes(np.nanmean,sith[:,:,8,:,:],[0]))
-#
-#sith1 = np.nanmean(sith_mo[11:36],axis=0)
-#sith2 = np.nanmean(sith_mo[36:61],axis=0)
-#sith3 = np.nanmean(sith_mo[61:86],axis=0)
-#
-#sitf_mo = np.squeeze(np.apply_over_axes(np.nanmean,sitf[:,:,8,:,:],[0]))
-#
-#sitf1 = np.nanmean(sitf_mo[0:25],axis=0)
-#sitf2 = np.nanmean(sitf_mo[25:50],axis=0)
-#sitf3 = np.nanmean(sitf_mo[50:75],axis=0)
-#
-#sitp_mo = sitp[:,8,:,:]
-#
-#sitp1 = np.nanmean(sitp_mo[1:19],axis=0)
-#sitp2 = np.nanmean(sitp_mo[19:37],axis=0)
 
-#composites = [sith1,sith2,sith3,sitp1,sitf1,sitf2,sitf3,sitp2]
+sitp = readPIOMAS(directorydatap,0.15)
+
+### September 
+sith_mo = np.squeeze(np.apply_over_axes(np.nanmean,sith[:,:,8,:,:],[0]))
+
+sith1 = np.nanmean(sith_mo[11:36],axis=0)
+sith2 = np.nanmean(sith_mo[36:61],axis=0)
+sith3 = np.nanmean(sith_mo[61:86],axis=0)
+
+sitf_mo = np.squeeze(np.apply_over_axes(np.nanmean,sitf[:,:,8,:,:],[0]))
+
+sitf1 = np.nanmean(sitf_mo[0:25],axis=0)
+sitf2 = np.nanmean(sitf_mo[25:50],axis=0)
+sitf3 = np.nanmean(sitf_mo[50:75],axis=0)
+
+sitp_mo = sitp[:,8,:,:]
+
+sitp1 = np.nanmean(sitp_mo[1:19],axis=0)
+sitp2 = np.nanmean(sitp_mo[19:37],axis=0)
+
+composites = [sith1,sith2,sith3,sitp1,sitf1,sitf2,sitf3,sitp2]
 
 ### Create subplots
 plt.rcParams['text.usetex']=True
@@ -110,27 +110,33 @@ def colormapSIT():
 for i in xrange(len(composites)):
     ax = plt.subplot(2,4,i+1)
     
+    ### Select variable
+    var = composites[i]
+    
     m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
                 resolution='l',round =True)
+                
+    var, lons_cyclic = addcyclic(var, lons)
+    var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
+    lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
+    x, y = m(lon2d, lat2d)      
+      
     m.drawmapboundary(fill_color='white')
-    m.drawcoastlines(color='k',linewidth=0.1)
+    m.drawcoastlines(color='k',linewidth=0.2)
     parallels = np.arange(50,90,10)
     meridians = np.arange(-180,180,30)
-    m.drawparallels(parallels,labels=[False,False,False,False],
-                    linewidth=0.35,color='k',fontsize=1)
-    m.drawmeridians(meridians,labels=[False,False,False,False],
-                    linewidth=0.35,color='k',fontsize=1)
+#    m.drawparallels(parallels,labels=[False,False,False,False],
+#                    linewidth=0.35,color='k',fontsize=1)
+#    m.drawmeridians(meridians,labels=[False,False,False,False],
+#                    linewidth=0.35,color='k',fontsize=1)
     m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
-    
-    ### Select variable
-    sit = composites[i]
     
     ### Adjust maximum limits
     values = np.arange(0,7.1,0.1)  
     
     ### Plot filled contours    
-    cs = m.contourf(lons[:,:],lats[:,:],sit,
-                    values,latlon=True,extend='max')
+    cs = m.contourf(x,y,var,
+                    values,extend='max')
                     
     ### Set colormap  
 #    cmap = ncm.cmap('MPL_cubehelix')         

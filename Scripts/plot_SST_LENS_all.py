@@ -17,7 +17,7 @@ import read_var_LENS as LV
 
 ### Define directories
 directorydata = '/home/zlabe/Surtsey3/CESM_large_ensemble/' 
-directoryfigure = '/home/zlabe/Desktop/LENS/SST/'
+directoryfigure = '/home/zlabe/Desktop/'
 
 ### Define time           
 now = datetime.datetime.now()
@@ -102,76 +102,76 @@ def adjust_spines(ax, spines):
 ###########################################################################
 ###########################################################################
 ###########################################################################
-sstaven = np.nanmean(sstave,axis=2)
-sstaveq = np.nanmean(sstaven,axis=0)
-
-fig = plt.figure()
-ax = plt.subplot(111)
-
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['bottom'].set_linewidth(2)
-ax.spines['left'].set_linewidth(2)
-ax.tick_params('both',length=4.5,width=2,which='major')  
-
-plt.plot(sstaven.transpose(),color='cornflowerblue',alpha=0.3,linewidth=0.7,
-     zorder=2)
-plt.plot(sstaveq,color='darkorchid',alpha=1,linewidth=2,
-     zorder=2)
-         
-plt.axvline(85,linestyle='--',linewidth=2,color='k')
-
-plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
-plt.yticks(np.arange(-2,2.1,0.5),map(str,np.arange(-2,2.1,0.5)))
-plt.xlim([0,180])
-
-plt.ylabel(r'Sea Surface Temperatures ($^{\circ}$C)')
-
-plt.savefig(directoryfigure + 'lens_sstmean70N_all.png',dpi=300)
-
-###########################################################################
-###########################################################################
-###########################################################################
-###########################################################################
-sstsep = sstave[:,:,8]
-sstmar = sstave[:,:,2]
-
-sstsepmean = np.nanmean(sstave[:,:,8],axis=0)
-sstmarmean = np.nanmean(sstave[:,:,2],axis=0)
-
-fig = plt.figure()
-ax = plt.subplot(111)
-
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['bottom'].set_linewidth(2)
-ax.spines['left'].set_linewidth(2)
-ax.tick_params('both',length=4.5,width=2,which='major')
-
-plt.plot(sstsep.transpose(),color='darkgrey',alpha=0.55,linewidth=0.7,
-     zorder=2)
-plt.plot(sstsepmean,color='indianred',alpha=1,linewidth=2,
-     zorder=2,label=r'LENS September')
-     
-plt.plot(sstmar.transpose(),color='darkgrey',alpha=0.55,linewidth=0.7,
-     zorder=2)
-plt.plot(sstmarmean,color='steelblue',alpha=1,linewidth=2,
-     zorder=2,label=r'LENS March')
-     
-plt.axvline(85,linestyle='--',linewidth=2,color='k')
-
-plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
-plt.yticks(np.arange(-2,8,1),map(str,np.arange(-2,8,1)))
-plt.xlim([0,180])
-
-plt.ylabel(r'Sea Surface Temperatures ($^{\circ}$C)')
-
-plt.legend(shadow=False,fontsize=11,loc='upper left',
-           fancybox=True,frameon=False)
-
-plt.savefig(directoryfigure + 'lens_sstmean70N_all_marsep.png',dpi=300)
+#sstaven = np.nanmean(sstave,axis=2)
+#sstaveq = np.nanmean(sstaven,axis=0)
+#
+#fig = plt.figure()
+#ax = plt.subplot(111)
+#
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#ax.spines['bottom'].set_linewidth(2)
+#ax.spines['left'].set_linewidth(2)
+#ax.tick_params('both',length=4.5,width=2,which='major')  
+#
+#plt.plot(sstaven.transpose(),color='cornflowerblue',alpha=0.3,linewidth=0.7,
+#     zorder=2)
+#plt.plot(sstaveq,color='darkorchid',alpha=1,linewidth=2,
+#     zorder=2)
+#         
+#plt.axvline(85,linestyle='--',linewidth=2,color='k')
+#
+#plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
+#plt.yticks(np.arange(-2,2.1,0.5),map(str,np.arange(-2,2.1,0.5)))
+#plt.xlim([0,180])
+#
+#plt.ylabel(r'Sea Surface Temperatures ($^{\circ}$C)')
+#
+#plt.savefig(directoryfigure + 'lens_sstmean70N_all.png',dpi=300)
+#
+############################################################################
+############################################################################
+############################################################################
+############################################################################
+#sstsep = sstave[:,:,8]
+#sstmar = sstave[:,:,2]
+#
+#sstsepmean = np.nanmean(sstave[:,:,8],axis=0)
+#sstmarmean = np.nanmean(sstave[:,:,2],axis=0)
+#
+#fig = plt.figure()
+#ax = plt.subplot(111)
+#
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#ax.spines['bottom'].set_linewidth(2)
+#ax.spines['left'].set_linewidth(2)
+#ax.tick_params('both',length=4.5,width=2,which='major')
+#
+#plt.plot(sstsep.transpose(),color='darkgrey',alpha=0.55,linewidth=0.7,
+#     zorder=2)
+#plt.plot(sstsepmean,color='indianred',alpha=1,linewidth=2,
+#     zorder=2,label=r'LENS September')
+#     
+#plt.plot(sstmar.transpose(),color='darkgrey',alpha=0.55,linewidth=0.7,
+#     zorder=2)
+#plt.plot(sstmarmean,color='steelblue',alpha=1,linewidth=2,
+#     zorder=2,label=r'LENS March')
+#     
+#plt.axvline(85,linestyle='--',linewidth=2,color='k')
+#
+#plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
+#plt.yticks(np.arange(-2,8,1),map(str,np.arange(-2,8,1)))
+#plt.xlim([0,180])
+#
+#plt.ylabel(r'Sea Surface Temperatures ($^{\circ}$C)')
+#
+#plt.legend(shadow=False,fontsize=11,loc='upper left',
+#           fancybox=True,frameon=False)
+#
+#plt.savefig(directoryfigure + 'lens_sstmean70N_all_marsep.png',dpi=300)
 
 ###########################################################################
 ###########################################################################
@@ -193,26 +193,26 @@ ax = plt.subplot(111)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
-ax.spines['bottom'].set_linewidth(2)
-ax.spines['left'].set_linewidth(2)
-ax.tick_params('both',length=4.5,width=2,which='major')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 
-plt.plot(sst_w.transpose(),color='darkgrey',alpha=0.55,linewidth=0.7,
+plt.plot(sst_w.transpose(),color='dimgrey',alpha=0.55,linewidth=0.3,
      zorder=2)
 plt.plot(sstmean_w,color='darkslateblue',alpha=1,linewidth=2,
      zorder=4,label=r'JFM')
      
-plt.plot(sst_sp.transpose(),color='darkgrey',alpha=0.55,linewidth=0.7,
+plt.plot(sst_sp.transpose(),color='dimgrey',alpha=0.55,linewidth=0.3,
      zorder=2)
 plt.plot(sstmean_sp,color='teal',alpha=1,linewidth=2,
      zorder=5,label=r'AMJ')
      
-plt.plot(sst_su.transpose(),color='darkgrey',alpha=0.55,linewidth=0.7,
+plt.plot(sst_su.transpose(),color='dimgrey',alpha=0.55,linewidth=0.3,
      zorder=2)
 plt.plot(sstmean_su,color='seagreen',alpha=1,linewidth=2,
      zorder=6,label=r'JAS')
      
-plt.plot(sst_f.transpose(),color='darkgrey',alpha=0.55,linewidth=0.7,
+plt.plot(sst_f.transpose(),color='dimgrey',alpha=0.55,linewidth=0.3,
      zorder=2)
 plt.plot(sstmean_f,color='saddlebrown',alpha=1,linewidth=2,
      zorder=7,label=r'OND')
@@ -221,11 +221,11 @@ plt.axvline(85,linestyle='--',linewidth=2,color='k')
 
 plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
 plt.yticks(np.arange(-2,8,1),map(str,np.arange(-2,8,1)))
-plt.xlim([0,180])
+plt.xlim([0,160])
 
-plt.ylabel(r'Sea Surface Temperatures ($^{\circ}$C)')
+plt.ylabel(r'\textbf{Sea Surface Temperatures ($^{\circ}$C)}')
 
-plt.legend(shadow=False,fontsize=11,loc='upper left',
+plt.legend(shadow=False,fontsize=9,loc='upper left',
            fancybox=True,frameon=False)
 
 plt.savefig(directoryfigure + 'lens_sstmean70N_all_seasons.png',dpi=300)

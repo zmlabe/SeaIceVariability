@@ -22,7 +22,7 @@ from netCDF4 import Dataset
 ### Define directories
 directorydatal = '/home/zlabe/Surtsey3/'
 directorydatap = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/Thickness/'  
-directoryfigure = '/home/zlabe/Desktop/LENS/'
+directoryfigure = '/home/zlabe/Desktop/'
 #directoryfigure = '/home/zlabe/Documents/Research/SeaIceVariability/Figures/'
 
 ### Define time           
@@ -100,9 +100,9 @@ def weightThick(var,lats,types):
 #sitp = readPIOMAS(directorydatap,0.15)
 #lons,lats = np.meshgrid(lons,lats)
 #  
-sitaveh = weightThick(sith,lats,'lens')
-sitavef = weightThick(sitf,lats,'lens')
-sitavep = weightThick(sitp,lats,'piomas')
+#sitaveh = weightThick(sith,lats,'lens')
+#sitavef = weightThick(sitf,lats,'lens')
+#sitavep = weightThick(sitp,lats,'piomas')
 
 #### Plot Figure
 plt.rc('text',usetex=True)
@@ -145,9 +145,11 @@ def adjust_spines(ax, spines):
 #adjust_spines(ax, ['left', 'bottom'])
 #ax.spines['top'].set_color('none')
 #ax.spines['right'].set_color('none')
-#ax.spines['bottom'].set_linewidth(2)
-#ax.spines['left'].set_linewidth(2)
-#ax.tick_params('both',length=4.5,width=2,which='major')  
+#ax.spines['left'].set_color('darkgrey')
+#ax.spines['bottom'].set_color('none')
+#plt.setp(ax.get_xticklabels(), visible=False)
+#ax.xaxis.set_tick_params(size=0)
+#ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
 #
 #for i in xrange(sitaveh.shape[0]):
 #    plt.plot(sitaveh[i,:],color='darkslateblue',alpha=0.3,linewidth=0.7,
@@ -194,12 +196,12 @@ ax = plt.subplot(111)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
-ax.spines['bottom'].set_linewidth(2)
-ax.spines['left'].set_linewidth(2)
-ax.tick_params('both',length=4.5,width=2,which='major')  
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 
 for i in xrange(sitavehyr.shape[0]):
-    plt.plot(sitavehyr[i,:],color='darkslateblue',alpha=0.3,linewidth=0.7,
+    plt.plot(sitavehyr[i,:],color='cornflowerblue',alpha=0.3,linewidth=0.7,
          zorder=2)
          
 for i in xrange(sitavefyr.shape[0]):
@@ -209,7 +211,7 @@ for i in xrange(sitavefyr.shape[0]):
 plt.plot(np.nanmean(sitavehyr,axis=0),color='steelblue',linewidth=1.5,linestyle='-',
          zorder=3,label=r'Mean Historical')    
 plt.plot(np.nanmean(sitavefyr,axis=0),color='darkgreen',linewidth=1.5,linestyle='-',
-         zorder=3,label=r'Mean Future')   
+         zorder=3,label=r'Mean RCP85')   
 plt.plot(sitavepyr,color='darkorange',alpha=1,linewidth=2,linestyle='-',
          zorder=4,label=r'PIOMAS')
          
@@ -217,11 +219,11 @@ plt.axvline(85,linestyle='--',linewidth=2,color='k')
 
 plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
 plt.yticks(np.arange(0,4.5,0.5),map(str,np.arange(0,4.5,0.5))) 
-plt.xlim([0,180])
+plt.xlim([0,160])
 
-plt.ylabel('Sea Ice Thickness (m)')
+plt.ylabel(r'\textbf{Sea Ice Thickness (m)}')
 
-plt.legend(shadow=False,fontsize=11,loc='upper right',
+plt.legend(shadow=False,fontsize=9,loc='upper right',
            fancybox=True,frameon=False)
 
 plt.savefig(directoryfigure + 'lens_yr_all.png',dpi=300)

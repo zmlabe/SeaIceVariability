@@ -19,6 +19,7 @@ import scipy.stats as sts
 import read_NCEP as NP
 from mpl_toolkits.basemap import Basemap, addcyclic, shiftgrid
 from eofs.standard import Eof
+import nclcmaps as ncm
 
 ### Define directories
 directorydata = '/home/zlabe/Surtsey/NCEP/'  
@@ -142,7 +143,7 @@ def calcSeasonalEOF(anomslp,years,year1,year2,monthind,eoftype,pctype):
     return eof,pc
     
 ### Climatology
-eofpattern,pcpattern = calcSeasonalEOF(anomslp,years,1958,1998,
+eofpattern,pcpattern = calcSeasonalEOF(anomslp,years,1981,2010,
                                        np.asarray([0,1,2,10,11]),2,2)
 #eofpattern,pcpattern = calcSeasonalEOF(anomslp,years,1958,1998,
 #                                       np.asarray([3,4,5,6]),2,2)
@@ -237,15 +238,22 @@ adindex_f = (ad_f - np.nanmean(adclimo_f))/np.std(adclimo_f)
                            
 
 
-var = eofpattern[1]
+var1 = eofpattern[0]
+var2 = eofpattern[1]
 
-
+###########################################################################
+###########################################################################
 ### Plot figure
 plt.rc('text',usetex=True)
 plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
+plt.rc('axes',edgecolor='k')
+plt.rc('xtick',color='k')
+plt.rc('ytick',color='k')
+plt.rc('axes',labelcolor='darkgrey')
+plt.rc('axes',facecolor='w')
 
 fig = plt.figure()
-ax = plt.subplot(111)
+ax = plt.subplot(121)
 
 m = Basemap(projection='npstere',boundinglat=70,lon_0=270,
             resolution='l',round =True)
@@ -253,40 +261,79 @@ m.drawmapboundary(fill_color='white')
 m.drawcoastlines(color='k',linewidth=0.3)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
-m.drawparallels(parallels,labels=[False,False,False,False],
-                linewidth=0,color='k',fontsize=6)
-m.drawmeridians(meridians,labels=[True,True,False,False],
-                linewidth=0,color='k',fontsize=6)
+#m.drawparallels(parallels,labels=[False,False,False,False],
+#                linewidth=0,color='k',fontsize=6)
+#m.drawmeridians(meridians,labels=[True,True,False,False],
+#                linewidth=0,color='k',fontsize=6)
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 # Make the plot continuous
-barlim = np.arange(-3,3.1,1)
+barlim = np.arange(-3,4,1)
 values = np.arange(-3,3.1,0.25)
 
-var, lons_cyclic = addcyclic(var, lons)
-var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
+var1, lons_cyclic = addcyclic(var1, lons)
+var1, lons_cyclic = shiftgrid(180., var1, lons_cyclic, start=False)
 lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
 x, y = m(lon2d, lat2d)
 
-cs = m.contourf(x,y,var,
+cs = m.contourf(x,y,var1,
                 values,extend='both')
-cs1 = m.contour(x,y,var,
-                values,linewidths=0.2,colors='k',
+cs1 = m.contour(x,y,var1,
+                values,linewidths=0.2,colors='darkgrey',
                 linestyles='-')
+                
+cmap = ncm.cmap('nrl_sirkes')         
+cs.set_cmap(cmap)   
+
+ax.annotate(r'\textbf{EOF1}',xy=(0,0),xytext=(0.35,1.05),
+            textcoords='axes fraction',fontsize=20,color='darkgrey')            
+                
+###########################################################################                
+                
+ax = plt.subplot(122)
+m = Basemap(projection='npstere',boundinglat=70,lon_0=270,
+            resolution='l',round =True)
+m.drawmapboundary(fill_color='white')
+m.drawcoastlines(color='k',linewidth=0.3)
+parallels = np.arange(50,90,10)
+meridians = np.arange(-180,180,30)
+#m.drawparallels(parallels,labels=[False,False,False,False],
+#                linewidth=0,color='k',fontsize=6)
+#m.drawmeridians(meridians,labels=[True,True,False,False],
+#                linewidth=0,color='k',fontsize=6)
+m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+
+var2, lons_cyclic = addcyclic(var2, lons)
+var2, lons_cyclic = shiftgrid(180., var2, lons_cyclic, start=False)
+lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
+x, y = m(lon2d, lat2d)
+
+cs = m.contourf(x,y,var2,
+                values,extend='both')
+cs1 = m.contour(x,y,var2,
+                values,linewidths=0.2,colors='darkgrey',
+                linestyles='-')                
         
-cs.set_cmap('RdBu_r')
+cmap = ncm.cmap('nrl_sirkes')         
+cs.set_cmap(cmap)      
 
-cbar = m.colorbar(cs,location='right',pad='10%',drawedges=True)
+cbar_ax = fig.add_axes([0.312,0.2,0.4,0.03])                
+cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
+                    extend='both',extendfrac=0.07,drawedges=True,cmap=cmap)
+
+cbar.set_label(r'\textbf{hPa}',color='k')
 cbar.set_ticks(barlim)
-cbar.set_ticklabels(map(str,barlim))  
-cbar.ax.tick_params(axis='x', size=.1)
-cbar.set_label(r'hPa')
+cbar.set_ticklabels(map(str,barlim))
 
-fig.suptitle(r'\textbf{EOF2, NDJFM 1958-1998 (SLP)}')
+ax.annotate(r'\textbf{EOF2}',xy=(0,0),xytext=(0.35,1.05),
+            textcoords='axes fraction',fontsize=20,color='darkgrey')
 
-plt.savefig(directoryfigure + 'testeof2.png',dpi=300)
+fig.subplots_adjust(bottom=0.2)
 
+plt.savefig(directoryfigure + 'testeofs_8110.png',dpi=300)
 
+###########################################################################
+###########################################################################
 ### Plot PC time series
 ### Adjust axes in time series plots 
 def adjust_spines(ax, spines):
@@ -333,7 +380,7 @@ plt.xlim([0,year2-year1+2])
 plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
 plt.ylim([-3,3])
 
-plt.text(-1.3,2.85,r'\textbf{JFM}',fontsize=20)
+plt.text(-1.3,2.85,r'\textbf{JFM}',fontsize=20,color='darkgrey')
 
 ax = plt.subplot(222)
 
@@ -362,7 +409,7 @@ plt.xlim([0,year2-year1+2])
 plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
 plt.ylim([-3,3])
 
-plt.text(-1.3,2.85,r'\textbf{AMJ}',fontsize=20)
+plt.text(-1.3,2.85,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
 
 
 ax = plt.subplot(223)
@@ -392,7 +439,7 @@ plt.xlim([0,year2-year1+2])
 plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
 plt.ylim([-3,3])
 
-plt.text(-1.3,2.85,r'\textbf{JAS}',fontsize=20)
+plt.text(-1.3,2.85,r'\textbf{JAS}',fontsize=20,color='darkgrey')
 
 
 ax = plt.subplot(224)
@@ -422,11 +469,11 @@ plt.xlim([0,year2-year1+2])
 plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
 plt.ylim([-3,3])
 
-plt.text(-1.3,2.85,r'\textbf{OND}',fontsize=20)
+plt.text(-1.3,2.85,r'\textbf{OND}',fontsize=20,color='darkgrey')
 
 
 fig.subplots_adjust(hspace=0.4)
-plt.savefig(directoryfigure + 'eof2pattern_5998.png',dpi=300)
+plt.savefig(directoryfigure + 'eof2pattern_8010.png',dpi=300)
 
 
 ### Create text files

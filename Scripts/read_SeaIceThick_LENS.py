@@ -45,13 +45,13 @@ def readLENS(directory,threshold):
     from netCDF4 import Dataset
     
     ### Modify directory
-    directory = directory + 'CESM_large_ensemble/SIT/interp_1deg/'
+    directory = directory + 'CESM_large_ensemble/SIT/'
     files = 'SIT_control_0001-1800.nc'
     filename = directory + files
     
     data = Dataset(filename)
-    lats = data.variables['lat'][:]
-    lons = data.variables['lon'][:]
+    lats = data.variables['latitude'][:]
+    lons = data.variables['longitude'][:]
     sitq = data.variables['SIT'][:,:,:]
     data.close()
     

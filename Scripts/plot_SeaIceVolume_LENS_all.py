@@ -22,7 +22,7 @@ from netCDF4 import Dataset
 ### Define directories
 directorydatal = '/home/zlabe/Surtsey3/'
 directorydatap = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/Thickness/'  
-directoryfigure = '/home/zlabe/Desktop/LENS/'
+directoryfigure = '/home/zlabe/Desktop/'
 #directoryfigure = '/home/zlabe/Documents/Research/SeaIceVariability/Figures/'
 
 ### Define time           
@@ -87,7 +87,7 @@ def volumeYear(sit,area,version):
     """
     sitq = sit / 1000.    
     
-z3416    volume = (sitq * area) / 1000.
+    volume = (sitq * area) / 1000.
     
     if version == 'PIOMAS':
         voln = np.squeeze(np.apply_over_axes(np.nansum,volume[:,:,:,:],(2,3)))
@@ -99,15 +99,15 @@ z3416    volume = (sitq * area) / 1000.
 
 
 ### Call functions   
-sith,lat,lon = lens.readLENSEnsemble(directorydatal,0.15,'historical')
-sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
-sitp = readPIOMAS(directorydatap,0.15)
-lons,lats = np.meshgrid(lon,lat)
-
-area,lonsize,latsize = areaGrid(lat,lon)    
-volh = volumeYear(sith,area,'historical')
-volf = volumeYear(sitf,area,'rcp85')
-volp = volumeYear(sitp,area,'PIOMAS')
+#sith,lat,lon = lens.readLENSEnsemble(directorydatal,0.15,'historical')
+#sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
+#sitp = readPIOMAS(directorydatap,0.15)
+#lons,lats = np.meshgrid(lon,lat)
+#
+#area,lonsize,latsize = areaGrid(lat,lon)    
+#volh = volumeYear(sith,area,'historical')
+#volf = volumeYear(sitf,area,'rcp85')
+#volp = volumeYear(sitp,area,'PIOMAS')
 
 #### Plot Figure
 plt.rc('text',usetex=True)
@@ -301,24 +301,24 @@ def adjust_spines(ax, spines):
 #adjust_spines(ax, ['left', 'bottom'])
 #ax.spines['top'].set_color('none')
 #ax.spines['right'].set_color('none')
-#ax.spines['bottom'].set_linewidth(2)
-#ax.spines['left'].set_linewidth(2)
-#ax.tick_params('both',length=4.5,width=2,which='major')  
+#ax.spines['left'].set_color('darkgrey')
+#ax.spines['bottom'].set_color('darkgrey')
+#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 #
 #for i in xrange(volavehyrs.shape[0]):
-#    plt.plot(volavehyrs[i,:],color='darkgrey',alpha=0.55,linewidth=0.7,
+#    plt.plot(volavehyrs[i,:],color='dimgrey',alpha=0.55,linewidth=0.3,
 #         zorder=2)
 #         
 #for i in xrange(volavefyrs.shape[0]):
-#    plt.plot(volavefyrs[i,:],color='darkgrey',alpha=0.55,linewidth=0.7,
+#    plt.plot(volavefyrs[i,:],color='dimgrey',alpha=0.55,linewidth=0.3,
 #         zorder=2)
 #         
 #for i in xrange(volavehyrs.shape[0]):
-#    plt.plot(volavehyrm[i,:],color='darkgrey',alpha=0.55,linewidth=0.7,
+#    plt.plot(volavehyrm[i,:],color='dimgrey',alpha=0.55,linewidth=0.3,
 #         zorder=2)
 #         
 #for i in xrange(volavefyrs.shape[0]):
-#    plt.plot(volavefyrm[i,:],color='darkgrey',alpha=0.55,linewidth=0.7,
+#    plt.plot(volavefyrm[i,:],color='dimgrey',alpha=0.55,linewidth=0.3,
 #         zorder=2)
 #         
 #plt.plot(np.nanmean(volavehyrs,axis=0),color='indianred',linewidth=1.5,linestyle='-',
@@ -328,9 +328,9 @@ def adjust_spines(ax, spines):
 #plt.plot(volavepyrs,color='darkorchid',alpha=1,linewidth=2,linestyle='-',
 #         zorder=4)
 #         
-#plt.plot(np.nanmean(volavehyrm,axis=0),color='steelblue',linewidth=1.5,linestyle='-',
+#plt.plot(np.nanmean(volavehyrm,axis=0),color='teal',linewidth=1.5,linestyle='-',
 #         zorder=3,label=r'LENS March')    
-#plt.plot(np.nanmean(volavefyrm,axis=0),color='steelblue',linewidth=1.5,linestyle='-',
+#plt.plot(np.nanmean(volavefyrm,axis=0),color='teal',linewidth=1.5,linestyle='-',
 #         zorder=3)   
 #plt.plot(volavepyrm,color='darkorchid',alpha=1,linewidth=2,linestyle='-',
 #         zorder=4,label=r'PIOMAS')
@@ -339,10 +339,10 @@ def adjust_spines(ax, spines):
 #
 #plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
 #plt.yticks(np.arange(0,36,5),map(str,np.arange(0,36,5)))
-#plt.xlim([0,180])
+#plt.xlim([0,160])
 #plt.ylim([0,35])
 #
-#plt.ylabel(r'Sea Ice Volume ($\times$1000 km$^{3}$)')
+#plt.ylabel(r'\textbf{Sea Ice Volume ($\times$1000 km$^{3}$)}')
 #
 #plt.legend(shadow=False,fontsize=9,loc='upper right',
 #           fancybox=True,frameon=False)
@@ -364,17 +364,18 @@ for i in xrange(volavefyrqs.shape[0]):
 fig = plt.figure()
 ax = plt.subplot(111)
 
+### Adjust axes spines
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
-ax.spines['bottom'].set_linewidth(2)
-ax.spines['left'].set_linewidth(2)
-ax.tick_params('both',length=4.5,width=2,which='major')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 
-n, bins, patches = ax.hist(zeros,bins=range(2038,2056),align='mid')
+n, bins, patches = ax.hist(zeros,bins=range(2038,2056),align='left')
 
 for i in range(len(patches)):
-    patches[i].set_facecolor('darkgrey')
+    patches[i].set_facecolor('cornflowerblue')
     patches[i].set_edgecolor('white')
     patches[i].set_linewidth(0.9)
 
@@ -383,6 +384,6 @@ plt.yticks(np.arange(0,7,1),map(str,np.arange(0,7,1)))
 plt.xlim([2038,2054])
 plt.ylim([0,6])
 
-plt.ylabel(r'Number of Ensembles')
+plt.ylabel(r'\textbf{Number of Ensembles}')
 
 plt.savefig(directoryfigure + 'lens_vol_icefreetime_all.png',dpi=300)

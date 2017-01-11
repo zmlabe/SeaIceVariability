@@ -120,7 +120,7 @@ plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
 plt.ylim([-3,3])
 
 plt.text(-0.1,-3.1,r'\textbf{SIV}',fontsize=11,color='darkorange')
-plt.text(-1.3,2.7,r'\textbf{JFM}',fontsize=20)
+plt.text(-1.3,2.7,r'\textbf{JFM}',fontsize=20,color='darkgrey')
 
 ax = plt.subplot(222)
 
@@ -149,7 +149,7 @@ plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
 plt.ylim([-3,3])
 
 plt.text(-0.1,-3.1,r'\textbf{SIV}',fontsize=11,color='darkorange')
-plt.text(-1.3,2.7,r'\textbf{AMJ}',fontsize=20)
+plt.text(-1.3,2.7,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
 
 ax = plt.subplot(223)
 
@@ -178,7 +178,7 @@ plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
 plt.ylim([-3,3])
 
 plt.text(-0.1,-3.1,r'\textbf{SIV}',fontsize=11,color='darkorange')
-plt.text(-1.3,2.7,r'\textbf{JAS}',fontsize=20)       
+plt.text(-1.3,2.7,r'\textbf{JAS}',fontsize=20,color='darkgrey')       
 
 ax = plt.subplot(224)
 
@@ -207,7 +207,7 @@ plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
 plt.ylim([-3,3])
 
 plt.text(-0.1,-3.1,r'\textbf{SIV}',fontsize=11,color='darkorange')
-plt.text(-1.3,2.7,r'\textbf{OND}',fontsize=20)
+plt.text(-1.3,2.7,r'\textbf{OND}',fontsize=20,color='darkgrey')
 
 
 fig.subplots_adjust(hspace=0.4)
@@ -255,16 +255,16 @@ plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']})
 fig = plt.figure()
 ax = plt.subplot(221)
 
-m = Basemap(projection='npstere',boundinglat=70,lon_0=270,
+m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
             resolution='l',round =True)
 m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.3)
+m.drawcoastlines(color='k',linewidth=0.2)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
-m.drawparallels(parallels,labels=[False,False,False,False],
-                linewidth=0.3,color='k',fontsize=6)
-m.drawmeridians(meridians,labels=[False,False,False,False],
-                linewidth=0.3,color='k',fontsize=6)
+#m.drawparallels(parallels,labels=[False,False,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
+#m.drawmeridians(meridians,labels=[False,False,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 # Make the plot continuous
@@ -274,95 +274,95 @@ values = np.arange(-1,1.1,0.1)
 cs = m.contourf(lons,lats,corr_w,
                 values,extend='both',latlon=True)
 cs1 = m.contour(lons,lats,corr_w,
-                values,linewidths=0.2,colors='k',
+                values,linewidths=0.2,colors='darkgrey',
                 linestyles='-',latlon=True)
         
 cs.set_cmap('RdBu_r')
 ax.annotate(r'\textbf{JFM}', xy=(0, 0), xytext=(-0.23, 0.9),
-            xycoords='axes fraction',fontsize=22)
+            xycoords='axes fraction',fontsize=22,color='darkgrey')
 
 ###########################################################################
 ###########################################################################
 
 ax = plt.subplot(222)
 
-m = Basemap(projection='npstere',boundinglat=70,lon_0=270,
+m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
             resolution='l',round =True)
 m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.3)
+m.drawcoastlines(color='k',linewidth=0.2)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
-m.drawparallels(parallels,labels=[False,False,False,False],
-                linewidth=0.3,color='k',fontsize=6)
-m.drawmeridians(meridians,labels=[False,False,False,False],
-                linewidth=0.3,color='k',fontsize=6)
+#m.drawparallels(parallels,labels=[False,False,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
+#m.drawmeridians(meridians,labels=[False,False,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 cs = m.contourf(lons,lats,corr_sp,
                 values,extend='both',latlon=True)
 cs1 = m.contour(lons,lats,corr_sp,
-                values,linewidths=0.2,colors='k',
+                values,linewidths=0.2,colors='darkgrey',
                 linestyles='-',latlon=True)
         
 cs.set_cmap('RdBu_r')
 
 ax.annotate(r'\textbf{AMJ}', xy=(0, 0), xytext=(0.8, 0.9),
-            xycoords='axes fraction',fontsize=22)
+            xycoords='axes fraction',fontsize=22,color='darkgrey')
 
 ###########################################################################
 ###########################################################################
 
 ax = plt.subplot(223)
 
-m = Basemap(projection='npstere',boundinglat=70,lon_0=270,
+m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
             resolution='l',round =True)
 m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.3)
+m.drawcoastlines(color='k',linewidth=0.2)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
-m.drawparallels(parallels,labels=[False,False,False,False],
-                linewidth=0.3,color='k',fontsize=6)
-m.drawmeridians(meridians,labels=[False,False,False,False],
-                linewidth=0.3,color='k',fontsize=6)
+#m.drawparallels(parallels,labels=[False,False,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
+#m.drawmeridians(meridians,labels=[False,False,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 cs = m.contourf(lons,lats,corr_su,
                 values,extend='both',latlon=True)
 cs1 = m.contour(lons,lats,corr_su,
-                values,linewidths=0.2,colors='k',
+                values,linewidths=0.2,colors='darkgrey',
                 linestyles='-',latlon=True)
         
 cs.set_cmap('RdBu_r')
 ax.annotate(r'\textbf{JAS}', xy=(0, 0), xytext=(-0.23, 0.9),
-            xycoords='axes fraction',fontsize=22)
+            xycoords='axes fraction',fontsize=22,color='darkgrey')
 
 ###########################################################################
 ###########################################################################
 
 ax = plt.subplot(224)
 
-m = Basemap(projection='npstere',boundinglat=70,lon_0=270,
+m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
             resolution='l',round =True)
 m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.3)
+m.drawcoastlines(color='k',linewidth=0.2)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
-m.drawparallels(parallels,labels=[False,False,False,False],
-                linewidth=0.3,color='k',fontsize=6)
-m.drawmeridians(meridians,labels=[False,False,False,False],
-                linewidth=0.3,color='k',fontsize=6)
+#m.drawparallels(parallels,labels=[False,False,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
+#m.drawmeridians(meridians,labels=[False,False,False,False],
+#                linewidth=0.3,color='k',fontsize=6)
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 cs = m.contourf(lons,lats,corr_f,
-                values,extend='both',latlon=True)
+                values,latlon=True)
 cs1 = m.contour(lons,lats,corr_f,
-                values,linewidths=0.2,colors='k',
+                values,linewidths=0.2,colors='darkgrey',
                 linestyles='-',latlon=True)
         
 cs.set_cmap('RdBu_r')
 
 ax.annotate(r'\textbf{OND}', xy=(0, 0), xytext=(0.8, 0.9),
-            xycoords='axes fraction',fontsize=22)
+            xycoords='axes fraction',fontsize=22,color='darkgrey')
 
 cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])                
 cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',

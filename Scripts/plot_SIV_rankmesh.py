@@ -106,6 +106,9 @@ for i in xrange(sivyr.shape[0]):
 plt.rcParams['text.usetex']=True
 plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['font.sans-serif'] = 'Avant Garde'
+plt.rcParams['xtick.direction'] = 'out'
+plt.rcParams['xtick.major.width'] = 1.3
+plt.rcParams['xtick.major.size'] = 4
 
 ### Plot first meshgrid
 fig = plt.figure()
@@ -115,7 +118,20 @@ ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
 ax.spines['bottom'].set_color('none')
 ax.spines['left'].set_color('none')
-ax.tick_params('both',length=0,width=0,which='major')
+ax.get_xaxis().set_tick_params(direction='out', width=1.5,length=5)
+
+plt.tick_params(
+    axis='x',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    bottom='on',      # ticks along the bottom edge are off
+    top='off',         # ticks along the top edge are off
+    labelbottom='on')
+plt.tick_params(
+    axis='y',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    left='off',      # ticks along the bottom edge are off
+    right='off',         # ticks along the top edge are off
+    labelleft='on')
 
 cs = plt.pcolormesh(rank,shading='faceted',edgecolor='w',
                     linewidth=0.3,vmin=1,vmax=38)
@@ -162,17 +178,41 @@ ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
 ax.spines['bottom'].set_color('none')
 ax.spines['left'].set_color('none')
-ax.tick_params('both',length=0,width=0,which='major')
+ax.get_xaxis().set_tick_params(direction='out', width=1.3,length=5)
+
+plt.tick_params(
+    axis='x',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    bottom='on',      # ticks along the bottom edge are off
+    top='off',         # ticks along the top edge are off
+    labelbottom='on')
+plt.tick_params(
+    axis='y',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    left='off',      # ticks along the bottom edge are off
+    right='off',         # ticks along the top edge are off
+    labelleft='on')
 
 cs = plt.pcolormesh(np.flipud(anoms.transpose()),shading='faceted',
-                    edgecolor='w',linewidth=0.3,vmin=-10,vmax=10)
+                    edgecolor='w',linewidth=0.3,clim=np.arange(-10,11,0.2),
+                    vmin=-10,vmax=10)
+                    
+for i in xrange(rank.shape[0]):
+    for j in xrange(rank.shape[1]):
+        plt.text(j+0.5,i+0.5,'%s' % int(rank[i,j]),fontsize=6,
+                 color='k',va='center',ha='center')                    
 
-cs.set_cmap('seismic_r')
+cs.set_cmap('RdBu')
 
-cbar = plt.colorbar(cs,orientation='horizontal')
+cbar = plt.colorbar(cs,orientation='horizontal',shrink=0.7)
 cbar.set_ticks(np.arange(-10,11,2))
 cbar.set_ticklabels(map(str,np.arange(-10,11,2)))
-cbar.set_label(r'\textbf{Sea Ice Volume Anomalies ($\times$1000\ km${^3}$})')
+cbar.set_label(r'\textbf{Sea Ice Volume Anomalies ($\times$1000\ km${^3}$)}',
+                         color='k')
+
+#cbar().tick_params(axis='y', direction='out')
+#cbarxtks = plt.getp(cbar.ax.axes, 'xticklines')
+#plt.setp(cbarxtks, direction='out')
 
 ylabels = ['D','N','O','S','A','J','J','M','A','M','F','J']
 plt.yticks(np.arange(0.5,12.5,1),ylabels,ha='center')

@@ -40,13 +40,9 @@ months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
 
 #### Call functions
-#lats,lons,sit = LENSt.readLENS(directorydata,0.15)
+lats,lons,sit = LENSt.readLENS(directorydata,0.15)
 
-
-#weights = np.cos(np.deg2rad(lats))
-#sit_zonalave = np.nanmean(sit,axis=2)
-#
-#lons,lats = np.meshgrid(lons,lats)
+lons,lats = np.meshgrid(lons,lats)
 
 def weightThick(var,lats):
     """
@@ -83,24 +79,24 @@ def adjust_spines(ax, spines):
     else:
         ax.xaxis.set_ticks([]) 
 
-var = sit[0,8,:,:]
-var[np.where(var > 10)] = np.nan
+#var = sit[0,8,:,:]
+#var[np.where(var > 10)] = np.nan
 
 ### Plot figure
 plt.rc('text',usetex=True)
 plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
 
-def colormapSIT():
-    cmap1 = plt.get_cmap('BuPu')
-    cmap2 = plt.get_cmap('RdPu_r')
-    cmap3 = plt.get_cmap('gist_heat_r')
-    cmaplist1 = [cmap1(i) for i in xrange(cmap1.N-10)]
-    cmaplist2 = [cmap2(i) for i in xrange(15,cmap2.N)]
-    cmaplist3 = [cmap3(i) for i in xrange(cmap2.N)]
-    cms_sit = c.ListedColormap(cmaplist1 + cmaplist2 + cmaplist3)
-    return cms_sit
-    
-cmap = colormapSIT()
+#def colormapSIT():
+#    cmap1 = plt.get_cmap('BuPu')
+#    cmap2 = plt.get_cmap('RdPu_r')
+#    cmap3 = plt.get_cmap('gist_heat_r')
+#    cmaplist1 = [cmap1(i) for i in xrange(cmap1.N-10)]
+#    cmaplist2 = [cmap2(i) for i in xrange(15,cmap2.N)]
+#    cmaplist3 = [cmap3(i) for i in xrange(cmap2.N)]
+#    cms_sit = c.ListedColormap(cmaplist1 + cmaplist2 + cmaplist3)
+#    return cms_sit
+#    
+#cmap = colormapSIT()
 #cmap = ncm.cmap('helix') 
 
 #fig = plt.figure()
@@ -144,71 +140,69 @@ cmap = colormapSIT()
 ############################################################################
 ############################################################################
 ############################################################################
-sitmean = np.squeeze(np.apply_over_axes(np.nanmean,sit,[2,3]))
-
-sitm = np.ravel(sitave[-1000:,:])
-time = np.arange(0,sitm.shape[0]-1,600)
-
-fig = plt.figure()
-for i,times in enumerate(time):
-    adjax = i+1  
-    
-    line3 = [3]*(50*12)
-    
-    ax = plt.subplot(5,4,i+1)
-    ax.plot(line3,color='k',linewidth=0.85)
-    ax.plot(np.ravel(sitm[times:times+(50*12)]),linewidth=0.7,
-            color='darkslateblue')
-
-            
-    if any([adjax == 1,adjax == 5,adjax == 9,adjax == 13,adjax==17]):       
-        ax.spines['top'].set_color('none')      
-        ax.spines['bottom'].set_linewidth(2)
-        ax.spines['left'].set_linewidth(2)
-        ax.spines['right'].set_linewidth(2)
-        ax.xaxis.set_tick_params(size=0)
-        ax.yaxis.set_tick_params(size=0)
-        plt.setp(ax.get_xticklabels(), visible=False)
-                
-        plt.xlim([1,600])
-        plt.ylim([2,4])
-        plt.yticks(np.arange(2,5,1),map(str,np.arange(2,5,1)),fontsize=8)
-        
-    elif any([adjax == 4,adjax == 8,adjax == 12,adjax == 16,adjax == 20]):        
-        ax.spines['top'].set_color('none')     
-        ax.spines['bottom'].set_linewidth(2)
-        ax.spines['left'].set_linewidth(2)
-        ax.spines['right'].set_linewidth(2)
-        plt.setp(ax.get_xticklabels(), visible=False)
-        plt.setp(ax.get_yticklabels(), visible=False)
-        ax.xaxis.set_tick_params(size=0)
-        ax.yaxis.set_tick_params(size=0)
-        ax.yaxis.set_ticks_position('right')
-                      
-        plt.xlim([1,600])
-        plt.ylim([2,4])
-        plt.yticks(np.arange(2,5,1),map(str,np.arange(2,5,1)),fontsize=8)
-               
-    else:
-        ax.spines['top'].set_color('none')     
-        ax.spines['bottom'].set_linewidth(2)
-        ax.spines['left'].set_linewidth(2)
-        ax.spines['right'].set_linewidth(2)
-        ax.xaxis.set_tick_params(size=0)
-        ax.yaxis.set_tick_params(size=0)
-        plt.setp(ax.get_xticklabels(), visible=False)
-        plt.setp(ax.get_yticklabels(), visible=False)
-        
-        plt.xlim([1,600])
-        plt.ylim([2,4])
-        plt.yticks(np.arange(2,5,1),map(str,np.arange(2,5,1)),fontsize=8)
-        
-    plt.annotate('Period %s' % (i+1),xy=(0.5,1),xycoords='axes fraction',
-                 ha='center',va='center',fontsize=6,
-                 bbox=dict(facecolor='white', edgecolor='k',boxstyle='round'))
-    
-    plt.subplots_adjust(hspace=0.4)
-plt.savefig(directoryfigure + 'timeseries_lens.png',dpi=300)
+#sitm = np.ravel(sitave[-1000:,:])
+#time = np.arange(0,sitm.shape[0]-1,600)
+#
+#fig = plt.figure()
+#for i,times in enumerate(time):
+#    adjax = i+1  
+#    
+#    line3 = [3]*(50*12)
+#    
+#    ax = plt.subplot(5,4,i+1)
+#    ax.plot(line3,color='k',linewidth=0.85)
+#    ax.plot(np.ravel(sitm[times:times+(50*12)]),linewidth=0.7,
+#            color='darkslateblue')
+#
+#            
+#    if any([adjax == 1,adjax == 5,adjax == 9,adjax == 13,adjax==17]):       
+#        ax.spines['top'].set_color('none')      
+#        ax.spines['bottom'].set_linewidth(2)
+#        ax.spines['left'].set_linewidth(2)
+#        ax.spines['right'].set_linewidth(2)
+#        ax.xaxis.set_tick_params(size=0)
+#        ax.yaxis.set_tick_params(size=0)
+#        plt.setp(ax.get_xticklabels(), visible=False)
+#                
+#        plt.xlim([1,600])
+#        plt.ylim([2,4])
+#        plt.yticks(np.arange(2,5,1),map(str,np.arange(2,5,1)),fontsize=8)
+#        
+#    elif any([adjax == 4,adjax == 8,adjax == 12,adjax == 16,adjax == 20]):        
+#        ax.spines['top'].set_color('none')     
+#        ax.spines['bottom'].set_linewidth(2)
+#        ax.spines['left'].set_linewidth(2)
+#        ax.spines['right'].set_linewidth(2)
+#        plt.setp(ax.get_xticklabels(), visible=False)
+#        plt.setp(ax.get_yticklabels(), visible=False)
+#        ax.xaxis.set_tick_params(size=0)
+#        ax.yaxis.set_tick_params(size=0)
+#        ax.yaxis.set_ticks_position('right')
+#                      
+#        plt.xlim([1,600])
+#        plt.ylim([2,4])
+#        plt.yticks(np.arange(2,5,1),map(str,np.arange(2,5,1)),fontsize=8)
+#               
+#    else:
+#        ax.spines['top'].set_color('none')     
+#        ax.spines['bottom'].set_linewidth(2)
+#        ax.spines['left'].set_linewidth(2)
+#        ax.spines['right'].set_linewidth(2)
+#        ax.xaxis.set_tick_params(size=0)
+#        ax.yaxis.set_tick_params(size=0)
+#        plt.setp(ax.get_xticklabels(), visible=False)
+#        plt.setp(ax.get_yticklabels(), visible=False)
+#        
+#        plt.xlim([1,600])
+#        plt.ylim([2,4])
+#        plt.yticks(np.arange(2,5,1),map(str,np.arange(2,5,1)),fontsize=8)
+#        
+#    plt.annotate('Period %s' % (i+1),xy=(0.5,1),xycoords='axes fraction',
+#                 ha='center',va='center',fontsize=6,
+#                 bbox=dict(facecolor='white', edgecolor='k',boxstyle='round'))
+#    
+#    plt.subplots_adjust(hspace=0.4)
+#plt.savefig(directoryfigure + 'timeseries_lens.png',dpi=300)
 
 ############################################################################
 ############################################################################
@@ -240,34 +234,34 @@ plt.savefig(directoryfigure + 'seasonalcycle_lens.png',dpi=300)
 ############################################################################
 ############################################################################
 ############################################################################
-sitperiods = np.ravel(sitave)
-sitperiod30 = np.transpose(np.reshape(sitperiods,(sitperiods.shape[0]/(30*12),(30*12))))
-
-sitperiodmax = np.nanmax(sitperiod30,axis=1)
-sitperiodmin = np.nanmin(sitperiod30,axis=1)
-sitperiodmean = np.nanmean(sitperiod30,axis=1)
-
-fig = plt.figure()
-ax = plt.subplot(111)
-
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['bottom'].set_linewidth(2)
-ax.spines['left'].set_linewidth(2)
-ax.tick_params('both',length=4.5,width=2,which='major')  
-#plt.grid(color='k',zorder=1,alpha=0.4)
-
-plt.plot(sitperiod30,color='dimgrey',alpha=0.2,
-         linewidth=0.7,zorder=3)
-plt.plot(sitperiodmean,color='darkslateblue',linewidth=1.5,zorder=4)
-plt.plot(sitperiodmax,color='indianred',linewidth=1,zorder=2)
-plt.plot(sitperiodmin,color='indianred',linewidth=1,zorder=1)
-
-plt.xlabel(r'Years')
-plt.ylabel('Sea Ice Thickness (m)')
-plt.yticks(np.arange(1.5,4.5,0.5),map(str,np.arange(1.5,4.5,0.5)))         
-plt.xticks(np.arange(0,361,60),map(str,np.arange(0,31,5)))
-plt.xlim([0,360])
-         
-plt.savefig(directoryfigure + '30yearSIT_LENScontrol.png',dpi=300)
+#sitperiods = np.ravel(sitave)
+#sitperiod30 = np.transpose(np.reshape(sitperiods,(sitperiods.shape[0]/(30*12),(30*12))))
+#
+#sitperiodmax = np.nanmax(sitperiod30,axis=1)
+#sitperiodmin = np.nanmin(sitperiod30,axis=1)
+#sitperiodmean = np.nanmean(sitperiod30,axis=1)
+#
+#fig = plt.figure()
+#ax = plt.subplot(111)
+#
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#ax.spines['bottom'].set_linewidth(2)
+#ax.spines['left'].set_linewidth(2)
+#ax.tick_params('both',length=4.5,width=2,which='major')  
+##plt.grid(color='k',zorder=1,alpha=0.4)
+#
+#plt.plot(sitperiod30,color='dimgrey',alpha=0.2,
+#         linewidth=0.7,zorder=3)
+#plt.plot(sitperiodmean,color='darkslateblue',linewidth=1.5,zorder=4)
+#plt.plot(sitperiodmax,color='indianred',linewidth=1,zorder=2)
+#plt.plot(sitperiodmin,color='indianred',linewidth=1,zorder=1)
+#
+#plt.xlabel(r'Years')
+#plt.ylabel('Sea Ice Thickness (m)')
+#plt.yticks(np.arange(1.5,4.5,0.5),map(str,np.arange(1.5,4.5,0.5)))         
+#plt.xticks(np.arange(0,361,60),map(str,np.arange(0,31,5)))
+#plt.xlim([0,360])
+#         
+#plt.savefig(directoryfigure + '30yearSIT_LENScontrol.png',dpi=300)
