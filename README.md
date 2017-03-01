@@ -12,7 +12,7 @@ Changes in Arctic sea ice extent and concentration are well documented within th
 
 ## Publications
 #### In Preparation 
-+ **Labe, Z.M.**, G. Magnusdottir, and H.S. Stern, Evaluating the long-term Arctic sea ice thickness record using PIOMAS and relationships with the springtime large-scale atmospheric circulation, *drafting*
++ **Labe, Z.M.**, G. Magnusdottir, and H.S. Stern, Internal variability of Arctic sea ice thickness using PIOMAS and the CESM Large Ensemble Project, *drafting*
 
 ## Conferences
 + **Labe, Z.M.**, G. Magnusdottir, and H.S. Stern. SArctic Sea Ice Thickness Variability and the Large-scale Atmospheric Circulation Using Satellite Observations, PIOMAS, and the CESM Large Ensemble, 14th Conference on Polar Meteorology and Oceanography, 97th Annual Meeting of the American Meteorological Society (Jan 2017). [[ABSTRACT]](https://ams.confex.com/ams/97Annual/webprogram/Paper313445.html) [[POSTER]](http://sites.uci.edu/zlabe/files/2017/01/ZLabeMagnusdottirStern_AMSposter_2017.pdf)
