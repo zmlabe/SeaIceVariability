@@ -38,9 +38,9 @@ months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
 
 ### Call functions
-lats,lons,sit = CT.readPiomas(directorydata,years,0.15)
-lats,lons,sic = CC.readPiomas(directorydata,years,0.01)
-area = CA.readPiomasArea(directorydata)
+#lats,lons,sit = CT.readPiomas(directorydata,years,0.15)
+#lats,lons,sic = CC.readPiomas(directorydata,years,0.01)
+#area = CA.readPiomasArea(directorydata)
 
 ### Calculate siv per year
 def sivYear(sit,sic,area,conc):
@@ -82,7 +82,7 @@ def sivYear(sit,sic,area,conc):
     siv = np.squeeze(np.apply_over_axes(np.nansum,
                                         siv[:,:,:,:],(2,3)))
                                         
-    ### Correct units (I don't know why yet!!!!)
+    ### Correct units 
     siv = siv/10**6                                  
       
     print '*Completed: Calculated sea ice volume per year!'
@@ -95,12 +95,14 @@ def sivYear(sit,sic,area,conc):
 sivyr = sivYear(sit,sic,area,False)
 sivyr[np.where(sivyr==0.0)]=np.nan
 
-sivyr = np.flipud(sivyr.transpose())
+sivyr = sivyr.transpose()
 
 ### Try ranking
 rank = np.empty(sivyr.shape)
 for i in xrange(sivyr.shape[0]):
     rank[i,:] = sts.rankdata(sivyr[i,:],method='min')
+    
+rank = np.flipud(rank)
 
 ### Call parameters
 plt.rcParams['text.usetex']=True
@@ -196,7 +198,7 @@ plt.tick_params(
 cs = plt.pcolormesh(np.flipud(anoms.transpose()),shading='faceted',
                     edgecolor='w',linewidth=0.3,clim=np.arange(-10,11,0.2),
                     vmin=-10,vmax=10)
-                    
+                   
 for i in xrange(rank.shape[0]):
     for j in xrange(rank.shape[1]):
         plt.text(j+0.5,i+0.5,'%s' % int(rank[i,j]),fontsize=6,

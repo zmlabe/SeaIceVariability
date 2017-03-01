@@ -68,11 +68,11 @@ def readPIOMAS(directorydata,threshold):
     return sitp
 
 #### Call functions
-#sit,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
-#sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
-#lons,lats = np.meshgrid(lons,lats)
-#
-#sitp = readPIOMAS(directorydatap,0.15)
+sit,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
+sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
+lons,lats = np.meshgrid(lons,lats)
+
+sitp = readPIOMAS(directorydatap,0.15)
 
 def weightThick(var,lats,types):
     """
@@ -106,9 +106,9 @@ def weightThick(var,lats,types):
     return sityr
 
 #### Call functions     
-#sitave = weightThick(sit,lats,'lens')
-#sitavef = weightThick(sitf,lats,'lens')
-#sitavep = weightThick(sitp,lats,'piomas')
+sitave = weightThick(sit,lats,'lens')
+sitavef = weightThick(sitf,lats,'lens')
+sitavep = weightThick(sitp,lats,'piomas')
 
 #### Plot Figure
 plt.rc('text',usetex=True)

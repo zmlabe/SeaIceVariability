@@ -95,14 +95,14 @@ def weightThick(var,lats,types):
     return sityr
 
 ### Call functions   
-#sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
-#sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
-#sitp = readPIOMAS(directorydatap,0.15)
-#lons,lats = np.meshgrid(lons,lats)
-#  
-#sitaveh = weightThick(sith,lats,'lens')
-#sitavef = weightThick(sitf,lats,'lens')
-#sitavep = weightThick(sitp,lats,'piomas')
+sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
+sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
+sitp = readPIOMAS(directorydatap,0.15)
+lons,lats = np.meshgrid(lons,lats)
+  
+sitaveh = weightThick(sith,lats,'lens')
+sitavef = weightThick(sitf,lats,'lens')
+sitavep = weightThick(sitp,lats,'piomas')
 
 #### Plot Figure
 plt.rc('text',usetex=True)

@@ -74,7 +74,7 @@ def anom(meanslp,slp):
     print 'Completed: Calculated anomalies!'
     return anomslp
 
-meanslp = climo(slp,years,1980,2010)    
+meanslp = climo(slp,years,1981,2010)    
 anomslp = anom(meanslp,slp)
     
 def calcSeasonalEOF(anomslp,years,year1,year2,monthind,eoftype,pctype):

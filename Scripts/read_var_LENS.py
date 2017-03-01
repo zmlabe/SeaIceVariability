@@ -42,7 +42,6 @@ def readLENSEnsemble(directory,varq):
     import numpy as np
     from netCDF4 import Dataset
     
-#    ens = ['02','03']
     ens = ['02','03','04','05','06','07','08','09'] + \
         map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
     
@@ -71,10 +70,11 @@ def readLENSEnsemble(directory,varq):
     ### Modify Units
     if varq == 'SLP':
         var = var/100. #Pa to hPa
+    elif varq == 'T2M':
+        var = var - 273.15 #K to C
         
-
     print '*Completed: Read %s data!' % varq
     
     return var,lats,lons
     
-#var,lats,lons = readLENSEnsemble('/home/zlabe/Surtsey3/CESM_large_ensemble/' ,'SST')
+#var,lats,lons = readLENSEnsemble('/home/zlabe/Surtsey3/CESM_large_ensemble/','SST')
