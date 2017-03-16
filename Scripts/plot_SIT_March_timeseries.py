@@ -114,6 +114,40 @@ mean_sitp = np.nanmean(np.nanmean(sitp,axis=1),axis=1)
 mean_sitsg = np.nanmean(np.nanmean(sitsg,axis=1),axis=1)
 mean_sitsj = np.nanmean(np.nanmean(sitsj,axis=1),axis=1)
 
+def weightThick(var,lats,types):
+    """
+    Area weights sit array 5d [ens,year,month,lat,lon] into [ens,year,month]
+    """
+    
+    if types == 'lens':
+        sityr = np.empty((var.shape[0],var.shape[1],var.shape[2]))
+        for ens in xrange(var.shape[0]):
+            for i in xrange(var.shape[1]):
+                for j in xrange(var.shape[2]):
+                    varq = var[ens,i,j,:,:]
+                    mask = np.isfinite(varq) & np.isfinite(lats)
+                    varmask = varq[mask]
+                    areamask = np.cos(np.deg2rad(lats[mask]))
+                    sityr[ens,i,j] = np.nansum(varmask*areamask)/np.sum(areamask)
+            
+            print 'Completed: Weighting per ensemble #%s!' % ensemble[ens]
+    
+    elif types == 'piomas':
+        sityr = np.empty((var.shape[0]))
+        for i in xrange(var.shape[0]):
+            varq = var[i,:,:]
+            mask = np.isfinite(varq) & np.isfinite(lats)
+            varmask = varq[mask]
+            areamask = np.cos(np.deg2rad(lats[mask]))
+            sityr[i] = np.nansum(varmask*areamask)/np.sum(areamask)
+     
+    print '\nCompleted: Yearly weighted SIT average!' 
+    return sityr
+    
+mean_sitp = weightThick(sitp,lats,'piomas')
+mean_sitsg = weightThick(sitsg,lats,'piomas')
+mean_sitsj = weightThick(sitsj,lats,'piomas')
+
 cryo = mean_sitsg[-5:]
 years19792010 = np.empty((37-5))
 years19792010.fill(np.nan)
@@ -145,29 +179,6 @@ print 'Loss of %s meters per decade [CryoSat] \n' % round((slopec*10.),2)
 ### Plot March time series
 fig = plt.figure()
 ax = plt.subplot(111)
-    
-### Call parameters
-plt.rcParams['text.usetex']=True
-plt.rcParams['font.family'] = 'sans-serif'
-plt.rcParams['font.sans-serif'] = 'Avant Garde'
-
-### Plot
-trendp = plt.plot(linep,linewidth=1.4,linestyle='-',color='seagreen'),
-sg = plt.plot(mean_sitsg,linestyle='-',linewidth=0.8,color='saddlebrown',
-             label=r'\textbf{ICESat-G}',marker='o',markersize=3)
-sj = plt.plot(mean_sitsj,linestyle='-',linewidth=0.8,color='darkslateblue',
-             label=r'\textbf{ICESat-J}',marker='o',markersize=3)
-c = plt.plot(mean_cryo,linestyle='-',linewidth=0.8,color='fuchsia',
-             label=r'\textbf{CryoSat-2}',marker='o',markersize=3)
-p = plt.plot(mean_sitp,linestyle='-',linewidth=0.8,color='seagreen',
-             label=r'\textbf{PIOMAS}',marker='^',markersize=4)            
-
-### Labels for x/y
-labelsy = map(str,np.arange(1,5,1))
-labelsx = map(str,np.arange(1979,2016,3))
-plt.xticks(np.arange(0,37,3),labelsx)
-plt.yticks(np.arange(1,5,1),labelsy)
-plt.ylabel(r'\textbf{Thickness (meters)}',fontsize=11)
 
 ### Adjust axes in time series plots 
 def adjust_spines(ax, spines):
@@ -185,12 +196,38 @@ def adjust_spines(ax, spines):
         ax.xaxis.set_ticks_position('bottom')
     else:
         ax.xaxis.set_ticks([]) 
-
-### Adjust axes spines
+    
+### Call parameters
+    plt.rc('text',usetex=True)
+plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
-plt.grid(color='k',zorder=1,alpha=0.2)
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+### Plot
+trendp = plt.plot(linep,linewidth=1.4,linestyle='-',color='seagreen'),
+sg = plt.plot(mean_sitsg,linestyle='-',linewidth=0.8,color='saddlebrown',
+             label=r'\textbf{ICESat-G}',marker='o',markersize=3,
+                markeredgecolor='saddlebrown')
+sj = plt.plot(mean_sitsj,linestyle='-',linewidth=0.8,color='darkslateblue',
+             label=r'\textbf{ICESat-J}',marker='o',markersize=3,
+                markeredgecolor='darkslateblue')
+c = plt.plot(mean_cryo,linestyle='-',linewidth=0.8,color='fuchsia',
+             label=r'\textbf{CryoSat-2}',marker='o',markersize=3,
+                markeredgecolor='fuchsia')
+p = plt.plot(mean_sitp,linestyle='-',linewidth=0.8,color='seagreen',
+             label=r'\textbf{PIOMAS}',marker='^',markersize=4,
+                markeredgecolor='seagreen')            
+
+### Labels for x/y
+labelsy = map(str,np.arange(1,5,1))
+labelsx = map(str,np.arange(1979,2016,3))
+plt.xticks(np.arange(0,37,3),labelsx)
+plt.yticks(np.arange(1,5,1),labelsy)
+plt.ylabel(r'\textbf{Thickness (meters)}',fontsize=11)
 
 ### Add limits to axes
 plt.ylim([1,4])
@@ -202,13 +239,13 @@ plt.legend(shadow=False,fontsize=9,loc='center',
                         frameon=False)
 
 ### Add title
-fig.suptitle(r'\textbf{March Average Sea Ice Thickness (1979-2015)}',
-             fontsize=14)
+#fig.suptitle(r'\textbf{March Average Sea Ice Thickness (1979-2015)}',
+#             fontsize=14)
              
 ### Create subplot  
-diffg = mean_sitsg - mean_sitp 
-diffj = mean_sitsj - mean_sitp  
-diffc = mean_cryo[:] - mean_sitp[:] 
+diffg = mean_sitp - mean_sitsg
+diffj = mean_sitp - mean_sitsj 
+diffc = mean_sitp - mean_cryo
 
 zero = [0]*len(diffg)
 
@@ -217,13 +254,16 @@ yearsub = np.arange(2003,2016,2)
 a = plt.axes([.18, .18, .25, .25], axisbg='w')
 for axis in ['top','bottom','left','right']:
   a.spines[axis].set_linewidth(2)
-a.set_axis_bgcolor('darkgrey')
-plt.plot(zero,color='k',linewidth=2)        
-plt.plot(diffg,color='saddlebrown',marker='o',markersize=3)
-plt.plot(diffj,color='darkslateblue',marker='o',markersize=3)
-plt.plot(diffc,color='fuchsia',marker='o',markersize=3)
+  a.spines[axis].set_color('darkgrey')
+a.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+a.set_axis_bgcolor('w')
+plt.plot(zero,color='k',linewidth=1.5,linestyle='--')        
+plt.plot(diffg,color='saddlebrown',marker='o',markersize=3,markeredgecolor='saddlebrown')
+plt.plot(diffj,color='darkslateblue',marker='o',markersize=3,markeredgecolor='darkslateblue')
+plt.plot(diffc,color='fuchsia',marker='o',markersize=3,markeredgecolor='fuchsia')
 
-plt.title(r'\textbf{Difference, [Satellite -- PIOMAS]}',fontsize=7)
+plt.title(r'\textbf{Difference, [PIOMAS - Satellite]}',fontsize=7,
+          color='k')
 plt.ylim([-1.,1.])
 plt.xlim([24,36])
 plt.grid(alpha=0.4)

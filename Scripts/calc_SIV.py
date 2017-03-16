@@ -85,7 +85,7 @@ def sivYear(sit,sic,area,conc):
     siv = np.squeeze(np.apply_over_axes(np.nansum,
                                         siv[:,:,:,:],(2,3)))
                                         
-    ### Correct units (I don't know why yet!!!!)
+    ### Correct units
     siv = siv/10**6                                  
       
     print '*Completed: Calculated sea ice volume per year!'

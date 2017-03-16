@@ -87,10 +87,10 @@ years = np.arange(yearmin,yearmax+1,1)
 #            intercept[i:i+la,j:j+lo] = np.nan
 #                                      
 #print 'Completed: Script done!'
-#
-##val = slopesit
-#val = abs(r)
-##val = intercept
+
+#val = slopesit
+val = r**2
+#val = intercept
 
 ### Call parameters
 plt.rcParams['text.usetex']=True
@@ -119,6 +119,9 @@ values = np.arange(0,1.1,0.1)
 ### Plot filled contours    
 cs = m.contourf(lons[:,:],lats[:,:],val[:,:],
                 values,latlon=True)
+cs1 = m.contour(lons[:,:],lats[:,:],val[:,:],
+                values,linewidths=0.2,colors='darkgrey',
+                linestyles='-',latlon=True) 
                   
 ### Set colormap     
 #cmap = plt.cm.get_cmap('brewer_RdBu_11')      

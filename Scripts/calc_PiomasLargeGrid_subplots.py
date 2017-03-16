@@ -116,7 +116,7 @@ for i in xrange(0,sitq.shape[1]-la,la):
                 b = fit[1]
                 line = m*timex + b                                
                 plt.plot(line,linewidth=1,color='r',zorder=2)  
-                ax.text(0.2,6.6,r'r$^2$= %s' % abs(round(r[i:i+la,j:j+lo][0][0],2)),
+                ax.text(0.2,6.6,r'r$^2$= %s' % abs(round(r[i:i+la,j:j+lo][0][0]**2,2)),
                         color='k',fontsize=15)  
                 ax.text(0.2,6.1,r'trend = %s (cm/yr)' % (round(slopesit[i:i+la,j:j+lo][0][0],3)*100.),
                         color='k',fontsize=15)                                              

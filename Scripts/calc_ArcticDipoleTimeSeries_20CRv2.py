@@ -143,11 +143,13 @@ def calcSeasonalEOF(anomslp,years,year1,year2,monthind,eoftype,pctype):
     return eof,pc
     
 ### Climatology
-eofpattern,pcpattern = calcSeasonalEOF(anomslp,years,1981,2010,
+eofpattern,pcpattern = calcSeasonalEOF(anomslp,years,1850,1879,
                                        np.asarray([0,1,2,10,11]),2,2)
                                        
 if eofpattern[1,3,-10] < 0:
-    eofpattern[1,:,:] *=-1                                      
+    eofpattern[1,:,:] *=-1     
+if eofpattern[0,3,-10] > 0:
+    eofpattern[0,:,:] *=-1                                    
 
 ### Seasons
 year1 = 1851
@@ -328,172 +330,172 @@ ax.annotate(r'\textbf{EOF2}',xy=(0,0),xytext=(0.35,1.05),
 
 fig.subplots_adjust(bottom=0.2)
 
-plt.savefig(directoryfigure + 'testeofs_8110_20CR.png',dpi=300)
+plt.savefig(directoryfigure + 'testeofs_185079_20CR.png',dpi=300)
 
-###########################################################################
-###########################################################################
-### Plot PC time series
-### Adjust axes in time series plots 
-def adjust_spines(ax, spines):
-    for loc, spine in ax.spines.items():
-        if loc in spines:
-            spine.set_position(('outward', 10))
-        else:
-            spine.set_color('none')  
-    if 'left' in spines:
-        ax.yaxis.set_ticks_position('left')
-    else:
-        ax.yaxis.set_ticks([])
-
-    if 'bottom' in spines:
-        ax.xaxis.set_ticks_position('bottom')
-    else:
-        ax.xaxis.set_ticks([]) 
-
-fig = plt.figure()
-ax = plt.subplot(221)
-
-### Adjust axes spines
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-plt.grid(color='w',zorder=1,alpha=0.2)
-
-zeros = [0] * len(AOindex_w)
-
-plt.plot(zeros,linewidth=1.5,color='k',linestyle='-',zorder=1)
-
-plt.plot(adindex_w,marker='o',markersize=4,zorder=2,linewidth=2,
-         color='steelblue',label='PC2')
-         
-plt.bar(np.arange(len(AOindex_w))-0.4,AOindex_w,label='PC1',color='indianred')
-
-plt.axvline(np.where(years2 == 2007)[0],color='k',linestyle='--')
-plt.axvline(np.where(years2 == 2012)[0],color='k',linestyle='--')
-         
-plt.xticks(np.arange(0,year2-year1+3,5),
-           map(str,np.arange(year1,year2+3,5)),fontsize=6)
-plt.xlim([0,year2-year1+2])
-
-plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
-plt.ylim([-3,3])
-
-plt.text(-1.3,2.85,r'\textbf{JFM}',fontsize=20,color='darkgrey')
-
-ax = plt.subplot(222)
-
-### Adjust axes spines
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-plt.grid(color='w',zorder=1,alpha=0.2)
-
-zeros = [0] * len(AOindex_sp)
-
-plt.plot(zeros,linewidth=1.5,color='k',linestyle='-',zorder=1)
-
-plt.plot(adindex_sp,marker='o',markersize=4,zorder=2,linewidth=2,
-         color='steelblue',label='PC2')
-         
-plt.bar(np.arange(len(AOindex_sp))-0.4,AOindex_sp,label='PC1',color='indianred')
-
-plt.axvline(np.where(years2 == 2007)[0],color='k',linestyle='--')
-plt.axvline(np.where(years2 == 2012)[0],color='k',linestyle='--')
-         
-plt.xticks(np.arange(0,year2-year1+3,5),
-           map(str,np.arange(year1,year2+3,5)),fontsize=6)
-plt.xlim([0,year2-year1+2])
-
-plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
-plt.ylim([-3,3])
-
-plt.text(-1.3,2.85,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
-
-
-ax = plt.subplot(223)
-
-### Adjust axes spines
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-plt.grid(color='w',zorder=1,alpha=0.2)
-
-zeros = [0] * len(AOindex_su)
-
-plt.plot(zeros,linewidth=1.5,color='k',linestyle='-',zorder=1)
-
-plt.plot(adindex_su,marker='o',markersize=4,zorder=2,linewidth=2,
-         color='steelblue',label='PC2')
-         
-plt.bar(np.arange(len(AOindex_su))-0.4,AOindex_su,label='PC1',color='indianred')
-
-plt.axvline(np.where(years2 == 2007)[0],color='k',linestyle='--')
-plt.axvline(np.where(years2 == 2012)[0],color='k',linestyle='--')
-         
-plt.xticks(np.arange(0,year2-year1+3,5),
-           map(str,np.arange(year1,year2+3,5)),fontsize=6)
-plt.xlim([0,year2-year1+2])
-
-plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
-plt.ylim([-3,3])
-
-plt.text(-1.3,2.85,r'\textbf{JAS}',fontsize=20,color='darkgrey')
-
-
-ax = plt.subplot(224)
-
-### Adjust axes spines
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-plt.grid(color='w',zorder=1,alpha=0.2)
-
-zeros = [0] * len(AOindex_f)
-
-plt.plot(zeros,linewidth=1.5,color='k',linestyle='-',zorder=1)
-
-plt.plot(adindex_f,marker='o',markersize=4,zorder=2,linewidth=2,
-         color='steelblue',label='PC2')
-         
-plt.bar(np.arange(len(AOindex_f))-0.4,AOindex_f,label='PC1',color='indianred')
-
-plt.axvline(np.where(years2 == 2007)[0],color='k',linestyle='--')
-plt.axvline(np.where(years2 == 2012)[0],color='k',linestyle='--')
-         
-plt.xticks(np.arange(0,year2-year1+3,5),
-           map(str,np.arange(year1,year2+3,5)),fontsize=6)
-plt.xlim([0,year2-year1+2])
-
-plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
-plt.ylim([-3,3])
-
-plt.text(-1.3,2.85,r'\textbf{OND}',fontsize=20,color='darkgrey')
-
-
-fig.subplots_adjust(hspace=0.4)
-plt.savefig(directoryfigure + 'eof2pattern_8010_20CR.png',dpi=300)
-
-
-### Create text files
-directorytext = '/home/zlabe/Documents/Research/SeaIceVariability/Data/'
-
-np.savetxt(directorytext + 'AD_JFM_%s%s_20CR.txt' % (year1,year2),
-           adindex_w)
-np.savetxt(directorytext + 'AD_AMJ_%s%s_20CR.txt' % (year1,year2),
-           adindex_sp)
-np.savetxt(directorytext + 'AD_JAS_%s%s_20CR.txt' % (year1,year2),
-           adindex_su)
-np.savetxt(directorytext + 'AD_OND_%s%s_20CR.txt' % (year1,year2),
-           adindex_f)  
-           
-np.savetxt(directorytext + 'AO_JFM_%s%s_20CR.txt' % (year1,year2),
-           AOindex_w)
-np.savetxt(directorytext + 'AO_AMJ_%s%s_20CR.txt' % (year1,year2),
-           AOindex_sp)
-np.savetxt(directorytext + 'AO_JAS_%s%s_20CR.txt' % (year1,year2),
-           AOindex_su)
-np.savetxt(directorytext + 'AO_OND_%s%s_20CR.txt' % (year1,year2),
-           AOindex_f)            
+############################################################################
+############################################################################
+#### Plot PC time series
+#### Adjust axes in time series plots 
+#def adjust_spines(ax, spines):
+#    for loc, spine in ax.spines.items():
+#        if loc in spines:
+#            spine.set_position(('outward', 10))
+#        else:
+#            spine.set_color('none')  
+#    if 'left' in spines:
+#        ax.yaxis.set_ticks_position('left')
+#    else:
+#        ax.yaxis.set_ticks([])
+#
+#    if 'bottom' in spines:
+#        ax.xaxis.set_ticks_position('bottom')
+#    else:
+#        ax.xaxis.set_ticks([]) 
+#
+#fig = plt.figure()
+#ax = plt.subplot(221)
+#
+#### Adjust axes spines
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#plt.grid(color='w',zorder=1,alpha=0.2)
+#
+#zeros = [0] * len(AOindex_w)
+#
+#plt.plot(zeros,linewidth=1.5,color='k',linestyle='-',zorder=1)
+#
+#plt.plot(adindex_w,marker='o',markersize=4,zorder=2,linewidth=2,
+#         color='steelblue',label='PC2')
+#         
+#plt.bar(np.arange(len(AOindex_w))-0.4,AOindex_w,label='PC1',color='indianred')
+#
+#plt.axvline(np.where(years2 == 2007)[0],color='k',linestyle='--')
+#plt.axvline(np.where(years2 == 2012)[0],color='k',linestyle='--')
+#         
+#plt.xticks(np.arange(0,year2-year1+3,5),
+#           map(str,np.arange(year1,year2+3,5)),fontsize=6)
+#plt.xlim([0,year2-year1+2])
+#
+#plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
+#plt.ylim([-3,3])
+#
+#plt.text(-1.3,2.85,r'\textbf{JFM}',fontsize=20,color='darkgrey')
+#
+#ax = plt.subplot(222)
+#
+#### Adjust axes spines
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#plt.grid(color='w',zorder=1,alpha=0.2)
+#
+#zeros = [0] * len(AOindex_sp)
+#
+#plt.plot(zeros,linewidth=1.5,color='k',linestyle='-',zorder=1)
+#
+#plt.plot(adindex_sp,marker='o',markersize=4,zorder=2,linewidth=2,
+#         color='steelblue',label='PC2')
+#         
+#plt.bar(np.arange(len(AOindex_sp))-0.4,AOindex_sp,label='PC1',color='indianred')
+#
+#plt.axvline(np.where(years2 == 2007)[0],color='k',linestyle='--')
+#plt.axvline(np.where(years2 == 2012)[0],color='k',linestyle='--')
+#         
+#plt.xticks(np.arange(0,year2-year1+3,5),
+#           map(str,np.arange(year1,year2+3,5)),fontsize=6)
+#plt.xlim([0,year2-year1+2])
+#
+#plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
+#plt.ylim([-3,3])
+#
+#plt.text(-1.3,2.85,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
+#
+#
+#ax = plt.subplot(223)
+#
+#### Adjust axes spines
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#plt.grid(color='w',zorder=1,alpha=0.2)
+#
+#zeros = [0] * len(AOindex_su)
+#
+#plt.plot(zeros,linewidth=1.5,color='k',linestyle='-',zorder=1)
+#
+#plt.plot(adindex_su,marker='o',markersize=4,zorder=2,linewidth=2,
+#         color='steelblue',label='PC2')
+#         
+#plt.bar(np.arange(len(AOindex_su))-0.4,AOindex_su,label='PC1',color='indianred')
+#
+#plt.axvline(np.where(years2 == 2007)[0],color='k',linestyle='--')
+#plt.axvline(np.where(years2 == 2012)[0],color='k',linestyle='--')
+#         
+#plt.xticks(np.arange(0,year2-year1+3,5),
+#           map(str,np.arange(year1,year2+3,5)),fontsize=6)
+#plt.xlim([0,year2-year1+2])
+#
+#plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
+#plt.ylim([-3,3])
+#
+#plt.text(-1.3,2.85,r'\textbf{JAS}',fontsize=20,color='darkgrey')
+#
+#
+#ax = plt.subplot(224)
+#
+#### Adjust axes spines
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#plt.grid(color='w',zorder=1,alpha=0.2)
+#
+#zeros = [0] * len(AOindex_f)
+#
+#plt.plot(zeros,linewidth=1.5,color='k',linestyle='-',zorder=1)
+#
+#plt.plot(adindex_f,marker='o',markersize=4,zorder=2,linewidth=2,
+#         color='steelblue',label='PC2')
+#         
+#plt.bar(np.arange(len(AOindex_f))-0.4,AOindex_f,label='PC1',color='indianred')
+#
+#plt.axvline(np.where(years2 == 2007)[0],color='k',linestyle='--')
+#plt.axvline(np.where(years2 == 2012)[0],color='k',linestyle='--')
+#         
+#plt.xticks(np.arange(0,year2-year1+3,5),
+#           map(str,np.arange(year1,year2+3,5)),fontsize=6)
+#plt.xlim([0,year2-year1+2])
+#
+#plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=6)
+#plt.ylim([-3,3])
+#
+#plt.text(-1.3,2.85,r'\textbf{OND}',fontsize=20,color='darkgrey')
+#
+#
+#fig.subplots_adjust(hspace=0.4)
+#plt.savefig(directoryfigure + 'eof2pattern_8010_20CR.png',dpi=300)
+#
+#
+#### Create text files
+#directorytext = '/home/zlabe/Documents/Research/SeaIceVariability/Data/'
+#
+#np.savetxt(directorytext + 'AD_JFM_%s%s_20CR.txt' % (year1,year2),
+#           adindex_w)
+#np.savetxt(directorytext + 'AD_AMJ_%s%s_20CR.txt' % (year1,year2),
+#           adindex_sp)
+#np.savetxt(directorytext + 'AD_JAS_%s%s_20CR.txt' % (year1,year2),
+#           adindex_su)
+#np.savetxt(directorytext + 'AD_OND_%s%s_20CR.txt' % (year1,year2),
+#           adindex_f)  
+#           
+#np.savetxt(directorytext + 'AO_JFM_%s%s_20CR.txt' % (year1,year2),
+#           AOindex_w)
+#np.savetxt(directorytext + 'AO_AMJ_%s%s_20CR.txt' % (year1,year2),
+#           AOindex_sp)
+#np.savetxt(directorytext + 'AO_JAS_%s%s_20CR.txt' % (year1,year2),
+#           AOindex_su)
+#np.savetxt(directorytext + 'AO_OND_%s%s_20CR.txt' % (year1,year2),
+#           AOindex_f)            
 
 print 'Completed: Script done!'
 
