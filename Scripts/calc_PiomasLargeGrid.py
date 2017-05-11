@@ -35,58 +35,58 @@ yearmax = 2015
 years = np.arange(yearmin,yearmax+1,1)
 
 #### Read in 100km EASE Piomas regridded
-#data = Dataset(directorydata + 'piomas_regrid_sit_19792015.nc')
-#lats = data.variables['lat'][:]
-#lons = data.variables['lon'][:]
-#sit = data.variables['newthickness'][:]
-#data.close()
-#
-#sit[np.where(sit < 0.01)] = np.nan
-#
-#print 'Completed: Read PIOMAS data!'
-#
-#def transformGrid(var,la,lo):
-#    """
-#    Creates new grid with filled cells for averaged thickness
-#    over set bounds.
-#    """
-#    var = np.nanmean(var,axis=1)
-#
-#    varn_re = np.empty(var.shape)
-#    for i in xrange(var.shape[0]):
-#        for j in xrange(0,var.shape[1]-la,la):
-#            for k in xrange(0,var.shape[2]-lo,lo):
-#                averaging = np.nanmean(var[i,j:j+la,k:k+lo])
-#                varn_re[i,j:j+la,k:k+lo] = averaging
-#                
-#    print 'Completed: Grid transformation!'                   
-#    return varn_re
-#
-#la = 1
-#lo = 1
-#
-#sitq = transformGrid(sit,la,lo)
-#sitq[np.where(sitq < 0.05)] = np.nan
-#
-#r = np.zeros((sitq.shape[1],sitq.shape[2]))
-#slopesit = np.zeros((sitq.shape[1],sitq.shape[2]))
-#intercept = np.zeros((sitq.shape[1],sitq.shape[2]))
-#for i in xrange(0,sitq.shape[1]-la,la):
-#    for j in xrange(0,sitq.shape[2]-lo,lo):
-#        varyy = np.ravel(sitq[:,i,j])
-#        varxx = np.arange(varyy.shape[0])
-#        mask = np.isfinite(varxx) & np.isfinite(varyy)
-#        
-#        varyymean = np.nanmean(varyy)
-#        if np.isfinite(varyymean):
-#            slopesit[i:i+la,j:j+lo],intercept[i:i+la,j:j+lo],r[i:i+la,j:j+lo],p_value,std_err = sts.stats.linregress(varxx[mask],
-#                                                              varyy[mask])
-#        else:
-#            slopesit[i:i+la,j:j+lo] = np.nan   
-#            r[i:i+la,j:j+lo] = np.nan
-#            intercept[i:i+la,j:j+lo] = np.nan
-#                                      
-#print 'Completed: Script done!'
+data = Dataset(directorydata + 'piomas_regrid_sit_19792015.nc')
+lats = data.variables['lat'][:]
+lons = data.variables['lon'][:]
+sit = data.variables['newthickness'][:]
+data.close()
+
+sit[np.where(sit < 0.01)] = np.nan
+
+print 'Completed: Read PIOMAS data!'
+
+def transformGrid(var,la,lo):
+    """
+    Creates new grid with filled cells for averaged thickness
+    over set bounds.
+    """
+    var = np.nanmean(var[:,:,:,:],axis=1)
+
+    varn_re = np.empty(var.shape)
+    for i in xrange(var.shape[0]):
+        for j in xrange(0,var.shape[1]-la,la):
+            for k in xrange(0,var.shape[2]-lo,lo):
+                averaging = np.nanmean(var[i,j:j+la,k:k+lo])
+                varn_re[i,j:j+la,k:k+lo] = averaging
+                
+    print 'Completed: Grid transformation!'                   
+    return varn_re
+
+la = 1
+lo = 1
+
+sitq = transformGrid(sit,la,lo)
+sitq[np.where(sitq < 0.05)] = np.nan
+
+r = np.zeros((sitq.shape[1],sitq.shape[2]))
+slopesit = np.zeros((sitq.shape[1],sitq.shape[2]))
+intercept = np.zeros((sitq.shape[1],sitq.shape[2]))
+for i in xrange(0,sitq.shape[1]-la,la):
+    for j in xrange(0,sitq.shape[2]-lo,lo):
+        varyy = np.ravel(sitq[:,i,j])
+        varxx = np.arange(varyy.shape[0])
+        mask = np.isfinite(varxx) & np.isfinite(varyy)
+        
+        varyymean = np.nanmean(varyy)
+        if np.isfinite(varyymean):
+            slopesit[i:i+la,j:j+lo],intercept[i:i+la,j:j+lo],r[i:i+la,j:j+lo],p_value,std_err = sts.stats.linregress(varxx[mask],
+                                                              varyy[mask])
+        else:
+            slopesit[i:i+la,j:j+lo] = np.nan   
+            r[i:i+la,j:j+lo] = np.nan
+            intercept[i:i+la,j:j+lo] = np.nan
+                                      
+print 'Completed: Script done!'
 
 #val = slopesit
 val = r**2
@@ -101,7 +101,7 @@ plt.rcParams['font.sans-serif'] = 'Avant Garde'
 fig = plt.figure()
 ax = plt.subplot(111)
 
-m = Basemap(projection='npstere',boundinglat=67,lon_0=270,
+m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
             resolution='l',round =True)
 m.drawmapboundary(fill_color='white')
 m.drawcoastlines(color='k',linewidth=0.3)

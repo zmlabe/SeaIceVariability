@@ -52,83 +52,83 @@ yearsclimo = np.arange(1981,2010+1,1)
 ### Read in functions
 #tas,lats1,lons1 = LV.readLENSEnsemble(directorydataT,'T2M') 
 #sith,lats2,lons2 = lens.readLENSEnsemble(directorydataSIT,0.15,'historical')
-#sitf,lats2,lons2 = lens.readLENSEnsemble(directorydataSIT,0.15,'rcp85')
-#
-#### Combine SIT periods
+#sitf,lats,lons = lens.readLENSEnsemble(directorydataSIT,0.15,'rcp85')
+##
+##### Combine SIT periods
 #sitall = np.append(sith,sitf,axis=1)
 #          
 ##### 2D lat/lon arrays          
 #lons2,lats2 = np.meshgrid(lons2,lats2)
-#lons1,lats1 = np.meshgrid(lons1,lats1)    
+#lons,lats = np.meshgrid(lons,lats)    
 
 ###########################################################################  
 ###########################################################################
 ###########################################################################
 ### Regrid
-def regrid(lat1,lon1,lat2,lon2,var,years):
-    """
-    Interpolated on selected grid. 
-    [year,month,lat,lon]
-    """
-    
-    varn_re = np.reshape(var,(var.shape[0],var.shape[1],(14*144)))   
-    
-    varn = np.empty((var.shape[0],var.shape[1],lat2.shape[0],lon2.shape[1]))
-    
-    print 'Completed: Start regridding process:'
-    
-    for i in xrange(varn.shape[0]):
-        for j in xrange(varn.shape[1]):
-            z = g((np.ravel(lat1),np.ravel(lon1)),varn_re[i,j,:],(lat2,lon2),method='linear')
-            varn[i,j,:,:] = z
-        print 'Completed: Year %s Regridding---' % (years[i])
-    return varn
+#def regrid(lat1,lon1,lat2,lon2,var,years):
+#    """
+#    Interpolated on selected grid. 
+#    [year,month,lat,lon]
+#    """
+#    
+#    varn_re = np.reshape(var,(var.shape[0],var.shape[1],(14*144)))   
+#    
+#    varn = np.empty((var.shape[0],var.shape[1],lat2.shape[0],lon2.shape[1]))
+#    
+#    print 'Completed: Start regridding process:'
+#    
+#    for i in xrange(varn.shape[0]):
+#        for j in xrange(varn.shape[1]):
+#            z = g((np.ravel(lat1),np.ravel(lon1)),varn_re[i,j,:],(lat2,lon2),method='linear')
+#            varn[i,j,:,:] = z
+#        print 'Completed: Year %s Regridding---' % (years[i])
+#    return varn
     
 #tasn = np.empty(sitall.shape)
 #for i in xrange(len(ense)):
 #    tasn[i,:,:,:,:] = regrid(lats1,lons1,lats2,lons2,tas[i],years)
 #    print 'Completed: Regridded Ensemble #%s!' % ense[i]
 
-def netcdfPiomas(lats,lons,var,directory):
-    print '\n>>> Using netcdf4LENS function!'
-    
-    name = 'T2M/lens_regrid_T2M_19202080.nc'
-    filename = directory + name
-    ncfile = Dataset(filename,'w',format='NETCDF4')
-    ncfile.description = 'LENS T2M interpolated on 1x1 grid' 
-    
-    ### Dimensions
-    ncfile.createDimension('ensemble',var.shape[0])
-    ncfile.createDimension('years',var.shape[1])
-    ncfile.createDimension('months',var.shape[2])
-    ncfile.createDimension('lat',var.shape[3])
-    ncfile.createDimension('lon',var.shape[4])
-    
-    ### Variables
-    ensemble = ncfile.createVariable('ensemble','f4',('ensemble'))
-    years = ncfile.createVariable('years','f4',('years'))
-    months = ncfile.createVariable('months','f4',('months'))
-    latitude = ncfile.createVariable('lat','f4',('lat','lon'))
-    longitude = ncfile.createVariable('lon','f4',('lat','lon'))
-    varns = ncfile.createVariable('T2M','f4',('ensemble','years','months','lat','lon'))
-    
-    ### Units
-    varns.units = 'Degrees Celsius'
-    ncfile.title = 'LENS T2M'
-    ncfile.instituion = 'Dept. ESS at University of California, Irvine'
-    ncfile.source = 'NCAR LENS'
-    ncfile.references = 'Kay et al. [2013]'
-    
-    ### Data
-    ensemble[:] = list(xrange(var.shape[0]))
-    years[:] = list(xrange(var.shape[1]))
-    months[:] = list(xrange(var.shape[2]))
-    latitude[:] = lats
-    longitude[:] = lons
-    varns[:] = var
-    
-    ncfile.close()
-    print '*Completed: Created netCDF4 File!'
+#def netcdfPiomas(lats,lons,var,directory):
+#    print '\n>>> Using netcdf4LENS function!'
+#    
+#    name = 'T2M/lens_regrid_T2M_19202080.nc'
+#    filename = directory + name
+#    ncfile = Dataset(filename,'w',format='NETCDF4')
+#    ncfile.description = 'LENS T2M interpolated on 1x1 grid' 
+#    
+#    ### Dimensions
+#    ncfile.createDimension('ensemble',var.shape[0])
+#    ncfile.createDimension('years',var.shape[1])
+#    ncfile.createDimension('months',var.shape[2])
+#    ncfile.createDimension('lat',var.shape[3])
+#    ncfile.createDimension('lon',var.shape[4])
+#    
+#    ### Variables
+#    ensemble = ncfile.createVariable('ensemble','f4',('ensemble'))
+#    years = ncfile.createVariable('years','f4',('years'))
+#    months = ncfile.createVariable('months','f4',('months'))
+#    latitude = ncfile.createVariable('lat','f4',('lat','lon'))
+#    longitude = ncfile.createVariable('lon','f4',('lat','lon'))
+#    varns = ncfile.createVariable('T2M','f4',('ensemble','years','months','lat','lon'))
+#    
+#    ### Units
+#    varns.units = 'Degrees Celsius'
+#    ncfile.title = 'LENS T2M'
+#    ncfile.instituion = 'Dept. ESS at University of California, Irvine'
+#    ncfile.source = 'NCAR LENS'
+#    ncfile.references = 'Kay et al. [2013]'
+#    
+#    ### Data
+#    ensemble[:] = list(xrange(var.shape[0]))
+#    years[:] = list(xrange(var.shape[1]))
+#    months[:] = list(xrange(var.shape[2]))
+#    latitude[:] = lats
+#    longitude[:] = lons
+#    varns[:] = var
+#    
+#    ncfile.close()
+#    print '*Completed: Created netCDF4 File!'
 
 #netcdfPiomas(lats2,lons2,tasn,directorydataN)
     
@@ -140,7 +140,7 @@ def netcdfPiomas(lats,lons,var,directory):
 #tasall = data.variables['T2M'][:]
 #data.close()
 
-##print 'Completed: Read T2M data! \n'
+print 'Completed: Read T2M data! \n'
 #
 #### Calculate ensemble average
 ##tasmean = np.nanmean(tas,axis=0)
@@ -315,39 +315,39 @@ def netcdfPiomas(lats,lons,var,directory):
 ############################################################################
 ############################################################################
 ############################################################################
-#### Read in individual members
-#def weightThick(var,lats,types):
-#    """
-#    Area weights sit array 5d [ens,year,month,lat,lon] into [ens,year,month]
-#    """
-#    
-#    if types == 'lens':
-#        sityr = np.empty((var.shape[0],var.shape[1],var.shape[2]))
-#        for ens in xrange(var.shape[0]):
-#            for i in xrange(var.shape[1]):
-#                for j in xrange(var.shape[2]):
-#                    varq = var[ens,i,j,:,:]
-#                    mask = np.isfinite(varq) & np.isfinite(lats)
-#                    varmask = varq[mask]
-#                    areamask = np.cos(np.deg2rad(lats[mask]))
-#                    sityr[ens,i,j] = np.nansum(varmask*areamask)/np.sum(areamask)
-#            
-#            print 'Completed: Weighting per ensemble #%s!' % ense[ens]
-#    
-#    elif types == 'piomas':
-#        sityr = np.empty((var.shape[0],var.shape[1]))
-#        for i in xrange(var.shape[0]):
-#            for j in xrange(var.shape[1]):
-#                varq = var[i,j,:,:]
-#                mask = np.isfinite(varq) & np.isfinite(lats)
-#                varmask = varq[mask]
-#                areamask = np.cos(np.deg2rad(lats[mask]))
-#                sityr[i,j] = np.nansum(varmask*areamask)/np.sum(areamask)
-#     
-#    print '\nCompleted: Yearly weighted SIT average!' 
-#    return sityr
+### Read in individual members
+def weightThick(var,lats,types):
+    """
+    Area weights sit array 5d [ens,year,month,lat,lon] into [ens,year,month]
+    """
+    
+    if types == 'lens':
+        sityr = np.empty((var.shape[0],var.shape[1],var.shape[2]))
+        for ens in xrange(var.shape[0]):
+            for i in xrange(var.shape[1]):
+                for j in xrange(var.shape[2]):
+                    varq = var[ens,i,j,:,:]
+                    mask = np.isfinite(varq) & np.isfinite(lats)
+                    varmask = varq[mask]
+                    areamask = np.cos(np.deg2rad(lats[mask]))
+                    sityr[ens,i,j] = np.nansum(varmask*areamask)/np.sum(areamask)
+            
+            print 'Completed: Weighting per ensemble #%s!' % ense[ens]
+    
+    elif types == 'piomas':
+        sityr = np.empty((var.shape[0],var.shape[1]))
+        for i in xrange(var.shape[0]):
+            for j in xrange(var.shape[1]):
+                varq = var[i,j,:,:]
+                mask = np.isfinite(varq) & np.isfinite(lats)
+                varmask = varq[mask]
+                areamask = np.cos(np.deg2rad(lats[mask]))
+                sityr[i,j] = np.nansum(varmask*areamask)/np.sum(areamask)
+     
+    print '\nCompleted: Yearly weighted SIT average!' 
+    return sityr
 
-##### Call functions     
+#### Call functions     
 #sitmean = weightThick(sitall,lats,'lens')
 #tasmean = weightThick(tasall,lats,'lens')
 #
@@ -380,170 +380,170 @@ def netcdfPiomas(lats,lons,var,directory):
 #sitf_f = np.nanmean(sitall_f[:,86:],axis=0)
 #tash_f = np.nanmean(tasall_f[:,:86],axis=0)
 #tasf_f = np.nanmean(tasall_f[:,86:],axis=0)
-#
-#### Plot PC time series
-#### Adjust axes in time series plots 
-#def adjust_spines(ax, spines):
-#    for loc, spine in ax.spines.items():
-#        if loc in spines:
-#            spine.set_position(('outward', 10))
-#        else:
-#            spine.set_color('none')  
-#    if 'left' in spines:
-#        ax.yaxis.set_ticks_position('left')
-#    else:
-#        ax.yaxis.set_ticks([])
-#
-#    if 'bottom' in spines:
-#        ax.xaxis.set_ticks_position('bottom')
-#    else:
-#        ax.xaxis.set_ticks([]) 
-#        
-#plt.rc('text',usetex=True)
-#plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
-#
-#fig = plt.figure()
-#ax = plt.subplot(221)
-#
-#### Adjust axes spines
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#for i in xrange(sitall_w.shape[0]):
-#    plt.scatter(sitall_w[i],tasall_w[i],color='darkgrey',edgecolor='darkgrey',
-#                s=0.05,alpha=1)
-#            
-#plt.scatter(sith_w,tash_w,color='teal',edgecolor='teal',
-#            s=0.7,alpha=1)
-#plt.scatter(sitf_w,tasf_w,color='indianred',edgecolor='indianred',
-#            s=0.7,alpha=1)            
-##plt.plot(timex,line1,zorder=1,linewidth=2,color='indianred')
-##plt.plot(smoothed1[:,0],smoothed1[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
-#
-#plt.xticks(np.arange(0,4,0.5),
-#           map(str,np.arange(0,4,0.5)),fontsize=8)
-#plt.xlim([0,3.5])
-#
-#plt.yticks(np.arange(-34,-15,3),map(str,np.arange(-34,-15,3)),fontsize=8)
-#plt.ylim([-34,-16])
-#
-#plt.ylabel(r'\textbf{2 m Temperature ($^\circ$C)}')
-#
-#plt.text(-0.05,-16,r'\textbf{JFM}',fontsize=20,color='darkgrey')
-#
-############################################################################
-#
-#ax = plt.subplot(222)
-#
-#### Adjust axes spines
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#for i in xrange(sitall_w.shape[0]):
-#    plt.scatter(sitall_sp[i],tasall_sp[i],color='darkgrey',edgecolor='darkgrey',
-#                s=0.05,alpha=1)
-#
-#plt.scatter(sith_sp,tash_sp,color='teal',edgecolor='teal',
-#            s=0.7,alpha=1)
-#plt.scatter(sitf_sp,tasf_sp,color='indianred',edgecolor='indianred',
-#            s=0.7,alpha=1) 
-##plt.plot(timex,line2,zorder=1,linewidth=2,color='indianred')
-##plt.plot(smoothed2[:,0],smoothed2[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
-#
-#plt.xticks(np.arange(0,4,0.5),
-#           map(str,np.arange(0,4,0.5)),fontsize=8)
-#plt.xlim([0,3.5])
-#
-#plt.yticks(np.arange(-15,-4,5),map(str,np.arange(-15,-4,5)),fontsize=8)
-#plt.ylim([-15,-5])
-#
-#plt.text(2.5,-5,r'\textbf{1920-2005}',color='teal')
-#plt.text(2.5,-6,r'\textbf{2006-2080}',color='indianred')
-#
-#plt.text(-0.05,-5,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
-#
-############################################################################
-#
-#ax = plt.subplot(223)
-#
-#### Adjust axes spines
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#for i in xrange(sitall_w.shape[0]):
-#    plt.scatter(sitall_su[i],tasall_su[i],color='darkgrey',edgecolor='darkgrey',
-#                s=0.05,alpha=1)
-#
-#plt.scatter(sith_su,tash_su,color='teal',edgecolor='teal',
-#            s=0.7,alpha=1)
-#plt.scatter(sitf_su,tasf_su,color='indianred',edgecolor='indianred',
-#            s=0.7,alpha=1) 
-##plt.plot(timex,line3,zorder=1,linewidth=2,color='indianred')
-##plt.plot(smoothed3[:,0],smoothed3[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
-#
-#plt.xticks(np.arange(0,4,0.5),
-#           map(str,np.arange(0,4,0.5)),fontsize=8)
-#plt.xlim([0,3.5])
-#
-#plt.yticks(np.arange(-6,7,3),map(str,np.arange(-6,7,3)),fontsize=8)
-#plt.ylim([-6,6])
-#
-#plt.xlabel(r'\textbf{Sea Ice Thickness (m)}')
-#plt.ylabel(r'\textbf{2 m Temperature ($^\circ$C)}')
-#
-#plt.text(-0.05,6,r'\textbf{JAS}',fontsize=20,color='darkgrey')
-#
-############################################################################
-#
-#ax = plt.subplot(224)
-#
-#### Adjust axes spines
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#for i in xrange(sitall_w.shape[0]):
-#    plt.scatter(sitall_f[i],tasall_f[i],color='darkgrey',edgecolor='darkgrey',
-#                s=0.05,alpha=1)
-#
-#plt.scatter(sith_f,tash_f,color='teal',edgecolor='teal',
-#            s=0.7,alpha=1)
-#plt.scatter(sitf_f,tasf_f,color='indianred',edgecolor='indianred',
-#            s=0.7,alpha=1) 
-##plt.plot(timex,line4,zorder=1,linewidth=2,color='indianred')
-##plt.plot(smoothed4[:,0],smoothed4[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
-#
-#plt.xticks(np.arange(0,4,0.5),
-#           map(str,np.arange(0,4,0.5)),fontsize=8)
-#plt.xlim([0,3.5])
-#
-#plt.yticks(np.arange(-30,0,5),map(str,np.arange(-30,0,5)),fontsize=8)
-#plt.ylim([-30,-5])
-#
-#plt.text(-0.05,-5,r'\textbf{OND}',fontsize=20,color='darkgrey')
-#
-#plt.xlabel(r'\textbf{Sea Ice Thickness (m)}')
-#
-#
-#fig.subplots_adjust(hspace=0.4)
-#plt.savefig(directoryfigure + 'LENS_SITT2M_scatter_all.png',dpi=300)
-#
-#
+
+### Plot PC time series
+### Adjust axes in time series plots 
+def adjust_spines(ax, spines):
+    for loc, spine in ax.spines.items():
+        if loc in spines:
+            spine.set_position(('outward', 10))
+        else:
+            spine.set_color('none')  
+    if 'left' in spines:
+        ax.yaxis.set_ticks_position('left')
+    else:
+        ax.yaxis.set_ticks([])
+
+    if 'bottom' in spines:
+        ax.xaxis.set_ticks_position('bottom')
+    else:
+        ax.xaxis.set_ticks([]) 
+        
+plt.rc('text',usetex=True)
+plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
+
+fig = plt.figure()
+ax = plt.subplot(221)
+
+### Adjust axes spines
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+for i in xrange(sitall_w.shape[0]):
+    plt.scatter(sitall_w[i],tasall_w[i],color='darkgrey',edgecolor='darkgrey',
+                s=0.05,alpha=1)
+            
+plt.scatter(sith_w,tash_w,color='teal',edgecolor='teal',
+            s=0.7,alpha=1)
+plt.scatter(sitf_w,tasf_w,color='indianred',edgecolor='indianred',
+            s=0.7,alpha=1)            
+#plt.plot(timex,line1,zorder=1,linewidth=2,color='indianred')
+#plt.plot(smoothed1[:,0],smoothed1[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
+
+plt.xticks(np.arange(0,4,0.5),
+           map(str,np.arange(0,4,0.5)),fontsize=8)
+plt.xlim([0,3.5])
+
+plt.yticks(np.arange(-35,-14,5),map(str,np.arange(-35,-14,5)),fontsize=8)
+plt.ylim([-35,-15])
+
+plt.ylabel(r'\textbf{2 m Temperature ($^\circ$C)}')
+
+plt.text(-0.05,-15,r'\textbf{JFM}',fontsize=20,color='darkgrey')
+
+###########################################################################
+
+ax = plt.subplot(222)
+
+### Adjust axes spines
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+for i in xrange(sitall_w.shape[0]):
+    plt.scatter(sitall_sp[i],tasall_sp[i],color='darkgrey',edgecolor='darkgrey',
+                s=0.05,alpha=1)
+
+plt.scatter(sith_sp,tash_sp,color='teal',edgecolor='teal',
+            s=0.7,alpha=1)
+plt.scatter(sitf_sp,tasf_sp,color='indianred',edgecolor='indianred',
+            s=0.7,alpha=1) 
+#plt.plot(timex,line2,zorder=1,linewidth=2,color='indianred')
+#plt.plot(smoothed2[:,0],smoothed2[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
+
+plt.xticks(np.arange(0,4,0.5),
+           map(str,np.arange(0,4,0.5)),fontsize=8)
+plt.xlim([0,3.5])
+
+plt.yticks(np.arange(-12,-1,2),map(str,np.arange(-12,-1,2)),fontsize=8)
+plt.ylim([-12,-2])
+
+plt.text(2.5,-3,r'\textbf{1920-2005}',color='teal')
+plt.text(2.5,-4,r'\textbf{2006-2080}',color='indianred')
+
+plt.text(-0.05,-2,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
+
+###########################################################################
+
+ax = plt.subplot(223)
+
+### Adjust axes spines
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+for i in xrange(sitall_w.shape[0]):
+    plt.scatter(sitall_su[i],tasall_su[i],color='darkgrey',edgecolor='darkgrey',
+                s=0.05,alpha=1)
+
+plt.scatter(sith_su,tash_su,color='teal',edgecolor='teal',
+            s=0.7,alpha=1)
+plt.scatter(sitf_su,tasf_su,color='indianred',edgecolor='indianred',
+            s=0.7,alpha=1) 
+#plt.plot(timex,line3,zorder=1,linewidth=2,color='indianred')
+#plt.plot(smoothed3[:,0],smoothed3[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
+
+plt.xticks(np.arange(0,4,0.5),
+           map(str,np.arange(0,4,0.5)),fontsize=8)
+plt.xlim([0,3.5])
+
+plt.yticks(np.arange(-2,10,2),map(str,np.arange(-2,10,2)),fontsize=8)
+plt.ylim([-2,8])
+
+plt.xlabel(r'\textbf{Sea Ice Thickness (m)}')
+plt.ylabel(r'\textbf{2 m Temperature ($^\circ$C)}')
+
+plt.text(-0.05,8,r'\textbf{JAS}',fontsize=20,color='darkgrey')
+
+###########################################################################
+
+ax = plt.subplot(224)
+
+### Adjust axes spines
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+for i in xrange(sitall_w.shape[0]):
+    plt.scatter(sitall_f[i],tasall_f[i],color='darkgrey',edgecolor='darkgrey',
+                s=0.05,alpha=1)
+
+plt.scatter(sith_f,tash_f,color='teal',edgecolor='teal',
+            s=0.7,alpha=1)
+plt.scatter(sitf_f,tasf_f,color='indianred',edgecolor='indianred',
+            s=0.7,alpha=1) 
+#plt.plot(timex,line4,zorder=1,linewidth=2,color='indianred')
+#plt.plot(smoothed4[:,0],smoothed4[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
+
+plt.xticks(np.arange(0,4,0.5),
+           map(str,np.arange(0,4,0.5)),fontsize=8)
+plt.xlim([0,3.5])
+
+plt.yticks(np.arange(-25,0,5),map(str,np.arange(-25,0,5)),fontsize=8)
+plt.ylim([-25,-5])
+
+plt.text(-0.05,-5,r'\textbf{OND}',fontsize=20,color='darkgrey')
+
+plt.xlabel(r'\textbf{Sea Ice Thickness (m)}')
+
+
+fig.subplots_adjust(hspace=0.4)
+plt.savefig(directoryfigure + 'LENS_SITT2M_scatter_all.png',dpi=300)
+
+
 ############################################################################
 ############################################################################
 ############################################################################

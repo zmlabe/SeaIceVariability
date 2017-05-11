@@ -15,7 +15,7 @@ import matplotlib.colors as c
 import datetime
 import read_SeaIceThick_LENS as lens
 import statsmodels.api as sm
-from mpl_toolkits.basemap import Basemap
+from mpl_toolkits.basemap import Basemap, addcyclic, shiftgrid
 import nclcmaps as ncm
 from netCDF4 import Dataset
 
@@ -69,8 +69,8 @@ def readPIOMAS(directorydata,threshold):
 
 #### Call functions
 sit,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
-sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
-lons,lats = np.meshgrid(lons,lats)
+#sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
+lons2,lats2 = np.meshgrid(lons,lats)
 
 sitp = readPIOMAS(directorydatap,0.15)
 
@@ -106,9 +106,9 @@ def weightThick(var,lats,types):
     return sityr
 
 #### Call functions     
-sitave = weightThick(sit,lats,'lens')
-sitavef = weightThick(sitf,lats,'lens')
-sitavep = weightThick(sitp,lats,'piomas')
+sitave = weightThick(sit,lats2,'lens')
+#sitavef = weightThick(sitf,lats2,'lens')
+sitavep = weightThick(sitp,lats2,'piomas')
 
 #### Plot Figure
 plt.rc('text',usetex=True)
@@ -218,23 +218,21 @@ yearpq = np.where((yearp >= 1979) & (yearp <= 2005))[0]
 sitcycle = np.nanmean(sitave[:,yearlq,:],axis=1)
 sitcyclep = np.nanmean(sitavep[yearpq,:],axis=0)
 
-yearlqf = np.where((yearf >= 2006) & (yearf <= 2015))[0]
-yearpqf = np.where((yearp >= 2006) & (yearp <= 2015))[0]
-sitcyclef = np.nanmean(sitavef[:,yearlqf,:],axis=1)
-sitcyclefp = np.nanmean(sitavep[yearpqf,:],axis=0)
+#yearlqf = np.where((yearf >= 2006) & (yearf <= 2015))[0]
+#yearpqf = np.where((yearp >= 2006) & (yearp <= 2015))[0]
+#sitcyclef = np.nanmean(sitavef[:,yearlqf,:],axis=1)
+#sitcyclefp = np.nanmean(sitavep[yearpqf,:],axis=0)
 
 fig = plt.figure()
-ax = plt.subplot(211)
+ax = plt.subplot(111)
 
 ### Adjust axes spines
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
 ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('none')
-plt.setp(ax.get_xticklabels(), visible=False)
-ax.xaxis.set_tick_params(size=0)
-ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 
 for i in xrange(sitcycle.shape[0]):
     plt.plot(sitcycle[i],color='cornflowerblue',alpha=0.3,linewidth=0.7,
@@ -250,45 +248,67 @@ plt.plot(sitcyclep,color='seagreen',linewidth=2,
 plt.xticks(np.arange(0,12,1),months) 
 plt.yticks(np.arange(0,5,1),map(str,np.arange(0,5,1))) 
 plt.xlim([0,11]) 
-plt.ylim([1,4])
+plt.ylim([0,4])
+
+plt.ylabel(r'\textbf{Sea Ice Thickness (m)}')
 
 plt.legend(shadow=False,fontsize=9,loc='upper right',
-           fancybox=True,frameon=False)
+           fancybox=True,frameon=False,bbox_to_anchor=(1.03,1.06),
+            ncol=1)
            
-plt.annotate(r'\textbf{HISTORICAL}', xy=(0, 0), xytext=(0.01,0.9),
-            xycoords='axes fraction',fontsize=22,color='darkgrey')           
-           
-ax = plt.subplot(212)
+plt.annotate(r'\textbf{HISTORICAL}', xy=(0, 0), xytext=(0.01,0.95),
+            xycoords='axes fraction',fontsize=22,color='darkgrey')    
 
-### Adjust axes spines
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('darkgrey')
-ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+### Create 2nd subplot
+def colormapSIT():
+    cmap1 = plt.get_cmap('BuPu')
+    cmap2 = plt.get_cmap('RdPu_r')
+    cmap3 = plt.get_cmap('gist_heat_r')
+    cmaplist1 = [cmap1(i) for i in xrange(cmap1.N-10)]
+    cmaplist2 = [cmap2(i) for i in xrange(15,cmap2.N)]
+    cmaplist3 = [cmap3(i) for i in xrange(cmap2.N)]
+    cms_sit = c.ListedColormap(cmaplist1 + cmaplist2 + cmaplist3)
+    return cms_sit
 
-for i in xrange(sitcycle.shape[0]):
-    plt.plot(sitcyclef[i],color='cornflowerblue',alpha=0.3,linewidth=0.7,
-             zorder=2)
-plt.plot(np.nanmean(sitcyclef,axis=0),color='darkorchid',linewidth=2,
-         marker='o',markeredgecolor='darkorchid',zorder=3,
-         label=r'Mean LENS',markersize=4)
-         
-plt.plot(sitcyclefp,color='seagreen',linewidth=2,
-         marker='^',markeredgecolor='seagreen',
-         zorder=4,label=r'PIOMAS',markersize=4)
+a2 = plt.axes([.095, .15, .29, .29], axisbg='w')   
 
-plt.xticks(np.arange(0,12,1),months) 
-plt.yticks(np.arange(0,5,1),map(str,np.arange(0,5,1))) 
-plt.xlim([0,11]) 
-plt.ylim([1,4])   
+compsitp = np.apply_over_axes(np.nanmean,sitp[yearpq,:,:,:],[0,1]).squeeze()
+compsith = np.apply_over_axes(np.nanmean,sit[:,yearlq,:,:,:],[0,1,2]).squeeze()
+var = compsith - compsitp
 
-plt.annotate(r'\textbf{RCP8.5}', xy=(0, 0), xytext=(0.01,0.9),
-            xycoords='axes fraction',fontsize=22,color='darkgrey')  
-            
-plt.annotate(r'\textbf{Sea Ice Thickness (m)}', xy=(0, 0), xytext=(0.03,0.75),
-            xycoords='figure fraction',fontsize=15,color='k',
-            rotation=90)               
+var, lons_cyclic = addcyclic(var, lons)
+var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
+lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
+
+m = Basemap(projection='npstere',boundinglat=66,lon_0=-90,resolution='l',round=True)
+m.drawmapboundary(fill_color = 'white')
+m.drawcoastlines(color = 'dimgrey',linewidth=0.1)
+m.drawlsmask(land_color='dimgrey',ocean_color='snow')
+parallels = np.arange(50,90,10)
+meridians = np.arange(-180,180,30)
+x, y = m(lon2d, lat2d) 
+def setcolor(x, color):
+     for m in x:
+         for t in x[m][1]:
+             t.set_color(color)
+
+#m.drawparallels(parallels,labels=[False,False,False,False],linewidth=0.2,
+#                fontsize=0)
+#mer = m.drawmeridians(meridians,labels=[False,False,False,False],linewidth=0.2,
+#                fontsize=0)
+#setcolor(mer,'darkgrey')
+
+values = np.arange(-1,1.1,0.1) 
+cs = m.contourf(x,y,var,values,extend='both')
+cmap = ncm.cmap('BrownBlue12')  
+cs.set_cmap(cmap)
+
+cbar = plt.colorbar(cs,orientation='vertical',
+                    extend='both',extendfrac=0.07,pad=0.05)  
+cbar.set_ticks(np.arange(-1,2,1))
+cbar.set_ticklabels(map(str,np.arange(-1,2,1)))
+cbar.set_label(r'\textbf{Difference (m)}',fontsize=8,
+                         color='darkgrey',labelpad=1) 
+cbar.ax.tick_params(labelsize=6.5)                              
 
 plt.savefig(directoryfigure + 'seasonalcycle_lens.png',dpi=300)

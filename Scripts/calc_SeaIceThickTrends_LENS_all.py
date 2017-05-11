@@ -227,10 +227,10 @@ def weightThick(var,lats,types):
     print '\nCompleted: Yearly weighted SIT average!' 
     return sityr
     
-trendmeanf_w = weightThick(trendf_w,lats,'lens')
-trendmeanf_sp = weightThick(trendf_sp,lats,'lens')
-trendmeanf_su = weightThick(trendf_su,lats,'lens')
-trendmeanf_f = weightThick(trendf_f,lats,'lens')
+trendmeanf_w = weightThick(trendp_w,lats,'lens')
+trendmeanf_sp = weightThick(trendp_sp,lats,'lens')
+trendmeanf_su = weightThick(trendp_su,lats,'lens')
+trendmeanf_f = weightThick(trendp_f,lats,'lens')
 
 trendmeanpio_w = weightThick(trendpio_w,lats,'piomas')
 trendmeanpio_sp = weightThick(trendpio_sp,lats,'piomas')
@@ -260,255 +260,255 @@ def adjust_spines(ax, spines):
 plt.rc('text',usetex=True)
 plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
 
-#fig = plt.figure()
-#ax = plt.subplot(141)
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#plt.axvline(np.nanmean(trendmeanf_w),color='k',linewidth=2,alpha=0.65)
-#plt.scatter(trendmeanf_w,ense,s=15,color='teal')
-#plt.axvline(trendmeanpio_w,color='m',linewidth=1.5)
-#
-#plt.xticks(np.arange(-0.5,0.1,0.25),
-#           map(str,np.arange(-0.5,0.1,0.25)),fontsize=8)
-#plt.xlim([-0.5,0])
-#plt.yticks(np.arange(0,45,5),map(str,np.arange(0,45,5)),fontsize=8)
-#plt.ylim([0,40])
-#
-#plt.text(-0.4,40,r'\textbf{JFM}',fontsize=20,color='darkgrey')
-#plt.ylabel(r'\textbf{Ensemble Number}')
-#
-#ax = plt.subplot(142)
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#plt.axvline(np.nanmean(trendmeanf_sp),color='k',linewidth=2,alpha=0.65)
-#plt.scatter(trendmeanf_sp,ense,s=15,color='teal')
-#plt.axvline(trendmeanpio_sp,color='m',linewidth=1.5)
-#
-#plt.xticks(np.arange(-0.5,0.1,0.25),
-#           map(str,np.arange(-0.5,0.1,0.25)),fontsize=8)
-#plt.xlim([-0.5,0])
-#plt.yticks(np.arange(0,45,5),map(str,np.arange(0,45,5)),fontsize=8)
-#plt.ylim([0,40])
-#
-#plt.text(-0.4,40,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
-#
-#ax = plt.subplot(143)
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#plt.axvline(np.nanmean(trendmeanf_su),color='k',linewidth=2,alpha=0.65)
-#plt.scatter(trendmeanf_su,ense,s=15,color='teal')
-#plt.axvline(trendmeanpio_su,color='m',linewidth=1.5)
-#
-#plt.xticks(np.arange(-0.5,0.1,0.25),
-#           map(str,np.arange(-0.5,0.1,0.25)),fontsize=8)
-#plt.xlim([-0.5,0])
-#plt.yticks(np.arange(0,45,5),map(str,np.arange(0,45,5)),fontsize=8)
-#plt.ylim([0,40])
-#
-#plt.text(-0.4,40,r'\textbf{JAS}',fontsize=20,color='darkgrey')
-#
-#ax = plt.subplot(144)
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#plt.axvline(np.nanmean(trendmeanf_f),color='k',linewidth=2,alpha=0.65)
-#plt.scatter(trendmeanf_f,ense,s=15,color='teal')
-#plt.axvline(trendmeanpio_f,color='m',linewidth=1.5)
-#
-#plt.xticks(np.arange(-0.5,0.1,0.25),
-#           map(str,np.arange(-0.5,0.1,0.25)),fontsize=8)
-#plt.xlim([-0.5,0])
-#plt.yticks(np.arange(0,45,5),map(str,np.arange(0,45,5)),fontsize=8)
-#plt.ylim([0,40])
-#
-#plt.text(-0.4,40,r'\textbf{OND}',fontsize=20,color='darkgrey')
-#
-#ax.text(-1.6,-6,r'\textbf{LENS SIT( m decade$^{-1}$ )}')
-#
-#fig.subplots_adjust(wspace=0.3)
-#plt.savefig(directoryfigure+'future_lens_sittrends.png',dpi=300)
+fig = plt.figure()
+ax = plt.subplot(141)
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+plt.axvline(np.nanmean(trendmeanf_w),color='k',linewidth=2,alpha=0.65)
+plt.scatter(trendmeanf_w,ense,s=15,color='teal')
+plt.axvline(trendmeanpio_w,color='m',linewidth=1.5)
+
+plt.xticks(np.arange(-0.5,0.1,0.25),
+           map(str,np.arange(-0.5,0.1,0.25)),fontsize=8)
+plt.xlim([-0.5,0])
+plt.yticks(np.arange(0,45,5),map(str,np.arange(0,45,5)),fontsize=8)
+plt.ylim([0,40])
+
+plt.text(-0.4,40,r'\textbf{JFM}',fontsize=20,color='darkgrey')
+plt.ylabel(r'\textbf{Ensemble Number}')
+
+ax = plt.subplot(142)
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+plt.axvline(np.nanmean(trendmeanf_sp),color='k',linewidth=2,alpha=0.65)
+plt.scatter(trendmeanf_sp,ense,s=15,color='teal')
+plt.axvline(trendmeanpio_sp,color='m',linewidth=1.5)
+
+plt.xticks(np.arange(-0.5,0.1,0.25),
+           map(str,np.arange(-0.5,0.1,0.25)),fontsize=8)
+plt.xlim([-0.5,0])
+plt.yticks(np.arange(0,45,5),map(str,np.arange(0,45,5)),fontsize=8)
+plt.ylim([0,40])
+
+plt.text(-0.4,40,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
+
+ax = plt.subplot(143)
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+plt.axvline(np.nanmean(trendmeanf_su),color='k',linewidth=2,alpha=0.65)
+plt.scatter(trendmeanf_su,ense,s=15,color='teal')
+plt.axvline(trendmeanpio_su,color='m',linewidth=1.5)
+
+plt.xticks(np.arange(-0.5,0.1,0.25),
+           map(str,np.arange(-0.5,0.1,0.25)),fontsize=8)
+plt.xlim([-0.5,0])
+plt.yticks(np.arange(0,45,5),map(str,np.arange(0,45,5)),fontsize=8)
+plt.ylim([0,40])
+
+plt.text(-0.4,40,r'\textbf{JAS}',fontsize=20,color='darkgrey')
+
+ax = plt.subplot(144)
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+plt.axvline(np.nanmean(trendmeanf_f),color='k',linewidth=2,alpha=0.65)
+plt.scatter(trendmeanf_f,ense,s=15,color='teal')
+plt.axvline(trendmeanpio_f,color='m',linewidth=1.5)
+
+plt.xticks(np.arange(-0.5,0.1,0.25),
+           map(str,np.arange(-0.5,0.1,0.25)),fontsize=8)
+plt.xlim([-0.5,0])
+plt.yticks(np.arange(0,45,5),map(str,np.arange(0,45,5)),fontsize=8)
+plt.ylim([0,40])
+
+plt.text(-0.4,40,r'\textbf{OND}',fontsize=20,color='darkgrey')
+
+ax.text(-1.6,-6,r'\textbf{LENS SIT( m decade$^{-1}$ )}')
+
+fig.subplots_adjust(wspace=0.3)
+plt.savefig(directoryfigure+'satellite_lens_sittrends.png',dpi=300)
 
 ### Figures
 ### Adjust axes in time series plots 
-def adjust_spines(ax, spines):
-    for loc, spine in ax.spines.items():
-        if loc in spines:
-            spine.set_position(('outward', 10))
-        else:
-            spine.set_color('none')  
-    if 'left' in spines:
-        ax.yaxis.set_ticks_position('left')
-    else:
-        ax.yaxis.set_ticks([])
-
-    if 'bottom' in spines:
-        ax.xaxis.set_ticks_position('bottom')
-    else:
-        ax.xaxis.set_ticks([]) 
-
-timex = np.arange(-1,1.5,0.5)
-timey = np.arange(-1,1.5,0.5)
-
-varx_w = trendpio_w
-vary_w = np.nanmean(trendp_w,axis=0)      
-mask = np.isfinite(varx_w) & np.isfinite(vary_w)
-slope_w, intercept_w, r_value_w, p_value, std_err = sts.linregress(varx_w[mask], vary_w[mask])
-line_w = slope_w*timex + intercept_w
-
-varx_sp = trendpio_sp
-vary_sp = np.nanmean(trendp_sp,axis=0)      
-mask = np.isfinite(varx_sp) & np.isfinite(vary_sp)
-slope_sp, intercept_sp, r_value_sp, p_value, std_err = sts.linregress(varx_sp[mask], vary_sp[mask])
-line_sp = slope_sp*timex + intercept_sp
-
-varx_su = trendpio_su
-vary_su = np.nanmean(trendp_su,axis=0)      
-mask = np.isfinite(varx_su) & np.isfinite(vary_su)
-slope_su, intercept_su, r_value_su, p_value, std_err = sts.linregress(varx_su[mask], vary_su[mask])
-line_su = slope_su*timex + intercept_su
-
-varx_f = trendpio_w
-vary_f = np.nanmean(trendp_f,axis=0)      
-mask = np.isfinite(varx_f) & np.isfinite(vary_f)
-slope_f, intercept_f, r_value_f, p_value, std_err = sts.linregress(varx_f[mask], vary_f[mask])
-line_f = slope_f*timex + intercept_f
-        
-plt.rc('text',usetex=True)
-plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
-
-fig = plt.figure()
-ax = plt.subplot(221)
-
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('darkgrey')
-ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-
-ax.plot(timex,timey,color='k',linewidth=3,zorder=1)
-for i in xrange(trendp_w.shape[0]):
-    plt.scatter(trendpio_w,trendp_w[i],color='darkgrey',s=0.1,alpha=0.5,
-                zorder=2)
-plt.scatter(trendpio_w,np.nanmean(trendp_w,axis=0),color='teal',s=1,
-            zorder=3,alpha=0.5)
-plt.plot(timex,line_w,color='r',zorder=4)
-
-plt.xticks(np.arange(-1,1.5,0.5),
-           map(str,np.arange(-1,1.5,0.5)),fontsize=8)
-plt.xlim([-1,1])
-plt.yticks(np.arange(-1,1.5,0.5),map(str,np.arange(-1,1.5,0.5)),fontsize=8)
-plt.ylim([-1,1])
-
-plt.ylabel(r'\textbf{LENS SIT( m decade$^{-1}$ )}')
-plt.text(-1.05,0.9,r'\textbf{JFM}',fontsize=20,color='darkgrey')
-plt.text(0.5,-1,r'LENS Mean',fontsize=7,color='teal')
-plt.text(-1.05,0.7,r'R$^{2}$=%s' % round(r_value_w**2,2),fontsize=8,color='r')
-
-ax = plt.subplot(222)
-
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('darkgrey')
-ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-
-ax.plot(timex,timey,color='k',linewidth=3,zorder=1)
-for i in xrange(trendp_w.shape[0]):
-    plt.scatter(trendpio_sp,trendp_sp[i],color='darkgrey',s=0.1,alpha=0.5,
-                zorder=2)
-plt.scatter(trendpio_sp,np.nanmean(trendp_sp,axis=0),color='teal',s=1,
-            zorder=3,alpha=0.5)
-plt.plot(timex,line_sp,color='r',zorder=4)
-
-plt.xticks(np.arange(-1,1.5,0.5),
-           map(str,np.arange(-1,1.5,0.5)),fontsize=8)
-plt.xlim([-1,1])
-plt.yticks(np.arange(-1,1.5,0.5),map(str,np.arange(-1,1.5,0.5)),fontsize=8)
-plt.ylim([-1,1])
-
-plt.text(-1.05,0.9,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
-plt.text(0.5,-1,r'LENS Mean',fontsize=7,color='teal')
-plt.text(-1.05,0.7,r'R$^{2}$=%s' % round(r_value_sp**2,2),fontsize=8,color='r')
-
-ax = plt.subplot(223)
-
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('darkgrey')
-ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-
-ax.plot(timex,timey,color='k',linewidth=3,zorder=1)
-for i in xrange(trendp_w.shape[0]):
-    plt.scatter(trendpio_su,trendp_su[i],color='darkgrey',s=0.1,alpha=0.5,
-                zorder=2)
-plt.scatter(trendpio_su,np.nanmean(trendp_su,axis=0),color='teal',s=1,
-            zorder=3,alpha=0.5)
-plt.plot(timex,line_su,color='r',zorder=4)
-
-plt.xticks(np.arange(-1,1.5,0.5),
-           map(str,np.arange(-1,1.5,0.5)),fontsize=8)
-plt.xlim([-1,1])
-plt.yticks(np.arange(-1,1.5,0.5),map(str,np.arange(-1,1.5,0.5)),fontsize=8)
-plt.ylim([-1,1])
-
-plt.text(-1.05,0.9,r'\textbf{JAS}',fontsize=20,color='darkgrey')
-plt.text(0.5,-1,r'LENS Mean',fontsize=7,color='teal')
-plt.text(-1.05,0.7,r'R$^{2}$=%s' % round(r_value_su**2,2),fontsize=8,color='r')
-
-plt.xlabel(r'\textbf{PIOMAS SIT( m decade$^{-1}$ )}')
-plt.ylabel(r'\textbf{LENS SIT( m decade$^{-1}$ )}')
-
-ax = plt.subplot(224)
-
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('darkgrey')
-ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-
-ax.plot(timex,timey,color='k',linewidth=3,zorder=1)
-for i in xrange(trendp_f.shape[0]):
-    plt.scatter(trendpio_f,trendp_f[i],color='darkgrey',s=0.1,alpha=0.5,
-                zorder=2)
-plt.scatter(trendpio_f,np.nanmean(trendp_f,axis=0),color='teal',s=1,
-            zorder=3,alpha=0.5)
-plt.plot(timex,line_f,color='r',zorder=4)
-
-plt.xticks(np.arange(-1,1.5,0.5),
-           map(str,np.arange(-1,1.5,0.5)),fontsize=8)
-plt.xlim([-1,1])
-plt.yticks(np.arange(-1,1.5,0.5),map(str,np.arange(-1,1.5,0.5)),fontsize=8)
-plt.ylim([-1,1])
-
-plt.text(-1.05,0.9,r'\textbf{OND}',fontsize=20,color='darkgrey')
-plt.text(0.5,-1,r'LENS Mean',fontsize=7,color='teal')
-plt.text(-1.05,0.7,r'R$^{2}$=%s' % round(r_value_f**2,2),fontsize=8,color='r')
-
-plt.xlabel(r'\textbf{PIOMAS SIT( m decade$^{-1}$ )}')
-
-fig.subplots_adjust(hspace=0.4)
-plt.savefig(directoryfigure + 'LENSPIOMAS_trends_scatter.png',dpi=300)
+#def adjust_spines(ax, spines):
+#    for loc, spine in ax.spines.items():
+#        if loc in spines:
+#            spine.set_position(('outward', 10))
+#        else:
+#            spine.set_color('none')  
+#    if 'left' in spines:
+#        ax.yaxis.set_ticks_position('left')
+#    else:
+#        ax.yaxis.set_ticks([])
+#
+#    if 'bottom' in spines:
+#        ax.xaxis.set_ticks_position('bottom')
+#    else:
+#        ax.xaxis.set_ticks([]) 
+#
+#timex = np.arange(-1,1.5,0.5)
+#timey = np.arange(-1,1.5,0.5)
+#
+#varx_w = trendpio_w
+#vary_w = np.nanmean(trendp_w,axis=0)      
+#mask = np.isfinite(varx_w) & np.isfinite(vary_w)
+#slope_w, intercept_w, r_value_w, p_value, std_err = sts.linregress(varx_w[mask], vary_w[mask])
+#line_w = slope_w*timex + intercept_w
+#
+#varx_sp = trendpio_sp
+#vary_sp = np.nanmean(trendp_sp,axis=0)      
+#mask = np.isfinite(varx_sp) & np.isfinite(vary_sp)
+#slope_sp, intercept_sp, r_value_sp, p_value, std_err = sts.linregress(varx_sp[mask], vary_sp[mask])
+#line_sp = slope_sp*timex + intercept_sp
+#
+#varx_su = trendpio_su
+#vary_su = np.nanmean(trendp_su,axis=0)      
+#mask = np.isfinite(varx_su) & np.isfinite(vary_su)
+#slope_su, intercept_su, r_value_su, p_value, std_err = sts.linregress(varx_su[mask], vary_su[mask])
+#line_su = slope_su*timex + intercept_su
+#
+#varx_f = trendpio_w
+#vary_f = np.nanmean(trendp_f,axis=0)      
+#mask = np.isfinite(varx_f) & np.isfinite(vary_f)
+#slope_f, intercept_f, r_value_f, p_value, std_err = sts.linregress(varx_f[mask], vary_f[mask])
+#line_f = slope_f*timex + intercept_f
+#        
+#plt.rc('text',usetex=True)
+#plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
+#
+#fig = plt.figure()
+#ax = plt.subplot(221)
+#
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#ax.spines['left'].set_color('darkgrey')
+#ax.spines['bottom'].set_color('darkgrey')
+#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+#
+#ax.plot(timex,timey,color='k',linewidth=3,zorder=1)
+#for i in xrange(trendp_w.shape[0]):
+#    plt.scatter(trendpio_w,trendp_w[i],color='darkgrey',s=0.1,alpha=0.5,
+#                zorder=2)
+#plt.scatter(trendpio_w,np.nanmean(trendp_w,axis=0),color='teal',s=1,
+#            zorder=3,alpha=0.5)
+#plt.plot(timex,line_w,color='r',zorder=4)
+#
+#plt.xticks(np.arange(-1,1.5,0.5),
+#           map(str,np.arange(-1,1.5,0.5)),fontsize=8)
+#plt.xlim([-1,1])
+#plt.yticks(np.arange(-1,1.5,0.5),map(str,np.arange(-1,1.5,0.5)),fontsize=8)
+#plt.ylim([-1,1])
+#
+#plt.ylabel(r'\textbf{LENS SIT( m decade$^{-1}$ )}')
+#plt.text(-1.05,0.9,r'\textbf{JFM}',fontsize=20,color='darkgrey')
+#plt.text(0.5,-1,r'LENS Mean',fontsize=7,color='teal')
+#plt.text(-1.05,0.7,r'R$^{2}$=%s' % round(r_value_w**2,2),fontsize=8,color='r')
+#
+#ax = plt.subplot(222)
+#
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#ax.spines['left'].set_color('darkgrey')
+#ax.spines['bottom'].set_color('darkgrey')
+#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+#
+#ax.plot(timex,timey,color='k',linewidth=3,zorder=1)
+#for i in xrange(trendp_w.shape[0]):
+#    plt.scatter(trendpio_sp,trendp_sp[i],color='darkgrey',s=0.1,alpha=0.5,
+#                zorder=2)
+#plt.scatter(trendpio_sp,np.nanmean(trendp_sp,axis=0),color='teal',s=1,
+#            zorder=3,alpha=0.5)
+#plt.plot(timex,line_sp,color='r',zorder=4)
+#
+#plt.xticks(np.arange(-1,1.5,0.5),
+#           map(str,np.arange(-1,1.5,0.5)),fontsize=8)
+#plt.xlim([-1,1])
+#plt.yticks(np.arange(-1,1.5,0.5),map(str,np.arange(-1,1.5,0.5)),fontsize=8)
+#plt.ylim([-1,1])
+#
+#plt.text(-1.05,0.9,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
+#plt.text(0.5,-1,r'LENS Mean',fontsize=7,color='teal')
+#plt.text(-1.05,0.7,r'R$^{2}$=%s' % round(r_value_sp**2,2),fontsize=8,color='r')
+#
+#ax = plt.subplot(223)
+#
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#ax.spines['left'].set_color('darkgrey')
+#ax.spines['bottom'].set_color('darkgrey')
+#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+#
+#ax.plot(timex,timey,color='k',linewidth=3,zorder=1)
+#for i in xrange(trendp_w.shape[0]):
+#    plt.scatter(trendpio_su,trendp_su[i],color='darkgrey',s=0.1,alpha=0.5,
+#                zorder=2)
+#plt.scatter(trendpio_su,np.nanmean(trendp_su,axis=0),color='teal',s=1,
+#            zorder=3,alpha=0.5)
+#plt.plot(timex,line_su,color='r',zorder=4)
+#
+#plt.xticks(np.arange(-1,1.5,0.5),
+#           map(str,np.arange(-1,1.5,0.5)),fontsize=8)
+#plt.xlim([-1,1])
+#plt.yticks(np.arange(-1,1.5,0.5),map(str,np.arange(-1,1.5,0.5)),fontsize=8)
+#plt.ylim([-1,1])
+#
+#plt.text(-1.05,0.9,r'\textbf{JAS}',fontsize=20,color='darkgrey')
+#plt.text(0.5,-1,r'LENS Mean',fontsize=7,color='teal')
+#plt.text(-1.05,0.7,r'R$^{2}$=%s' % round(r_value_su**2,2),fontsize=8,color='r')
+#
+#plt.xlabel(r'\textbf{PIOMAS SIT( m decade$^{-1}$ )}')
+#plt.ylabel(r'\textbf{LENS SIT( m decade$^{-1}$ )}')
+#
+#ax = plt.subplot(224)
+#
+#adjust_spines(ax, ['left', 'bottom'])
+#ax.spines['top'].set_color('none')
+#ax.spines['right'].set_color('none')
+#ax.spines['left'].set_color('darkgrey')
+#ax.spines['bottom'].set_color('darkgrey')
+#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+#
+#ax.plot(timex,timey,color='k',linewidth=3,zorder=1)
+#for i in xrange(trendp_f.shape[0]):
+#    plt.scatter(trendpio_f,trendp_f[i],color='darkgrey',s=0.1,alpha=0.5,
+#                zorder=2)
+#plt.scatter(trendpio_f,np.nanmean(trendp_f,axis=0),color='teal',s=1,
+#            zorder=3,alpha=0.5)
+#plt.plot(timex,line_f,color='r',zorder=4)
+#
+#plt.xticks(np.arange(-1,1.5,0.5),
+#           map(str,np.arange(-1,1.5,0.5)),fontsize=8)
+#plt.xlim([-1,1])
+#plt.yticks(np.arange(-1,1.5,0.5),map(str,np.arange(-1,1.5,0.5)),fontsize=8)
+#plt.ylim([-1,1])
+#
+#plt.text(-1.05,0.9,r'\textbf{OND}',fontsize=20,color='darkgrey')
+#plt.text(0.5,-1,r'LENS Mean',fontsize=7,color='teal')
+#plt.text(-1.05,0.7,r'R$^{2}$=%s' % round(r_value_f**2,2),fontsize=8,color='r')
+#
+#plt.xlabel(r'\textbf{PIOMAS SIT( m decade$^{-1}$ )}')
+#
+#fig.subplots_adjust(hspace=0.4)
+#plt.savefig(directoryfigure + 'LENSPIOMAS_trends_scatter.png',dpi=300)

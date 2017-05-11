@@ -104,7 +104,7 @@ sitaveh = weightThick(sith,lats,'lens')
 sitavef = weightThick(sitf,lats,'lens')
 sitavep = weightThick(sitp,lats,'piomas')
 
-#### Plot Figure
+### Plot Figure
 plt.rc('text',usetex=True)
 plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
 

@@ -50,16 +50,16 @@ yearslens = np.arange(1920,2080+1,1)
 yearsclimo = np.arange(1981,2010+1,1)
           
 ### Read in functions
-sith,lats,lons = lens.readLENSEnsemble(directorydataSIT,0.15,'historical')
-sitf,lats,lons = lens.readLENSEnsemble(directorydataSIT,0.15,'rcp85')
-
-### Combine SIT periods
-sitall = np.append(sith,sitf,axis=1)
-
-### Read lhtfx
-data = Dataset(directorydata2 + 'lens_regrid_LHFLX_19202080.nc')
-tasall = data.variables['lhflx'][:]
-data.close()
+#sith,lats,lons = lens.readLENSEnsemble(directorydataSIT,0.15,'historical')
+#sitf,lats,lons = lens.readLENSEnsemble(directorydataSIT,0.15,'rcp85')
+#
+#### Combine SIT periods
+#sitall = np.append(sith,sitf,axis=1)
+#
+#### Read lhtfx
+#data = Dataset(directorydata2 + 'lens_regrid_LHFLX_19202080.nc')
+#tasall = data.variables['lhflx'][:]
+#data.close()
 #          
 ##### 2D lat/lon arrays          
 #lons,lats = np.meshgrid(lons,lats)
@@ -133,339 +133,338 @@ def weightThick(var,lats,types):
 #tash_f = np.nanmean(tasall_f[:,:86],axis=0)
 #tasf_f = np.nanmean(tasall_f[:,86:],axis=0)
 
+### Plot PC time series
+### Adjust axes in time series plots 
+def adjust_spines(ax, spines):
+    for loc, spine in ax.spines.items():
+        if loc in spines:
+            spine.set_position(('outward', 10))
+        else:
+            spine.set_color('none')  
+    if 'left' in spines:
+        ax.yaxis.set_ticks_position('left')
+    else:
+        ax.yaxis.set_ticks([])
 
-
-
-sitw = np.nanmean(tasall[:,:,0:3],axis=2)
-sitsp = np.nanmean(tasall[:,:,3:6],axis=2)
-sitsu = np.nanmean(tasall[:,:,6:9],axis=2)
-sitf = np.nanmean(tasall[:,:,9:12],axis=2)
-
-sitw_w = np.nanmean(sitw,axis=0)
-sitsp_sp = np.nanmean(sitsp,axis=0)
-sitsu_su = np.nanmean(sitsu,axis=0)
-sitf_f = np.nanmean(sitf,axis=0)
-
-
-
-#### Plot PC time series
-#### Adjust axes in time series plots 
-#def adjust_spines(ax, spines):
-#    for loc, spine in ax.spines.items():
-#        if loc in spines:
-#            spine.set_position(('outward', 10))
-#        else:
-#            spine.set_color('none')  
-#    if 'left' in spines:
-#        ax.yaxis.set_ticks_position('left')
-#    else:
-#        ax.yaxis.set_ticks([])
-#
-#    if 'bottom' in spines:
-#        ax.xaxis.set_ticks_position('bottom')
-#    else:
-#        ax.xaxis.set_ticks([]) 
-#        
-#plt.rc('text',usetex=True)
-#plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
-#
-#fig = plt.figure()
-#ax = plt.subplot(221)
-#
-#### Adjust axes spines
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#for i in xrange(sitall_w.shape[0]):
-#    plt.scatter(sitall_w[i],tasall_w[i],color='darkgrey',edgecolor='darkgrey',
-#                s=0.05,alpha=1)
-#            
-#plt.scatter(sith_w,tash_w,color='teal',edgecolor='teal',
-#            s=0.7,alpha=1)
-#plt.scatter(sitf_w,tasf_w,color='indianred',edgecolor='indianred',
-#            s=0.7,alpha=1)            
-##plt.plot(timex,line1,zorder=1,linewidth=2,color='indianred')
-##plt.plot(smoothed1[:,0],smoothed1[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
-#
-#plt.xticks(np.arange(0,4,0.5),
-#           map(str,np.arange(0,4,0.5)),fontsize=8)
-#plt.xlim([0,3.5])
-#
-#plt.yticks(np.arange(0,21,5),map(str,np.arange(0,21,5)),fontsize=8)
-#plt.ylim([0,20])
-#
-#plt.ylabel(r'\textbf{LHFLX (W/m$^2$)}')
-#
-#plt.text(-0.05,20,r'\textbf{JFM}',fontsize=20,color='darkgrey')
-#
-############################################################################
-#
-#ax = plt.subplot(222)
-#
-#### Adjust axes spines
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#for i in xrange(sitall_w.shape[0]):
-#    plt.scatter(sitall_sp[i],tasall_sp[i],color='darkgrey',edgecolor='darkgrey',
-#                s=0.05,alpha=1)
-#
-#plt.scatter(sith_sp,tash_sp,color='teal',edgecolor='teal',
-#            s=0.7,alpha=1)
-#plt.scatter(sitf_sp,tasf_sp,color='indianred',edgecolor='indianred',
-#            s=0.7,alpha=1) 
-##plt.plot(timex,line2,zorder=1,linewidth=2,color='indianred')
-##plt.plot(smoothed2[:,0],smoothed2[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
-#
-#plt.xticks(np.arange(0,4,0.5),
-#           map(str,np.arange(0,4,0.5)),fontsize=8)
-#plt.xlim([0,3.5])
-#
-#plt.yticks(np.arange(3,11,1),map(str,np.arange(3,11,1)),fontsize=8)
-#plt.ylim([3,10])
-#
-#plt.text(2.5,9.5,r'\textbf{1920-2005}',color='teal')
-#plt.text(2.5,8.85,r'\textbf{2006-2080}',color='indianred')
-#
-#plt.text(-0.05,10,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
-#
-############################################################################
-#
-#ax = plt.subplot(223)
-#
-#### Adjust axes spines
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#for i in xrange(sitall_w.shape[0]):
-#    plt.scatter(sitall_su[i],tasall_su[i],color='darkgrey',edgecolor='darkgrey',
-#                s=0.05,alpha=1)
-#
-#plt.scatter(sith_su,tash_su,color='teal',edgecolor='teal',
-#            s=0.7,alpha=1)
-#plt.scatter(sitf_su,tasf_su,color='indianred',edgecolor='indianred',
-#            s=0.7,alpha=1) 
-##plt.plot(timex,line3,zorder=1,linewidth=2,color='indianred')
-##plt.plot(smoothed3[:,0],smoothed3[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
-#
-#plt.xticks(np.arange(0,4,0.5),
-#           map(str,np.arange(0,4,0.5)),fontsize=8)
-#plt.xlim([0,3.5])
-#
-#plt.yticks(np.arange(4,15,2),map(str,np.arange(4,15,2)),fontsize=8)
-#plt.ylim([4,14])
-#
-#plt.xlabel(r'\textbf{Sea Ice Thickness (m)}')
-#plt.ylabel(r'\textbf{LHFLX (W/m$^2$)}')
-#
-#plt.text(-0.05,14,r'\textbf{JAS}',fontsize=20,color='darkgrey')
-#
-############################################################################
-#
-#ax = plt.subplot(224)
-#
-#### Adjust axes spines
-#adjust_spines(ax, ['left', 'bottom'])
-#ax.spines['top'].set_color('none')
-#ax.spines['right'].set_color('none')
-#ax.spines['left'].set_color('darkgrey')
-#ax.spines['bottom'].set_color('darkgrey')
-#ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-#
-#for i in xrange(sitall_w.shape[0]):
-#    plt.scatter(sitall_f[i],tasall_f[i],color='darkgrey',edgecolor='darkgrey',
-#                s=0.05,alpha=1)
-#
-#plt.scatter(sith_f,tash_f,color='teal',edgecolor='teal',
-#            s=0.7,alpha=1)
-#plt.scatter(sitf_f,tasf_f,color='indianred',edgecolor='indianred',
-#            s=0.7,alpha=1) 
-##plt.plot(timex,line4,zorder=1,linewidth=2,color='indianred')
-##plt.plot(smoothed4[:,0],smoothed4[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
-#
-#plt.xticks(np.arange(0,4,0.5),
-#           map(str,np.arange(0,4,0.5)),fontsize=8)
-#plt.xlim([0,3.5])
-#
-#plt.yticks(np.arange(0,31,5),map(str,np.arange(0,31,5)),fontsize=8)
-#plt.ylim([0,30])
-#
-#plt.text(-0.05,30,r'\textbf{OND}',fontsize=20,color='darkgrey')
-#
-#plt.xlabel(r'\textbf{Sea Ice Thickness (m)}')
-#
-#
-#fig.subplots_adjust(hspace=0.4)
-#plt.savefig(directoryfigure + 'LENS_SITLHTFX_scatter_all.png',dpi=300)
-
-
-###########################################################################
-###########################################################################
-###########################################################################
+    if 'bottom' in spines:
+        ax.xaxis.set_ticks_position('bottom')
+    else:
+        ax.xaxis.set_ticks([]) 
+        
 plt.rc('text',usetex=True)
 plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
 
 fig = plt.figure()
 ax = plt.subplot(221)
 
-m = Basemap(projection='npstere',boundinglat=67,lon_0=270,
-            resolution='l',round =True)
+### Adjust axes spines
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+for i in xrange(sitall_w.shape[0]):
+    plt.scatter(sitall_w[i],tasall_w[i],color='darkgrey',edgecolor='darkgrey',
+                s=0.05,alpha=1)
             
-var, lons_cyclic = addcyclic(sitw_w[-1] - sitw_w[0], lons)
-var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
-lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
-x, y = m(lon2d, lat2d)
+plt.scatter(sith_w,tash_w,color='teal',edgecolor='teal',
+            s=0.7,alpha=1)
+plt.scatter(sitf_w,tasf_w,color='indianred',edgecolor='indianred',
+            s=0.7,alpha=1)            
+#plt.plot(timex,line1,zorder=1,linewidth=2,color='indianred')
+#plt.plot(smoothed1[:,0],smoothed1[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
 
-m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.2)
-parallels = np.arange(50,90,10)
-meridians = np.arange(-180,180,30)
-#m.drawparallels(parallels,labels=[False,False,False,False],
-#                linewidth=0.3,color='k',fontsize=6)
-#m.drawmeridians(meridians,labels=[False,False,False,False],
-#                linewidth=0.3,color='k',fontsize=6)
-m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+plt.xticks(np.arange(0,4,0.5),
+           map(str,np.arange(0,4,0.5)),fontsize=8)
+plt.xlim([0,3.5])
 
-# Make the plot continuous
-barlim = np.arange(-50,51,25)
-values = np.arange(-50,51,2)
+plt.yticks(np.arange(2,17,2),map(str,np.arange(2,17,2)),fontsize=8)
+plt.ylim([2,16])
 
-cs = m.contourf(x,y,var,values,
-                extend='both')
-#cs1 = m.contour(x,y,var,values,
-#                linewidths=0.2,colors='k',
-#                linestyles='-')
-        
-cmap = ncm.cmap('BlueWhiteOrangeRed')         
-cs.set_cmap(cmap)
-ax.annotate(r'\textbf{JFM}', xy=(0, 0), xytext=(-0.23, 0.9),
-            xycoords='axes fraction',fontsize=22,color='darkgrey')
+plt.ylabel(r'\textbf{LHFLX (W/m$^2$)}')
 
-###########################################################################
+plt.text(-0.05,16,r'\textbf{JFM}',fontsize=20,color='darkgrey')
+
 ###########################################################################
 
 ax = plt.subplot(222)
 
-m = Basemap(projection='npstere',boundinglat=67,lon_0=270,
-            resolution='l',round =True)
+### Adjust axes spines
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 
-var, lons_cyclic = addcyclic(sitsp_sp[-1] - sitsp_sp[0], lons)
-var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
-lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
-x, y = m(lon2d, lat2d)            
-            
-m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.2)
-parallels = np.arange(50,90,10)
-meridians = np.arange(-180,180,30)
-#m.drawparallels(parallels,labels=[False,False,False,False],
-#                linewidth=0.3,color='k',fontsize=6)
-#m.drawmeridians(meridians,labels=[False,False,False,False],
-#                linewidth=0.3,color='k',fontsize=6)
-m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+for i in xrange(sitall_w.shape[0]):
+    plt.scatter(sitall_sp[i],tasall_sp[i],color='darkgrey',edgecolor='darkgrey',
+                s=0.05,alpha=1)
 
-cs = m.contourf(x,y,var,values,extend='both'
-                )
-#cs1 = m.contour(x,y,var,values,
-#                linewidths=0.2,colors='k',
-#                linestyles='-')
-        
-cmap = ncm.cmap('BlueWhiteOrangeRed')         
-cs.set_cmap(cmap)
-ax.annotate(r'\textbf{AMJ}', xy=(0, 0), xytext=(0.8, 0.9),
-            xycoords='axes fraction',fontsize=22,color='darkgrey')
+plt.scatter(sith_sp,tash_sp,color='teal',edgecolor='teal',
+            s=0.7,alpha=1)
+plt.scatter(sitf_sp,tasf_sp,color='indianred',edgecolor='indianred',
+            s=0.7,alpha=1) 
+#plt.plot(timex,line2,zorder=1,linewidth=2,color='indianred')
+#plt.plot(smoothed2[:,0],smoothed2[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
 
-###########################################################################
+plt.xticks(np.arange(0,4,0.5),
+           map(str,np.arange(0,4,0.5)),fontsize=8)
+plt.xlim([0,3.5])
+
+plt.yticks(np.arange(6,15,2),map(str,np.arange(6,15,2)),fontsize=8)
+plt.ylim([6,14])
+
+plt.text(2.5,13,r'\textbf{1920-2005}',color='teal')
+plt.text(2.5,12.2,r'\textbf{2006-2080}',color='indianred')
+
+plt.text(-0.05,14,r'\textbf{AMJ}',fontsize=20,color='darkgrey')
+
 ###########################################################################
 
 ax = plt.subplot(223)
 
-m = Basemap(projection='npstere',boundinglat=67,lon_0=270,
-            resolution='l',round =True)
-            
-var, lons_cyclic = addcyclic(sitsu_su[-1] - sitsu_su[0], lons)
-var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
-lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
-x, y = m(lon2d, lat2d)            
-                    
-m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.2)
-parallels = np.arange(50,90,10)
-meridians = np.arange(-180,180,30)
-#m.drawparallels(parallels,labels=[False,False,False,False],
-#                linewidth=0.3,color='k',fontsize=6)
-#m.drawmeridians(meridians,labels=[False,False,False,False],
-#                linewidth=0.3,color='k',fontsize=6)
-m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+### Adjust axes spines
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 
-cs = m.contourf(x,y,var,values,extend='both'
-                )
-#cs1 = m.contour(x,y,var,values,
-#               linewidths=0.2,colors='k',
-#                linestyles='-')
-        
-cmap = ncm.cmap('BlueWhiteOrangeRed')         
-cs.set_cmap(cmap)
-ax.annotate(r'\textbf{JAS}', xy=(0, 0), xytext=(-0.23, 0.9),
-            xycoords='axes fraction',fontsize=22,color='darkgrey')
+for i in xrange(sitall_w.shape[0]):
+    plt.scatter(sitall_su[i],tasall_su[i],color='darkgrey',edgecolor='darkgrey',
+                s=0.05,alpha=1)
 
-###########################################################################
+plt.scatter(sith_su,tash_su,color='teal',edgecolor='teal',
+            s=0.7,alpha=1)
+plt.scatter(sitf_su,tasf_su,color='indianred',edgecolor='indianred',
+            s=0.7,alpha=1) 
+#plt.plot(timex,line3,zorder=1,linewidth=2,color='indianred')
+#plt.plot(smoothed3[:,0],smoothed3[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
+
+plt.xticks(np.arange(0,4,0.5),
+           map(str,np.arange(0,4,0.5)),fontsize=8)
+plt.xlim([0,3.5])
+
+plt.yticks(np.arange(10,21,2),map(str,np.arange(10,21,2)),fontsize=8)
+plt.ylim([10,20])
+
+plt.xlabel(r'\textbf{Sea Ice Thickness (m)}')
+plt.ylabel(r'\textbf{LHFLX (W/m$^2$)}')
+
+plt.text(-0.05,20,r'\textbf{JAS}',fontsize=20,color='darkgrey')
+
 ###########################################################################
 
 ax = plt.subplot(224)
 
-m = Basemap(projection='npstere',boundinglat=67,lon_0=270,
-            resolution='l',round =True)
-            
-var, lons_cyclic = addcyclic(sitf_f[-1] - sitf_f[0], lons)
-var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
-lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
-x, y = m(lon2d, lat2d)            
-            
-m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.2)
-parallels = np.arange(50,90,10)
-meridians = np.arange(-180,180,30)
-#m.drawparallels(parallels,labels=[False,False,False,False],
-#                linewidth=0.3,color='k',fontsize=6)
-#m.drawmeridians(meridians,labels=[False,False,False,False],
-#                linewidth=0.3,color='k',fontsize=6)
-m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+### Adjust axes spines
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 
-cs = m.contourf(x,y,var,values,
-                extend='both')
-#cs1 = m.contour(x,y,var,values,
-#                linewidths=0.2,colors='k',
-#                linestyles='-')
-        
-cmap = ncm.cmap('BlueWhiteOrangeRed')         
-cs.set_cmap(cmap)
-ax.annotate(r'\textbf{OND}', xy=(0, 0), xytext=(0.8, 0.9),
-            xycoords='axes fraction',fontsize=22,color='darkgrey')
+for i in xrange(sitall_w.shape[0]):
+    plt.scatter(sitall_f[i],tasall_f[i],color='darkgrey',edgecolor='darkgrey',
+                s=0.05,alpha=1)
 
-cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])                
-cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
-                    extend='Both',extendfrac=0.07,drawedges=True)
+plt.scatter(sith_f,tash_f,color='teal',edgecolor='teal',
+            s=0.7,alpha=1)
+plt.scatter(sitf_f,tasf_f,color='indianred',edgecolor='indianred',
+            s=0.7,alpha=1) 
+#plt.plot(timex,line4,zorder=1,linewidth=2,color='indianred')
+#plt.plot(smoothed4[:,0],smoothed4[:,1],color='darkslateblue',zorder=8,linewidth=1.2)
 
-cbar.set_label(r'\textbf{Difference LHFX(W/m$^2$)}')
-cbar.set_ticks(barlim)
-cbar.set_ticklabels(map(str,barlim)) 
-plt.setp(ax.get_xticklabels(),visible=False)
+plt.xticks(np.arange(0,4,0.5),
+           map(str,np.arange(0,4,0.5)),fontsize=8)
+plt.xlim([0,3.5])
 
-fig.subplots_adjust(top=0.95)
-fig.subplots_adjust(bottom=0.2)
-fig.subplots_adjust(wspace=-0.45)
+plt.yticks(np.arange(0,30,5),map(str,np.arange(0,30,5)),fontsize=8)
+plt.ylim([0,25])
 
-plt.savefig(directoryfigure + 'diff_lhfx.png',dpi=300)
+plt.text(-0.05,25,r'\textbf{OND}',fontsize=20,color='darkgrey')
+
+plt.xlabel(r'\textbf{Sea Ice Thickness (m)}')
+
+
+fig.subplots_adjust(hspace=0.4)
+plt.savefig(directoryfigure + 'LENS_SITLHTFX_scatter_all.png',dpi=300)
+
+
+###########################################################################
+###########################################################################
+###########################################################################
+#sitw = np.nanmean(tasall[:,:,0:3],axis=2)
+#sitsp = np.nanmean(tasall[:,:,3:6],axis=2)
+#sitsu = np.nanmean(tasall[:,:,6:9],axis=2)
+#sitf = np.nanmean(tasall[:,:,9:12],axis=2)
+#
+#sitw_w = np.nanmean(sitw,axis=0)
+#sitsp_sp = np.nanmean(sitsp,axis=0)
+#sitsu_su = np.nanmean(sitsu,axis=0)
+#sitf_f = np.nanmean(sitf,axis=0)
+#
+#plt.rc('text',usetex=True)
+#plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
+#
+#fig = plt.figure()
+#ax = plt.subplot(221)
+#
+#m = Basemap(projection='npstere',boundinglat=67,lon_0=270,
+#            resolution='l',round =True)
+#            
+#var, lons_cyclic = addcyclic(sitw_w[-1] - sitw_w[0], lons)
+#var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
+#lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
+#x, y = m(lon2d, lat2d)
+#
+#m.drawmapboundary(fill_color='white')
+#m.drawcoastlines(color='k',linewidth=0.2)
+#parallels = np.arange(50,90,10)
+#meridians = np.arange(-180,180,30)
+##m.drawparallels(parallels,labels=[False,False,False,False],
+##                linewidth=0.3,color='k',fontsize=6)
+##m.drawmeridians(meridians,labels=[False,False,False,False],
+##                linewidth=0.3,color='k',fontsize=6)
+#m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+#
+## Make the plot continuous
+#barlim = np.arange(-50,51,25)
+#values = np.arange(-50,51,2)
+#
+#cs = m.contourf(x,y,var,values,
+#                extend='both')
+##cs1 = m.contour(x,y,var,values,
+##                linewidths=0.2,colors='k',
+##                linestyles='-')
+#            
+#m.fillcontinents(color='darkgrey')        
+#cmap = ncm.cmap('BlueWhiteOrangeRed')         
+#cs.set_cmap(cmap)
+#ax.annotate(r'\textbf{JFM}', xy=(0, 0), xytext=(-0.23, 0.9),
+#            xycoords='axes fraction',fontsize=22,color='darkgrey')
+#
+############################################################################
+############################################################################
+#
+#ax = plt.subplot(222)
+#
+#m = Basemap(projection='npstere',boundinglat=67,lon_0=270,
+#            resolution='l',round =True)
+#
+#var, lons_cyclic = addcyclic(sitsp_sp[-1] - sitsp_sp[0], lons)
+#var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
+#lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
+#x, y = m(lon2d, lat2d)            
+#            
+#m.drawmapboundary(fill_color='white')
+#m.drawcoastlines(color='k',linewidth=0.2)
+#parallels = np.arange(50,90,10)
+#meridians = np.arange(-180,180,30)
+##m.drawparallels(parallels,labels=[False,False,False,False],
+##                linewidth=0.3,color='k',fontsize=6)
+##m.drawmeridians(meridians,labels=[False,False,False,False],
+##                linewidth=0.3,color='k',fontsize=6)
+#
+#cs = m.contourf(x,y,var,values,extend='both'
+#                )
+##cs1 = m.contour(x,y,var,values,
+##                linewidths=0.2,colors='k',
+##                linestyles='-')
+#m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+#m.fillcontinents(color='darkgrey')
+#        
+#cmap = ncm.cmap('BlueWhiteOrangeRed')         
+#cs.set_cmap(cmap)
+#ax.annotate(r'\textbf{AMJ}', xy=(0, 0), xytext=(0.8, 0.9),
+#            xycoords='axes fraction',fontsize=22,color='darkgrey')
+#
+############################################################################
+############################################################################
+#
+#ax = plt.subplot(223)
+#
+#m = Basemap(projection='npstere',boundinglat=67,lon_0=270,
+#            resolution='l',round =True)
+#            
+#var, lons_cyclic = addcyclic(sitsu_su[-1] - sitsu_su[0], lons)
+#var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
+#lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
+#x, y = m(lon2d, lat2d)            
+#                    
+#m.drawmapboundary(fill_color='white')
+#m.drawcoastlines(color='k',linewidth=0.2)
+#parallels = np.arange(50,90,10)
+#meridians = np.arange(-180,180,30)
+##m.drawparallels(parallels,labels=[False,False,False,False],
+##                linewidth=0.3,color='k',fontsize=6)
+##m.drawmeridians(meridians,labels=[False,False,False,False],
+##                linewidth=0.3,color='k',fontsize=6)
+#m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+#
+#cs = m.contourf(x,y,var,values,extend='both'
+#                )
+##cs1 = m.contour(x,y,var,values,
+##               linewidths=0.2,colors='k',
+##                linestyles='-')
+#m.fillcontinents(color='darkgrey')        
+#cmap = ncm.cmap('BlueWhiteOrangeRed')         
+#cs.set_cmap(cmap)
+#ax.annotate(r'\textbf{JAS}', xy=(0, 0), xytext=(-0.23, 0.9),
+#            xycoords='axes fraction',fontsize=22,color='darkgrey')
+#
+############################################################################
+############################################################################
+#
+#ax = plt.subplot(224)
+#
+#m = Basemap(projection='npstere',boundinglat=67,lon_0=270,
+#            resolution='l',round =True)
+#            
+#var, lons_cyclic = addcyclic(sitf_f[-1] - sitf_f[0], lons)
+#var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
+#lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
+#x, y = m(lon2d, lat2d)            
+#            
+#m.drawmapboundary(fill_color='white')
+#m.drawcoastlines(color='k',linewidth=0.2)
+#parallels = np.arange(50,90,10)
+#meridians = np.arange(-180,180,30)
+##m.drawparallels(parallels,labels=[False,False,False,False],
+##                linewidth=0.3,color='k',fontsize=6)
+##m.drawmeridians(meridians,labels=[False,False,False,False],
+##                linewidth=0.3,color='k',fontsize=6)
+#m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+#
+#cs = m.contourf(x,y,var,values,
+#                extend='both')
+##cs1 = m.contour(x,y,var,values,
+##                linewidths=0.2,colors='k',
+##                linestyles='-')
+#
+#m.fillcontinents(color='darkgrey')        
+#cmap = ncm.cmap('BlueWhiteOrangeRed')         
+#cs.set_cmap(cmap)
+#ax.annotate(r'\textbf{OND}', xy=(0, 0), xytext=(0.8, 0.9),
+#            xycoords='axes fraction',fontsize=22,color='darkgrey')
+#
+#cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])                
+#cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
+#                    extend='Both',extendfrac=0.07,drawedges=True)
+#
+#cbar.set_label(r'\textbf{Difference LHFX(W/m$^2$)}')
+#cbar.set_ticks(barlim)
+#cbar.set_ticklabels(map(str,barlim)) 
+#plt.setp(ax.get_xticklabels(),visible=False)
+#cbar.ax.tick_params(axis='x', size=.01)
+#
+#fig.subplots_adjust(top=0.95)
+#fig.subplots_adjust(bottom=0.2)
+#fig.subplots_adjust(wspace=-0.45)
+#
+#plt.savefig(directoryfigure + 'diff_lhfx.png',dpi=300)

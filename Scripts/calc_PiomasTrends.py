@@ -15,6 +15,7 @@ import datetime
 import iris as ir
 import iris.quickplot as qplt
 import read_SeaIceThick_PIOMAS as CT
+import calc_PiomasArea as CA
 from matplotlib.colors import Normalize
 import nclcmaps as ncm
 
@@ -32,8 +33,8 @@ titletime = currentmn + '/' + currentdy + '/' + currentyr
 print '\n' '----Calculate PIOMAS trends - %s----' % titletime 
 
 ### Alott time series
-yearmin = 1980
-yearmax = 1990
+yearmin = 1979
+yearmax = 2015
 years = np.arange(yearmin,yearmax+1,1)
 months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',r'Sep',
           r'Oct',r'Nov',r'Dec']
@@ -45,6 +46,7 @@ years2 = np.arange(yearmin2,yearmax2+1,1)
 ### Call functions
 lats,lons,sitq1 = CT.readPiomas(directorydata,years,0.15)
 #lats,lons,sitq2 = CT.readPiomas(directorydata,years2,0.15)
+area = CA.readPiomasArea(directorydata)
 
 #### Take monthly mean
 def monRegress(sitq,months):
@@ -63,6 +65,7 @@ def monRegress(sitq,months):
                                                                       varyy[mask])
                 else:
                     slopesit[mo,i,j] = np.nan  
+                    
         print 'Completed: Month %s done!' % (months[mo])
     print 'Completed: Calculated regression!'
     
@@ -79,6 +82,24 @@ sittrend_w = np.nanmean(slopesit1[0:3],axis=0)
 sittrend_sp = np.nanmean(slopesit1[3:6],axis=0)
 sittrend_su = np.nanmean(slopesit1[6:9],axis=0)
 sittrend_f = np.nanmean(slopesit1[9:12],axis=0)
+
+def weightThick(var,area):
+    """
+    Area weights sit array 4d [year,month,lat,lon] into [year,month]
+    """
+    varq = var[:,:]
+    mask = np.isfinite(varq) & np.isfinite(area)
+    varmask = varq[mask]
+    areamask = area[mask]
+    sityr = np.nansum(varmask*areamask)/np.sum(areamask)
+     
+    print '\nCompleted: Yearly weighted SIT average!' 
+    return sityr
+    
+avetrend_w = weightThick(sittrend_w,area)
+avetrend_sp = weightThick(sittrend_sp,area)
+avetrend_su = weightThick(sittrend_su,area)
+avetrend_f = weightThick(sittrend_f,area)
 
 #sittrend_w = np.nanmean(slopesit2[0:3],axis=0)
 #sittrend_sp = np.nanmean(slopesit2[3:6],axis=0)
@@ -243,7 +264,7 @@ m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
 var = sittrend_w 
 
 m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.2)
+m.drawcoastlines(color='k',linewidth=0.3)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
 #m.drawparallels(parallels,labels=[False,False,False,False],
@@ -253,8 +274,8 @@ meridians = np.arange(-180,180,30)
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 # Make the plot continuous
-barlim = np.arange(-2,3,1)
-values = np.arange(-2,2.1,0.25)
+barlim = np.arange(-1,2,1)
+values = np.arange(-1,1.1,0.1)
 
 cs = m.contourf(lons,lats,var,
                 values,latlon=True,extend='both')
@@ -278,7 +299,7 @@ m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
 var = sittrend_sp           
             
 m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.2)
+m.drawcoastlines(color='k',linewidth=0.3)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
 #m.drawparallels(parallels,labels=[False,False,False,False],
@@ -309,7 +330,7 @@ m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
 var = sittrend_su            
                     
 m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.2)
+m.drawcoastlines(color='k',linewidth=0.3)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
 #m.drawparallels(parallels,labels=[False,False,False,False],
@@ -340,7 +361,7 @@ m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
 var = sittrend_f          
             
 m.drawmapboundary(fill_color='white')
-m.drawcoastlines(color='k',linewidth=0.2)
+m.drawcoastlines(color='k',linewidth=0.3)
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
 #m.drawparallels(parallels,labels=[False,False,False,False],
@@ -373,6 +394,6 @@ fig.subplots_adjust(top=0.95)
 fig.subplots_adjust(bottom=0.2)
 fig.subplots_adjust(wspace=-0.45)
 
-plt.savefig(directoryfigure + 'sit_trends_8090.png',dpi=300)
+plt.savefig(directoryfigure + 'sit_trends_7915.png',dpi=300)
 
 print 'Completed: Script done!'

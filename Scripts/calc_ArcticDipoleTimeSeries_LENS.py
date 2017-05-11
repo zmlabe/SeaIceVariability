@@ -557,7 +557,68 @@ plt.savefig(directoryfigure + 'testeof1.png',dpi=300)
 #plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1)),fontsize=8)
 #plt.ylim([-3,3])
 #
-#plt.text(-1.3,2.85,r'\textbf{OND}',fontsize=20,color='darkgrey')
+#plt.text(-1.3,2.85,r'\textbf{OND}',fontsize=20,c############################################################################
+############################################################################ 
+############################################################################            
+#### Plot figure
+plt.rc('text',usetex=True)
+plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
+
+fig = plt.figure()
+
+for i in xrange(eoff.shape[0]):
+    
+    varf = eoff[i,0,:,:]    
+    
+    ax = plt.subplot(7,6,i+1)
+    
+    m = Basemap(projection='npstere',boundinglat=70,lon_0=270,
+                resolution='l',round =True)
+    m.drawmapboundary(fill_color='white')
+    m.drawcoastlines(color='k',linewidth=0.3)
+    parallels = np.arange(50,90,10)
+    meridians = np.arange(-180,180,30)
+    m.drawparallels(parallels,labels=[False,False,False,False],
+                    linewidth=0,color='k',fontsize=6)
+    m.drawmeridians(meridians,labels=[False,False,False,False],
+                    linewidth=0,color='k',fontsize=6)
+    m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
+    
+    # Make the plot continuous
+    barlim = np.arange(-3,4,1)
+    values = np.arange(-3,3.1,0.25)
+    
+    varf, lons_cyclic = addcyclic(varf, lons)
+    varf, lons_cyclic = shiftgrid(180., varf, lons_cyclic, start=False)
+    lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
+    x, y = m(lon2d, lat2d)
+    
+    cs = m.contourf(x,y,varf,
+                    values,extend='both')
+    cs1 = m.contour(x,y,varf,
+                    values,linewidths=0.1,colors='darkgrey',
+                    linestyles='-')
+                    
+    ax.annotate(r'\textbf{%s}' % ense[i], xy=(0, 0), xytext=(-0.3, 0.9),
+            xycoords='axes fraction',fontsize=8,color='darkgrey',
+            rotation=0)
+            
+    cmap = ncm.cmap('nrl_sirkes')         
+    cs.set_cmap(cmap) 
+
+cbar_ax = fig.add_axes([0.51,0.16,0.31,0.027])                
+cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
+                    extend='both',extendfrac=0.07,drawedges=True)                      
+cbar.set_ticks(barlim)
+cbar.set_ticklabels(map(str,barlim))  
+cbar.ax.tick_params(labelsize=8)   
+cbar.set_label(r'\textbf{hPa}')
+
+plt.subplots_adjust(wspace=-0.6)
+
+fig.suptitle(r'\textbf{EOF1, NDJFM 1981-2010 (SLP) -- LENS}')
+
+plt.savefig(directoryfigure + 'testeof1.png',dpi=300)
 #
 #
 #fig.subplots_adjust(hspace=0.4)
@@ -577,18 +638,6 @@ plt.savefig(directoryfigure + 'testeof1.png',dpi=300)
 #           adindex_su)
 #np.savetxt(directorytext + 'AD_OND_%s%s_LENS.txt' % (year1a,year2a),
 #           adindex_f)  
-
-
-
-
-
-
-
-
-
-
-
-
 #         
 #plt.bar(np.arange(len(AOindex_su))-0.4,AOindex_su,label='PC1',color='indianred')
 #

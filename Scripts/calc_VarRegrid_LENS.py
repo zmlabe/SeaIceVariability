@@ -47,7 +47,7 @@ yearslens = np.arange(year1,year2+1,1)
 yearsclimo = np.arange(1981,2010+1,1)
 
 ### Select variable
-variable = 'SIC'
+variable = 'SLP'
           
 ### Read in functions
 var,lats1,lons1 = LV.readLENSEnsemble(directorydataL,variable) 
@@ -57,9 +57,9 @@ sith,lats2,lons2 = lens.readLENSEnsemble(directorydataSIT,0.15,'historical')
 lons2,lats2 = np.meshgrid(lons2,lats2)
 lons1,lats1 = np.meshgrid(lons1,lats1)
           
-##########################################################################  
-##########################################################################
-##########################################################################
+###########################################################################  
+###########################################################################
+###########################################################################
 ### Regrid
 def regrid(lat1,lon1,lat2,lon2,var,years):
     """
@@ -89,10 +89,10 @@ for i in xrange(len(ense)):
 def netcdfLENS(lats,lons,var,directory):
     print '\n>>> Using netcdf4LENS function!'
     
-    name = 'lens_regrid_SIC_19202080.nc'
+    name = 'lens_regrid_SLP_19202080.nc'
     filename = directory + name
     ncfile = Dataset(filename,'w',format='NETCDF4')
-    ncfile.description = 'LENS SIC interpolated on 1x1 grid' 
+    ncfile.description = 'LENS SLP interpolated on 1x1 grid' 
     
     ### Dimensions
     ncfile.createDimension('ensemble',var.shape[0])
@@ -107,11 +107,11 @@ def netcdfLENS(lats,lons,var,directory):
     months = ncfile.createVariable('months','f4',('months'))
     latitude = ncfile.createVariable('lat','f4',('lat','lon'))
     longitude = ncfile.createVariable('lon','f4',('lat','lon'))
-    varns = ncfile.createVariable('lhflx','f4',('ensemble','years','months','lat','lon'))
+    varns = ncfile.createVariable('slp','f4',('ensemble','years','months','lat','lon'))
     
     ### Units
-    varns.units = 'fraction of water covered by sea ice'
-    ncfile.title = 'LENS SIC'
+    varns.units = 'hPa'
+    ncfile.title = 'LENS SLP'
     ncfile.instituion = 'Dept. ESS at University of California, Irvine'
     ncfile.source = 'NCAR LENS'
     ncfile.references = 'Kay et al. [2013]'
