@@ -12,7 +12,7 @@ Changes in Arctic sea ice extent and concentration are well documented within th
 
 ## Data
 + CESM Large Ensemble Project (LENS) : [[DATA]](http://www.cesm.ucar.edu/projects/community-projects/LENS/data-sets.html)
-    + Kay, J. E and Coauthors, 2015: The Community Earth System Model (CESM) large ensemble project: A community resource for studying climate change in the presence of internal climate variability. Bull. Amer. Meteor. Soc., 96, 1333–1349, doi:10.1175/BAMS-D-13-00255.1 [[Publication]](http://journals.ametsoc.org/doi/full/10.1175/BAMS-D-13-00255.1)
+    + Kay, J. E and Coauthors, 2015: The Community Earth System Model (CESM) large ensemble project: A community resource for studying climate change in the presence of internal climate variability. Bull. Amer. Meteor. Soc., 96, 1333–1349, doi:10.1175/BAMS-D-13-00255.1, [[Publication]](http://journals.ametsoc.org/doi/full/10.1175/BAMS-D-13-00255.1)
 + CryoSat-2 : [[DATA]](http://data.meereisportal.de/gallery/index_new.php?ice-type=thickness&satellite=C&region=n&resolution=monthly&minYear=2010&minMonth=11&maxYear=2010&maxMonth=11&showMaps=y&dateRepeat=n&submit2=Show+&lang=de_DE&active-tab=thickness)
     + Laxon, S. W., and Coauthors, 2013: CryoSat-2 estimates of Arctic sea ice thickness and volume. Geophysical Research Letters, 40 (4), 732–737, doi:10.1002/grl.50193, [[Publication]](http://doi.wiley.com/10.1002/grl.50193)
 + Ice, Cloud, and land Elevation Satellite (ICESat) : [[DATA]](https://rkwok.jpl.nasa.gov/icesat/)
