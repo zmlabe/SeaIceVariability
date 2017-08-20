@@ -35,9 +35,10 @@ titletime = currentmn + '/' + currentdy + '/' + currentyr
 print '\n' '----LENS Historical Mean Sea Ice Thickness - %s----' % titletime 
 
 ### Alott time series
-yearmin = 2006
+yearmin = 1920
 yearmax = 2080
 years = np.arange(yearmin,yearmax+1,1)
+years2 = np.arange(2006,2080+1,1)
 months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
 ensemble = ['02','03','04','05','06','07','08','09'] + \
@@ -66,24 +67,31 @@ def readPIOMAS(directorydata,threshold):
 #### Call functions
 sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
 sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
-#lons,lats = np.meshgrid(lons,lats)
+lons2,lats2 = np.meshgrid(lons,lats)
+
+yearp1 = np.where((years >= 1980) & (years <= 1997))[0]
+yearp2 = np.where((years >= 1998) & (years <= 2015))[0]
+yearqh1 = np.where((years >= 1920) & (years <= 1962))[0]
+yearqh2 = np.where((years >= 1963) & (years <= 2005))[0]
+yearqf1 = np.where((years2 >= 2006) & (years2 <= 2042))[0]
+yearqf2 = np.where((years2 >= 2043) & (years2 <= 2080))[0]
 
 sitp = readPIOMAS(directorydatap,0.15)
 
 ### September 
-sith_mo = np.squeeze(np.apply_over_axes(np.nanmean,sith[:,:,8,:,:],[0]))
+sith_mo = np.squeeze(np.apply_over_axes(np.nanmean,sith[:,:,-1,:,:],[0]))
+sitf_mo = np.squeeze(np.apply_over_axes(np.nanmean,sitf[:,:,-1,:,:],[0]))
+sitall_mo = np.append(sith_mo,sitf_mo,axis=0)
 
-sith1 = np.nanmean(sith_mo[11:36],axis=0)
-sith2 = np.nanmean(sith_mo[36:61],axis=0)
-sith3 = np.nanmean(sith_mo[61:86],axis=0)
+sith1 = np.nanmean(sith_mo[yearqh1,:,:],axis=0)
+sith2 = np.nanmean(sith_mo[yearqh2,:,:],axis=0)
+sith3 = np.nanmean(sitall_mo[yearp1,:,:],axis=0)
 
-sitf_mo = np.squeeze(np.apply_over_axes(np.nanmean,sitf[:,:,8,:,:],[0]))
+sitf1 = np.nanmean(sitf_mo[yearqf1,:,:],axis=0)
+sitf2 = np.nanmean(sitf_mo[yearqf2,:,:],axis=0)
+sitf3 = np.nanmean(sitall_mo[yearp2,:,:],axis=0)
 
-sitf1 = np.nanmean(sitf_mo[0:25],axis=0)
-sitf2 = np.nanmean(sitf_mo[25:50],axis=0)
-sitf3 = np.nanmean(sitf_mo[50:75],axis=0)
-
-sitp_mo = sitp[:,8,:,:]
+sitp_mo = sitp[:,-1,:,:]
 
 sitp1 = np.nanmean(sitp_mo[1:19],axis=0)
 sitp2 = np.nanmean(sitp_mo[19:37],axis=0)
@@ -152,36 +160,58 @@ cbar.set_ticklabels(map(str,np.arange(0,8,1)))
 cbar.set_label(r'\textbf{Thickness (meters)}')
 
 plt.subplots_adjust(hspace=-0.3)
-plt.subplots_adjust(wspace=-0)
-plt.annotate(r'\textbf{Historical}', xy=(0, 0), xytext=(0.065, 0.778),
-            xycoords='figure fraction',fontsize=20,color='darkgrey',
-            rotation=90)
-plt.annotate(r'\textbf{RCP8.5}', xy=(0, 0), xytext=(0.065, 0.415),
-            xycoords='figure fraction',fontsize=20,color='darkgrey',
-            rotation=90)
+plt.subplots_adjust(wspace=0.1)
+#plt.annotate(r'\textbf{Historical}', xy=(0, 0), xytext=(0.065, 0.778),
+#            xycoords='figure fraction',fontsize=20,color='darkgrey',
+#            rotation=90)
+#plt.annotate(r'\textbf{RCP8.5}', xy=(0, 0), xytext=(0.065, 0.415),
+#            xycoords='figure fraction',fontsize=20,color='darkgrey',
+#            rotation=90)
             
-plt.annotate(r'\textbf{1}', xy=(0, 0), xytext=(0.214, 0.86),
+plt.annotate(r'\textbf{LENS}', xy=(0, 0), xytext=(0.318, 0.87),
             xycoords='figure fraction',fontsize=20,color='darkgrey',
-            rotation=0)
-plt.annotate(r'\textbf{2}', xy=(0, 0), xytext=(0.405, 0.86),
+            rotation=0,ha='center')
+plt.annotate(r'\textbf{LENS}', xy=(0, 0), xytext=(0.595, 0.87),
             xycoords='figure fraction',fontsize=20,color='darkgrey',
-            rotation=0)
-plt.annotate(r'\textbf{3}', xy=(0, 0), xytext=(0.595, 0.86),
-            xycoords='figure fraction',fontsize=20,color='darkgrey',
-            rotation=0)
-plt.annotate(r'\textbf{PIOMAS}', xy=(0, 0), xytext=(0.72, 0.86),
+            rotation=0,ha='center')
+plt.annotate(r'\textbf{PIOMAS}', xy=(0, 0), xytext=(0.635, 0.847),
+            xycoords='figure fraction',fontsize=7,color='darkgrey',
+            rotation=0,ha='center')
+plt.annotate(r'\textbf{PIOMAS}', xy=(0, 0), xytext=(0.72, 0.87),
             xycoords='figure fraction',fontsize=20,color='k',
             rotation=0)
             
 plt.annotate(r'\textbf{1980-1997}', xy=(0, 0), xytext=(0.845, 0.815),
             xycoords='figure fraction',fontsize=7,color='k',
             rotation=-40)
-                  
 plt.annotate(r'\textbf{1998-2015}', xy=(0, 0), xytext=(0.845, 0.495),
             xycoords='figure fraction',fontsize=7,color='k',
             rotation=-40)
+plt.annotate(r'\textbf{1980-1997}', xy=(0, 0), xytext=(0.645, 0.815),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=-40)                  
+plt.annotate(r'\textbf{1998-2015}', xy=(0, 0), xytext=(0.645, 0.495),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=-40)
+
+plt.annotate(r'\textbf{1920-1962}', xy=(0, 0), xytext=(0.174, 0.815),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=0)                               
+plt.annotate(r'\textbf{1963-2005}', xy=(0, 0), xytext=(0.374, 0.815),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=0)
+plt.annotate(r'\textbf{2006-2042}', xy=(0, 0), xytext=(0.174, 0.495),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=0)                     
+plt.annotate(r'\textbf{2043-2080}', xy=(0, 0), xytext=(0.374, 0.495),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=0)  
+                            
+            
     
 ### Save figure
-plt.savefig(directoryfigure +'sit_rcp_composites',dpi=500)
+plt.savefig(directoryfigure +'sit_rcp_composites_december',dpi=500)
+
+
 
     

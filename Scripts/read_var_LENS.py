@@ -76,5 +76,3 @@ def readLENSEnsemble(directory,varq):
     print '*Completed: Read %s data!' % varq
     
     return var,lats,lons
-    
-#var,lats,lons = readLENSEnsemble('/home/zlabe/Surtsey3/CESM_large_ensemble/','SST')

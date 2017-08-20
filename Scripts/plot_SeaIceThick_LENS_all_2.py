@@ -1,10 +1,12 @@
 """
-Scripts calculates SIT from LENS
+Script plots entire LENS time series for sea ice thickness during 
+the months of March and September
  
 Notes
 -----
+    Source : http://psc.apl.washington.edu/zhang/IDAO/data_piomas.html
     Author : Zachary Labe
-    Date   : 2 March 2017
+    Date   : 5 June 2017
 """
 
 ### Import modules
@@ -12,7 +14,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 import read_SeaIceThick_LENS as lens
-import statsmodels.api as sm
 from netCDF4 import Dataset
 
 ### Define directories
@@ -28,7 +29,7 @@ currentdy = str(now.day)
 currentyr = str(now.year)
 currenttime = currentmn + '_' + currentdy + '_' + currentyr
 titletime = currentmn + '/' + currentdy + '/' + currentyr
-print '\n' '----LENS Historical Mean Sea Ice Thickness - %s----' % titletime 
+print '\n' '----LENS Mean Sea Ice Thickness - %s----' % titletime 
 
 ### Alott time series
 yearmin = 1920
@@ -58,6 +59,12 @@ def readPIOMAS(directorydata,threshold):
     
     print 'Completed: Read PIOMAS SIT!'
     return sitp
+
+### Call functions   
+sith,lat,lon = lens.readLENSEnsemble(directorydatal,0.15,'historical')
+sitf,lat,lon = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
+sitp = readPIOMAS(directorydatap,0.15)
+lons2,lats2 = np.meshgrid(lon,lat)
 
 def weightThick(var,lats,types):
     """
@@ -89,32 +96,11 @@ def weightThick(var,lats,types):
      
     print '\nCompleted: Yearly weighted SIT average!' 
     return sityr
-
-### Call functions   
-#sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
-#sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
-#sitp = readPIOMAS(directorydatap,0.15)
-#lons,lats = np.meshgrid(lons,lats)
-#  
-#sitaveh = weightThick(sith,lats,'lens')
-#sitavef = weightThick(sitf,lats,'lens')
-#sitavep = weightThick(sitp,lats,'piomas')
-
-### Create time series\
-totalsit = np.append(sitaveh,sitavef,axis=1)
-
-varim = np.empty((totalsit.shape[1]))
-coeffm = np.empty((totalsit.shape[1]))
-for i in xrange(totalsit.shape[1]):
-    varim[i] = np.nanmax(totalsit[:,i,2]) - np.nanmin(totalsit[:,i,2])
-    coeffm[i] = (np.nanstd(totalsit[:,i,2])/np.nanmean(totalsit[:,i,2]) * 100.)
-
-varis = np.empty((totalsit.shape[1]))
-coeffs = np.empty((totalsit.shape[1]))
-for i in xrange(totalsit.shape[1]):
-    varis[i] = np.nanmax(totalsit[:,i,8]) - np.nanmin(totalsit[:,i,8])
-    coeffs[i] = (np.nanstd(totalsit[:,i,8])/np.nanmean(totalsit[:,i,8]) * 100.)
     
+sitaveh = weightThick(sith,lats2,'lens')
+sitavef = weightThick(sitf,lats2,'lens')
+sitavep = weightThick(sitp,lats2,'piomas')
+
 #### Plot Figure
 plt.rc('text',usetex=True)
 plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
@@ -134,10 +120,75 @@ def adjust_spines(ax, spines):
         ax.xaxis.set_ticks_position('bottom')
     else:
         ax.xaxis.set_ticks([]) 
+
+############################################################################
+############################################################################
+############################################################################
+
+sitavehyrs = sitaveh[:,:,8]
+sitavefyrqs = sitavef[:,:,8]
+sitavepyrqs = sitavep[:,8]
+
+emptyf = np.empty((sitf.shape[0],sith.shape[1]))
+emptyf[:] = np.nan
+sitavefyrs = np.append(emptyf,sitavefyrqs,axis=1)
+
+emptyp = np.array([np.nan] * ((1979-1920)))
+sitavepyrs = np.append(emptyp,sitavepyrqs,axis=0)
+
+sitavehyrm = sitaveh[:,:,2]
+sitavefyrqm = sitavef[:,:,2]
+sitavepyrqm = sitavep[:,2]
+
+emptyf = np.empty((sitf.shape[0],sith.shape[1]))
+emptyf[:] = np.nan
+sitavefyrm = np.append(emptyf,sitavefyrqm,axis=1)
+
+emptyp = np.array([np.nan] * ((1979-1920)))
+sitavepyrm = np.append(emptyp,sitavepyrqm,axis=0)
+
+fig = plt.figure()
+ax = plt.subplot(211)
+
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('darkgrey')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+
+for i in xrange(sitavehyrs.shape[0]):
+    plt.plot(sitavehyrm[i,:],color='dimgrey',alpha=0.55,linewidth=0.3,
+         zorder=2)
+         
+for i in xrange(sitavefyrs.shape[0]):
+    plt.plot(sitavefyrm[i,:],color='dimgrey',alpha=0.55,linewidth=0.3,
+         zorder=2)
         
-fig = plt.figure()
-ax = plt.subplot(111)
+         
+plt.plot(np.nanmean(sitavehyrm,axis=0),color='teal',linewidth=1.5,linestyle='-',
+         zorder=3)    
+plt.plot(np.nanmean(sitavefyrm,axis=0),color='teal',linewidth=1.5,linestyle='-',
+         zorder=3)   
+plt.plot(sitavepyrm,color='darkorchid',alpha=1,linewidth=2,linestyle='-',
+         zorder=4,label=r'PIOMAS')
+         
+plt.axvline(85,linestyle='--',linewidth=2,color='k')
 
+plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
+plt.yticks(np.arange(0,5,1),map(str,np.arange(0,5,1))) 
+plt.xlim([0,160])
+plt.ylim([0,4])
+
+plt.text(0,0,r'\textbf{MARCH}',fontsize=20,color='darkgrey')
+
+plt.legend(shadow=False,fontsize=9,loc='upper right',
+           fancybox=True,frameon=False)\
+
+###########################################################################
+###########################################################################
+###########################################################################
+ax = plt.subplot(212)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
@@ -145,52 +196,31 @@ ax.spines['left'].set_color('darkgrey')
 ax.spines['bottom'].set_color('darkgrey')
 ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 
-plt.plot(varis,linewidth=2,linestyle='-',color='indianred',
-         label=r'LENS September')
-plt.plot(varim,linewidth=2,linestyle='-',color='teal',label=r'LENS March')
+for i in xrange(sitavehyrs.shape[0]):
+    plt.plot(sitavehyrs[i,:],color='dimgrey',alpha=0.55,linewidth=0.3,
+         zorder=2)        
+for i in xrange(sitavefyrs.shape[0]):
+    plt.plot(sitavefyrs[i,:],color='dimgrey',alpha=0.55,linewidth=0.3,
+         zorder=2)
          
+plt.plot(np.nanmean(sitavehyrs,axis=0),color='indianred',linewidth=1.5,linestyle='-',
+         zorder=3,label=r'LENS September')  
+plt.plot(np.nanmean(sitavefyrs,axis=0),color='indianred',linewidth=1.5,linestyle='-',
+         zorder=3)   
+plt.plot(sitavepyrs,color='darkorchid',alpha=1,linewidth=2,linestyle='-',
+         zorder=4)
+
 plt.axvline(85,linestyle='--',linewidth=2,color='k')
-
-plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
-plt.yticks(np.arange(0,1.6,0.5),map(str,np.arange(0,1.6,0.5))) 
-plt.xlim([0,160])
-plt.ylim([0,1.5])
-
-plt.ylabel(r'\textbf{Sea Ice Thickness Spread (m)}')
-
-plt.legend(shadow=False,fontsize=9,loc='upper right',
-           fancybox=True,frameon=False)
-
-plt.savefig(directoryfigure + 'LENS_sit_spread.png',dpi=300)
-
-###########################################################################
-###########################################################################
-###########################################################################
-fig = plt.figure()
-ax = plt.subplot(111)
-
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('darkgrey')
-ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-
-plt.plot(coeffs,linewidth=2,linestyle='-',color='indianred',
-         label=r'LENS September')
-plt.plot(coeffm,linewidth=2,linestyle='-',color='teal',label=r'LENS March')
          
-plt.axvline(85,linestyle='--',linewidth=2,color='k')
-
 plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
-#plt.yticks(np.arange(0,1.6,0.5),map(str,np.arange(0,1.6,0.5))) 
+plt.yticks(np.arange(0,5,1),map(str,np.arange(0,5,1))) 
 plt.xlim([0,160])
-#plt.ylim([0,1.5])
+plt.ylim([0,4])
 
-perc = r'$\bf{\%}$'
-plt.ylabel(r'\textbf{CV (%s)}' % perc)
+plt.text(0,0,r'\textbf{SEPTEMBER}',fontsize=20,color='darkgrey')
+plt.text(-18,6.6,r'\textbf{Sea Ice Thickness (m)}',fontsize=11,
+                            rotation=90)
+         
+plt.subplots_adjust(hspace=0.3)
 
-plt.legend(shadow=False,fontsize=9,loc='upper right',
-           fancybox=True,frameon=False)
-
-plt.savefig(directoryfigure + 'LENS_sit_coeffvari.png',dpi=300)
+plt.savefig(directoryfigure + 'lens_sepmar_sit_all.png',dpi=300)

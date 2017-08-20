@@ -265,7 +265,7 @@ plt.savefig(directoryfigure+'lens_yr_regional_sep_all.png',dpi=300)
 
 fig = plt.figure(figsize=(5,9))
 
-ax = plt.subplot(611)
+ax = plt.subplot(612)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
@@ -297,7 +297,7 @@ plt.ylim([0,6])
          
 ###########################################################################         
          
-ax = plt.subplot(612)
+ax = plt.subplot(613)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
@@ -329,7 +329,7 @@ plt.ylim([0,6])
          
 ###########################################################################          
          
-ax = plt.subplot(613)
+ax = plt.subplot(614)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
@@ -361,7 +361,7 @@ plt.ylim([0,6])
 
 ########################################################################### 
 
-ax = plt.subplot(614)
+ax = plt.subplot(615)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
@@ -393,15 +393,14 @@ plt.ylim([0,6])
 
 ########################################################################### 
 
-ax = plt.subplot(615)
+ax = plt.subplot(616)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
 ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('none')
+ax.spines['bottom'].set_color('darkgrey')
 ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
-ax.tick_params('x',length=0,width=0,which='major',color='none')
-ax.xaxis.set_visible(False)
+ax.tick_params('x',length=4,width=1.5,which='major',color='darkgrey')
 
 for i in xrange(sityrkb.shape[0]):
     plt.plot(sityrkb[i,:],color='dimgrey',alpha=0.55,linewidth=0.2,
@@ -414,8 +413,7 @@ threskb = np.where(sitmeankb <= 0.5)[0]
 if threskb.shape[0] > 0:
     plt.axvline(threskb[0],linewidth=2,color='k')
 
-#xlabels = map(str,np.arange(1979,2017,5))
-#plt.xticks(np.arange(0,39,5),xlabels)
+plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
 plt.xlim([0,160])
 
 plt.text(0.5,0,r'\textbf{BARENTS-KARA SEAS}',fontsize=11,color='darkgrey')
@@ -425,13 +423,15 @@ plt.ylim([0,6])
 
 ########################################################################### 
 
-ax = plt.subplot(616)
+ax = plt.subplot(611)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
 ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('darkgrey')
-ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+ax.spines['bottom'].set_color('none')
+ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
+ax.tick_params('x',length=0,width=0,which='major',color='none')
+ax.xaxis.set_visible(False)
 
 for i in xrange(sityrcab.shape[0]):
     plt.plot(sityrcab[i,:],color='dimgrey',alpha=0.55,linewidth=0.2,
@@ -451,8 +451,8 @@ plt.text(-22,26.6,r'\textbf{Sea Ice Thickness (m)}',fontsize=15,
 plt.yticks(np.arange(0,7,2),map(str,np.arange(0,7,2))) 
 plt.ylim([0,6])
 
-plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
-plt.xlim([0,160])
+#plt.xticks(np.arange(0,181,20),np.arange(1920,2101,20))
+#plt.xlim([0,160])
 
 plt.savefig(directoryfigure + 'lens_yr_regional_sep_all_2.png',dpi=300)
 

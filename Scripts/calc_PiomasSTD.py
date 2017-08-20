@@ -12,9 +12,10 @@ from mpl_toolkits.basemap import Basemap, addcyclic, shiftgrid
 import datetime
 import read_SeaIceThick_PIOMAS as CT
 import nclcmaps as ncm
+import scipy.stats as sts
 
 ### Define directories
-directorydata = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/'  
+directorydata = '/surtsey/zlabe/seaice_obs/PIOMAS/'  
 directoryfigure = '/home/zlabe/Desktop/'
 
 ### Define time           
@@ -36,6 +37,34 @@ months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',r'Sep',
 ### Call functions
 lats,lons,sitq = CT.readPiomas(directorydata,years,0.15)
 
+def deTrend(y):
+    x = np.arange(y.shape[0])
+    
+    slopes = np.empty((y.shape[1],y.shape[2],y.shape[3]))
+    intercepts = np.empty((y.shape[1],y.shape[2],y.shape[3]))
+    for mo in xrange(y.shape[1]):
+        for i in xrange(y.shape[2]):
+            for j in xrange(y.shape[3]):
+                mask = np.isfinite(y[:,mo,i,j])
+                yy = y[:,mo,i,j]           
+                
+                if np.isfinite(np.nanmean(yy)):
+                    slopes[mo,i,j], intercepts[mo,i,j], r_value, p_value, std_err = sts.linregress(x[mask],yy[mask])
+                else:
+                    slopes[mo,i,j] = np.nan
+                    intercepts[mo,i,j] = np.nan
+        print 'Regressed over month %s!' % (mo)
+    
+    y_detrend = np.empty(y.shape)        
+    for i in xrange(y.shape[0]):
+        y_detrend[i,:,:,:] = y[i,:,:,:] - (slopes*x[i] + intercepts)
+        print 'Detrended over year %s!' % (i)
+     
+    print 'Completed: Detrended SIV data!' 
+    return y_detrend
+    
+sitq_dt = deTrend(sitq)
+
 #### Take monthly mean
 def monSTD(sitq,months):
     sitstd = np.zeros((sitq.shape[1],sitq.shape[2],sitq.shape[3]))
@@ -44,12 +73,12 @@ def monSTD(sitq,months):
         for i in xrange(0,sit.shape[1]):
             for j in xrange(0,sit.shape[2]):        
                 sitstd[mo,i,j] = np.nanstd(sit[:,i,j])
-        print 'Completed: Month %s done!' % (months[mo])
+        print 'Completed: Month std %s done!' % (months[mo])
     print 'Completed: Calculated STD!'
     
     return sitstd
 
-sitstd = monSTD(sitq,months)  
+sitstd = monSTD(sitq_dt,months)  
 
 sittrend_w = np.nanmean(sitstd[0:3],axis=0)
 sittrend_sp = np.nanmean(sitstd[3:6],axis=0)
@@ -195,7 +224,7 @@ cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])
 cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
                     extend='max',extendfrac=0.07,drawedges=True)
 
-cbar.set_label(r'\textbf{m}')
+cbar.set_label(r'\textbf{Thickness (meters)}')
 cbar.set_ticks(barlim)
 cbar.set_ticklabels(map(str,barlim)) 
 plt.setp(ax.get_xticklabels(),visible=False)

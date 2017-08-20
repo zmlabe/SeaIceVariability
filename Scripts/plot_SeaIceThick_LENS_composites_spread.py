@@ -35,9 +35,10 @@ titletime = currentmn + '/' + currentdy + '/' + currentyr
 print '\n' '----LENS Historical Mean Sea Ice Thickness - %s----' % titletime 
 
 ### Alott time series
-yearmin = 2006
+yearmin = 1920
 yearmax = 2080
 years = np.arange(yearmin,yearmax+1,1)
+years2 = np.arange(2006,2080+1,1)
 months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
 ensemble = ['02','03','04','05','06','07','08','09'] + \
@@ -81,46 +82,57 @@ def weightThick(var,lats,types):
 #  
 #sitaveh = weightThick(sith,lats2,'lens')
 #sitavef = weightThick(sitf,lats2,'lens')
-
-### Calculate sit_max and sit_min
-sitaveh1 = np.nanmean(sitaveh[:,11:36,8],axis=1)
-sitaveh2 = np.nanmean(sitaveh[:,36:61,8],axis=1)
-sitaveh3 = np.nanmean(sitaveh[:,61:86,8],axis=1)
-
-sitavef1 = np.nanmean(sitavef[:,0:25,8],axis=1)
-sitavef2 = np.nanmean(sitavef[:,25:50,8],axis=1)
-sitavef3 = np.nanmean(sitavef[:,50:75,8],axis=1)
-
-maxh1 = np.where(sitaveh1 == np.nanmax(sitaveh1))[0]
-maxh2 = np.where(sitaveh2 == np.nanmax(sitaveh2))[0]
-maxh3 = np.where(sitaveh3 == np.nanmax(sitaveh3))[0]
-
-minh1 = np.where(sitaveh1 == np.nanmin(sitaveh1))[0]
-minh2 = np.where(sitaveh2 == np.nanmin(sitaveh2))[0]
-minh3 = np.where(sitaveh3 == np.nanmin(sitaveh3))[0]
-
-maxf1 = np.where(sitavef1 == np.nanmax(sitavef1))[0]
-maxf2 = np.where(sitavef2 == np.nanmax(sitavef2))[0]
-maxf3 = np.where(sitavef3 == np.nanmax(sitavef3))[0]
-
-minf1 = np.where(sitavef1 == np.nanmin(sitavef1))[0]
-minf2 = np.where(sitavef2 == np.nanmin(sitavef2))[0]
-minf3 = np.where(sitavef3 == np.nanmin(sitavef3))[0]
-
-#### September 
-sith_mo = sith[:,:,8,:,:]
-
-sith1 = np.nanmean(sith_mo[:,11:36],axis=1)
-sith2 = np.nanmean(sith_mo[:,36:61],axis=1)
-sith3 = np.nanmean(sith_mo[:,61:86],axis=1)
-
-sitf_mo = sitf[:,:,8,:,:]
-
-sitf1 = np.nanmean(sitf_mo[:,0:25],axis=1)
-sitf2 = np.nanmean(sitf_mo[:,25:50],axis=1)
-sitf3 = np.nanmean(sitf_mo[:,50:75],axis=1)
-
-### Max/min ensembles
+#
+#yearp1 = np.where((years >= 1980) & (years <= 1997))[0]
+#yearp2 = np.where((years >= 1998) & (years <= 2015))[0]
+#yearqh1 = np.where((years >= 1920) & (years <= 1962))[0]
+#yearqh2 = np.where((years >= 1963) & (years <= 2005))[0]
+#yearqf1 = np.where((years2 >= 2006) & (years2 <= 2042))[0]
+#yearqf2 = np.where((years2 >= 2043) & (years2 <= 2080))[0]
+#
+#### Calculate sit_max and sit_min
+#sith_mo = sitaveh[:,:,8]
+#sitf_mo = sitavef[:,:,8]
+#sitall_mo = np.append(sith_mo,sitf_mo,axis=1)
+#
+#sitaveh1 = np.nanmean(sith_mo[:,yearqh1],axis=1)
+#sitaveh2 = np.nanmean(sith_mo[:,yearqh2],axis=1)
+#sitaveh3 = np.nanmean(sitall_mo[:,yearp1],axis=1)
+#
+#sitavef1 = np.nanmean(sitf_mo[:,yearqf1],axis=1)
+#sitavef2 = np.nanmean(sitf_mo[:,yearqf2],axis=1)
+#sitavef3 = np.nanmean(sitall_mo[:,yearp2],axis=1)
+#
+#maxh1 = np.where(sitaveh1 == np.nanmax(sitaveh1))[0]
+#maxh2 = np.where(sitaveh2 == np.nanmax(sitaveh2))[0]
+#maxh3 = np.where(sitaveh3 == np.nanmax(sitaveh3))[0]
+#
+#minh1 = np.where(sitaveh1 == np.nanmin(sitaveh1))[0]
+#minh2 = np.where(sitaveh2 == np.nanmin(sitaveh2))[0]
+#minh3 = np.where(sitaveh3 == np.nanmin(sitaveh3))[0]
+#
+#maxf1 = np.where(sitavef1 == np.nanmax(sitavef1))[0]
+#maxf2 = np.where(sitavef2 == np.nanmax(sitavef2))[0]
+#maxf3 = np.where(sitavef3 == np.nanmax(sitavef3))[0]
+#
+#minf1 = np.where(sitavef1 == np.nanmin(sitavef1))[0]
+#minf2 = np.where(sitavef2 == np.nanmin(sitavef2))[0]
+#minf3 = np.where(sitavef3 == np.nanmin(sitavef3))[0]
+#
+##### September 
+#sith_mo2 = sith[:,:,8,:,:]
+#sitf_mo2 = sitf[:,:,8,:,:]
+#sitall_mo2 = np.append(sith[:,:,8,:,:],sitf[:,:,8,:,:],axis=1)
+#
+#sith1 = np.nanmean(sith_mo2[:,yearqh1],axis=1)
+#sith2 = np.nanmean(sith_mo2[:,yearqh2],axis=1)
+#sith3 = np.nanmean(sitall_mo2[:,yearp1],axis=1)
+#
+#sitf1 = np.nanmean(sitf_mo2[:,yearqf1,:,:],axis=1)
+#sitf2 = np.nanmean(sitf_mo2[:,yearqf2,:,:],axis=1)
+#sitf3 = np.nanmean(sitall_mo2[:,yearp2,:,:],axis=1)
+#
+#### Max/min ensembles
 #sith1diff = np.squeeze(sith1[maxh1] - sith1[minh1])
 #sith2diff = np.squeeze(sith2[maxh2] - sith2[minh2])
 #sith3diff = np.squeeze(sith3[maxh3] - sith3[minh3])
@@ -128,6 +140,10 @@ sitf3 = np.nanmean(sitf_mo[:,50:75],axis=1)
 #sitf1diff = np.squeeze(sitf1[maxf1] - sitf1[minf1])
 #sitf2diff = np.squeeze(sitf2[maxf2] - sitf2[minf2])
 #sitf3diff = np.squeeze(sitf3[maxf3] - sitf3[minf3])
+
+####
+####
+####
 
 ### Percentiles 90/10
 #sortedh1 = np.sort(sitaveh1)
@@ -229,45 +245,45 @@ sitf3 = np.nanmean(sitf_mo[:,50:75],axis=1)
 #sitf3diff = p90f_3 - p10f_3
 
 ### Max/min grid cell method
-p90h_1 = np.empty((sith1.shape[1],sith1.shape[2]))
-p10h_1 = np.empty((sith1.shape[1],sith1.shape[2]))
-p90h_2 = np.empty((sith1.shape[1],sith1.shape[2]))
-p10h_2 = np.empty((sith1.shape[1],sith1.shape[2]))
-p90h_3 = np.empty((sith1.shape[1],sith1.shape[2]))
-p10h_3 = np.empty((sith1.shape[1],sith1.shape[2]))
-
-p90f_1 = np.empty((sith1.shape[1],sith1.shape[2]))
-p10f_1 = np.empty((sith1.shape[1],sith1.shape[2]))
-p90f_2 = np.empty((sith1.shape[1],sith1.shape[2]))
-p10f_2 = np.empty((sith1.shape[1],sith1.shape[2]))
-p90f_3 = np.empty((sith1.shape[1],sith1.shape[2]))
-p10f_3 = np.empty((sith1.shape[1],sith1.shape[2]))
-
-for i in xrange(sith1.shape[1]):
-    for j in xrange(sith1.shape[2]):
-        p90h_1[i,j] = np.nanmax(sith1[:,i,j])
-        p90h_2[i,j] = np.nanmax(sith2[:,i,j])
-        p90h_3[i,j] = np.nanmax(sith3[:,i,j])
-        
-        p10h_1[i,j] = np.nanmin(sith1[:,i,j])
-        p10h_2[i,j] = np.nanmin(sith2[:,i,j])
-        p10h_3[i,j] = np.nanmin(sith3[:,i,j])
-        
-        p90f_1[i,j] = np.nanmax(sitf1[:,i,j])
-        p90f_2[i,j] = np.nanmax(sitf2[:,i,j])
-        p90f_3[i,j] = np.nanmax(sitf3[:,i,j])
-        
-        p10f_1[i,j] = np.nanmin(sitf1[:,i,j])
-        p10f_2[i,j] = np.nanmin(sitf2[:,i,j])
-        p10f_3[i,j] = np.nanmin(sitf3[:,i,j])
-        
-sith1diff = p90h_1 - p10h_1
-sith2diff = p90h_2 - p10h_2
-sith3diff = p90h_3 - p10h_3
-
-sitf1diff = p90f_1 - p10f_1
-sitf2diff = p90f_2 - p10f_2
-sitf3diff = p90f_3 - p10f_3
+#p90h_1 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p10h_1 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p90h_2 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p10h_2 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p90h_3 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p10h_3 = np.empty((sith1.shape[1],sith1.shape[2]))
+#
+#p90f_1 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p10f_1 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p90f_2 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p10f_2 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p90f_3 = np.empty((sith1.shape[1],sith1.shape[2]))
+#p10f_3 = np.empty((sith1.shape[1],sith1.shape[2]))
+#
+#for i in xrange(sith1.shape[1]):
+#    for j in xrange(sith1.shape[2]):
+#        p90h_1[i,j] = np.nanmax(sith1[:,i,j])
+#        p90h_2[i,j] = np.nanmax(sith2[:,i,j])
+#        p90h_3[i,j] = np.nanmax(sith3[:,i,j])
+#        
+#        p10h_1[i,j] = np.nanmin(sith1[:,i,j])
+#        p10h_2[i,j] = np.nanmin(sith2[:,i,j])
+#        p10h_3[i,j] = np.nanmin(sith3[:,i,j])
+#        
+#        p90f_1[i,j] = np.nanmax(sitf1[:,i,j])
+#        p90f_2[i,j] = np.nanmax(sitf2[:,i,j])
+#        p90f_3[i,j] = np.nanmax(sitf3[:,i,j])
+#        
+#        p10f_1[i,j] = np.nanmin(sitf1[:,i,j])
+#        p10f_2[i,j] = np.nanmin(sitf2[:,i,j])
+#        p10f_3[i,j] = np.nanmin(sitf3[:,i,j])
+#        
+#sith1diff = p90h_1 - p10h_1
+#sith2diff = p90h_2 - p10h_2
+#sith3diff = p90h_3 - p10h_3
+#
+#sitf1diff = p90f_1 - p10f_1
+#sitf2diff = p90f_2 - p10f_2
+#sitf3diff = p90f_3 - p10f_3
 
 composites = [sith1diff,sith2diff,sith3diff,sitf1diff,sitf2diff,sitf3diff]
 
@@ -324,26 +340,40 @@ cbar.set_ticks(np.arange(-3,4,1))
 cbar.set_ticklabels(map(str,np.arange(-3,4,1)))    
 cbar.set_label(r'\textbf{Difference (meters)}')
 
-plt.subplots_adjust(hspace=0.05)
-plt.subplots_adjust(wspace=-0)
+plt.subplots_adjust(wspace=-0.28)
+plt.subplots_adjust(hspace=0.15)
 plt.subplots_adjust(bottom=0.2)
-
-plt.annotate(r'\textbf{Historical}', xy=(0, 0), xytext=(0.065, 0.845),
-            xycoords='figure fraction',fontsize=20,color='darkgrey',
-            rotation=90)
-plt.annotate(r'\textbf{RCP8.5}', xy=(0, 0), xytext=(0.065, 0.442),
-            xycoords='figure fraction',fontsize=20,color='darkgrey',
-            rotation=90)
+plt.subplots_adjust(top=0.87)
             
-plt.annotate(r'\textbf{1}', xy=(0, 0), xytext=(0.244, 0.915),
+plt.annotate(r'\textbf{LENS}', xy=(0, 0), xytext=(0.35, 0.915),
             xycoords='figure fraction',fontsize=20,color='darkgrey',
             rotation=0)
-plt.annotate(r'\textbf{2}', xy=(0, 0), xytext=(0.5, 0.915),
+plt.annotate(r'\textbf{LENS}', xy=(0, 0), xytext=(0.680, 0.915),
             xycoords='figure fraction',fontsize=20,color='darkgrey',
             rotation=0)
-plt.annotate(r'\textbf{3}', xy=(0, 0), xytext=(0.756, 0.915),
-            xycoords='figure fraction',fontsize=20,color='darkgrey',
+plt.annotate(r'\textbf{PIOMAS}', xy=(0, 0), xytext=(0.773, 0.892),
+            xycoords='figure fraction',fontsize=7,color='darkgrey',
+            rotation=0,ha='center')            
+            
+plt.annotate(r'\textbf{1980-1997}', xy=(0, 0), xytext=(0.79, 0.863),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=-40)                  
+plt.annotate(r'\textbf{1998-2015}', xy=(0, 0), xytext=(0.79, 0.504),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=-40)
+
+plt.annotate(r'\textbf{1920-1962}', xy=(0, 0), xytext=(0.24, 0.875),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=0)                               
+plt.annotate(r'\textbf{1963-2005}', xy=(0, 0), xytext=(0.468, 0.875),
+            xycoords='figure fraction',fontsize=7,color='k',
             rotation=0)
+plt.annotate(r'\textbf{2006-2042}', xy=(0, 0), xytext=(0.24, 0.517),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=0)                     
+plt.annotate(r'\textbf{2043-2080}', xy=(0, 0), xytext=(0.468, 0.517),
+            xycoords='figure fraction',fontsize=7,color='k',
+            rotation=0) 
     
 ### Save figure
-plt.savefig(directoryfigure +'sit_rcp_composites_spread_maxmingridcell.png',dpi=500)
+plt.savefig(directoryfigure +'sit_rcp_composites_spread.png',dpi=500)

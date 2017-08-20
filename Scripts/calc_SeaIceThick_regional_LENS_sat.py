@@ -21,9 +21,9 @@ from netCDF4 import Dataset
 import scipy.stats as sts
 
 ### Define directories
-directorydatal = '/home/zlabe/Surtsey3/'
-directorydatap = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/Thickness/'  
-directoryfigure = '/home/zlabe/Desktop/RegionalMask/'
+directorydatal = '/surtsey/ypeings/'
+directorydatap = '/surtsey/zlabe/seaice_obs/PIOMAS/Thickness/'  
+directoryfigure = '/home/zlabe/Desktop/'
 #directoryfigure = '/home/zlabe/Documents/Research/SeaIceVariability/Figures/'
 directorydata2 = '/home/zlabe/Documents/Research/SeaIceVariability/Data/'
 
@@ -70,7 +70,7 @@ sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
 sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
     
 sitp = readPIOMAS(directorydatap,0.15)
-#lons2,lats2 = np.meshgrid(lons,lats)
+lons2,lats2 = np.meshgrid(lons,lats)
 
 ### Slice regions
 def RegionalSlice(sith,sitf,sitp,region,lats,lons):
@@ -288,7 +288,7 @@ plt.plot(sitppyrcab,color='yellowgreen',linewidth=1,linestyle='--',
 
 xlabels = map(str,np.arange(1979,2017,5))
 plt.xticks(np.arange(0,39,5),xlabels)
-plt.xlim([0,39])
+plt.xlim([0,36])
 
 plt.yticks(np.arange(0,6,1),map(str,np.arange(0,6,1))) 
 plt.ylim([0,5])
@@ -331,17 +331,17 @@ plt.plot(sitmeancab - sitppyrcab,color='yellowgreen',linewidth=2,linestyle='-',
          
 xlabels = map(str,np.arange(1979,2017,5))
 plt.xticks(np.arange(0,39,5),xlabels)
-plt.xlim([0,39])
+plt.xlim([0,36])
 
-plt.yticks(np.arange(-2,3,1),map(str,np.arange(-2,3,1))) 
-plt.ylim([-2,2])
+plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1))) 
+plt.ylim([-3,3])
 
 plt.ylabel(r'\textbf{Sea Ice Thickness (m)}')
 
 plt.legend(shadow=False,fontsize=7,loc='bottom right',
            fancybox=True,frameon=False,ncol=1)
                       
-plt.savefig(directoryfigure+'lens_yr_regional_mar_sat_difference.png',dpi=300)
+plt.savefig(directoryfigure+'lens_yr_regional_sep_sat_difference.png',dpi=300)
 
 ###########################################################################
 ###########################################################################
@@ -349,31 +349,6 @@ plt.savefig(directoryfigure+'lens_yr_regional_mar_sat_difference.png',dpi=300)
 
 fig = plt.figure(figsize=(5,9))
 
-ax = plt.subplot(611)
-adjust_spines(ax, ['left', 'bottom'])
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
-ax.spines['left'].set_color('darkgrey')
-ax.spines['bottom'].set_color('none')
-ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
-ax.tick_params('x',length=0,width=0,which='major',color='none')
-ax.xaxis.set_visible(False)
-
-plt.plot([0]*len(sitmeang),color='k',linewidth=1.5,linestyle='--')
-plt.plot(sitmeang - sitppyrg,color='steelblue',linewidth=2,linestyle='-',
-         zorder=3,label=r'Greenland Sea')   
-         
-#xlabels = map(str,np.arange(1979,2017,5))
-#plt.xticks(np.arange(0,39,5),xlabels)
-plt.xlim([0,36])
-
-plt.text(0,-1.2,r'\textbf{GREENLAND}',fontsize=11,color='darkgrey')
-
-plt.yticks(np.arange(-2,3,1),map(str,np.arange(-2,3,1))) 
-plt.ylim([-2,2])
-         
-###########################################################################         
-         
 ax = plt.subplot(612)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
@@ -384,20 +359,22 @@ ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
 ax.tick_params('x',length=0,width=0,which='major',color='none')
 ax.xaxis.set_visible(False)
 
+plt.plot(sityrg-sitppyrg,color='dimgrey',alpha=0.55,linewidth=0.2)
 plt.plot([0]*len(sitmeang),color='k',linewidth=1.5,linestyle='--')
-plt.plot(sitmeanb - sitppyrb,color='darkgreen',linewidth=2,linestyle='-',
-         zorder=4,label=r'Beaufort Sea')
-
+plt.plot(sitmeang - sitppyrg,color='steelblue',linewidth=2,linestyle='-',
+         zorder=3,label=r'Greenland Sea',marker='o',markersize=4,
+         markeredgecolor='steelblue')   
+         
 #xlabels = map(str,np.arange(1979,2017,5))
 #plt.xticks(np.arange(0,39,5),xlabels)
 plt.xlim([0,36])
 
-plt.text(0,-1.2,r'\textbf{BEAUFORT-CHUKCHI SEAS}',fontsize=11,color='darkgrey')
+plt.text(0,2.8,r'\textbf{GREENLAND}',fontsize=11,color='darkgrey')
 
-plt.yticks(np.arange(-2,3,1),map(str,np.arange(-2,3,1))) 
-plt.ylim([-2,2])
+plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1))) 
+plt.ylim([-1,3])
          
-###########################################################################          
+###########################################################################         
          
 ax = plt.subplot(613)
 adjust_spines(ax, ['left', 'bottom'])
@@ -408,22 +385,24 @@ ax.spines['bottom'].set_color('none')
 ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
 ax.tick_params('x',length=0,width=0,which='major',color='none')
 ax.xaxis.set_visible(False)
-         
+
+plt.plot(sityrb-sitppyrb,color='dimgrey',alpha=0.55,linewidth=0.2)
 plt.plot([0]*len(sitmeang),color='k',linewidth=1.5,linestyle='--')
-plt.plot(sitmeane - sitppyre,color='darkorange',linewidth=2,linestyle='-',
-         zorder=5,label=r'East Siberian Sea')
+plt.plot(sitmeanb - sitppyrb,color='darkgreen',linewidth=2,linestyle='-',
+         zorder=4,label=r'Beaufort Sea',marker='o',markersize=4,
+         markeredgecolor='darkgreen')
 
 #xlabels = map(str,np.arange(1979,2017,5))
 #plt.xticks(np.arange(0,39,5),xlabels)
 plt.xlim([0,36])
 
-plt.text(0,-1.2,r'\textbf{EAST SIBERIAN SEA}',fontsize=11,color='darkgrey')
+plt.text(0,2.8,r'\textbf{BEAUFORT-CHUKCHI SEAS}',fontsize=11,color='darkgrey')
 
-plt.yticks(np.arange(-2,3,1),map(str,np.arange(-2,3,1))) 
-plt.ylim([-2,2])
-
-########################################################################### 
-
+plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1))) 
+plt.ylim([-1,3])
+         
+###########################################################################          
+         
 ax = plt.subplot(614)
 adjust_spines(ax, ['left', 'bottom'])
 ax.spines['top'].set_color('none')
@@ -433,19 +412,21 @@ ax.spines['bottom'].set_color('none')
 ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
 ax.tick_params('x',length=0,width=0,which='major',color='none')
 ax.xaxis.set_visible(False)
-         
+
+plt.plot(sityre-sitppyre,color='dimgrey',alpha=0.55,linewidth=0.2)         
 plt.plot([0]*len(sitmeang),color='k',linewidth=1.5,linestyle='--')
-plt.plot(sitmeanl - sitppyrl,color='darkblue',linewidth=2,linestyle='-',
-         zorder=6,label=r'Laptev Sea')   
+plt.plot(sitmeane - sitppyre,color='darkorange',linewidth=2,linestyle='-',
+         zorder=5,label=r'East Siberian Sea',marker='o',markersize=4,
+         markeredgecolor='darkorange')
 
 #xlabels = map(str,np.arange(1979,2017,5))
 #plt.xticks(np.arange(0,39,5),xlabels)
 plt.xlim([0,36])
 
-plt.text(0,-1.2,r'\textbf{LAPTEV SEA}',fontsize=11,color='darkgrey')
+plt.text(0,2.8,r'\textbf{EAST SIBERIAN SEA}',fontsize=11,color='darkgrey')
 
-plt.yticks(np.arange(-2,3,1),map(str,np.arange(-2,3,1))) 
-plt.ylim([-2,2])
+plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1))) 
+plt.ylim([-1,3])
 
 ########################################################################### 
 
@@ -458,19 +439,21 @@ ax.spines['bottom'].set_color('none')
 ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
 ax.tick_params('x',length=0,width=0,which='major',color='none')
 ax.xaxis.set_visible(False)
-         
+
+plt.plot(sityrl-sitppyrl,color='dimgrey',alpha=0.55,linewidth=0.2)         
 plt.plot([0]*len(sitmeang),color='k',linewidth=1.5,linestyle='--')
-plt.plot(sitmeankb - sitppyrkb,color='m',linewidth=2,linestyle='-',
-         zorder=7,label=r'Kara-Barents Seas')   
+plt.plot(sitmeanl - sitppyrl,color='darkblue',linewidth=2,linestyle='-',
+         zorder=6,label=r'Laptev Sea',marker='o',markersize=4,
+         markeredgecolor='darkblue')   
 
 #xlabels = map(str,np.arange(1979,2017,5))
 #plt.xticks(np.arange(0,39,5),xlabels)
 plt.xlim([0,36])
 
-plt.text(0,-1.2,r'\textbf{BARENTS-KARA SEAS}',fontsize=11,color='darkgrey')
+plt.text(0,2.8,r'\textbf{LAPTEV SEA}',fontsize=11,color='darkgrey')
 
-plt.yticks(np.arange(-2,3,1),map(str,np.arange(-2,3,1))) 
-plt.ylim([-2,2])
+plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1))) 
+plt.ylim([-1,3])
 
 ########################################################################### 
 
@@ -480,21 +463,51 @@ ax.spines['top'].set_color('none')
 ax.spines['right'].set_color('none')
 ax.spines['left'].set_color('darkgrey')
 ax.spines['bottom'].set_color('darkgrey')
-ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
-
+ax.tick_params('y',length=4,width=1.5,which='major',color='darkgrey')
+ax.tick_params('x',length=4,width=1.5,which='major',color='darkgrey')
+ 
+plt.plot(sityrkb-sitppyrkb,color='dimgrey',alpha=0.55,linewidth=0.2)        
 plt.plot([0]*len(sitmeang),color='k',linewidth=1.5,linestyle='--')
-plt.plot(sitmeancab - sitppyrcab,color='r',linewidth=2,linestyle='-',
-         zorder=8,label=r'Central Arctic Basin')
-         
+plt.plot(sitmeankb - sitppyrkb,color='m',linewidth=2,linestyle='-',
+         zorder=7,label=r'Kara-Barents Seas',marker='o',markersize=4,
+         markeredgecolor='m')   
+
 xlabels = map(str,np.arange(1979,2017,5))
 plt.xticks(np.arange(0,39,5),xlabels)
 plt.xlim([0,36])
 
-plt.text(0,-1.2,r'\textbf{CENTRAL ARCTIC BASIN}',fontsize=11,color='darkgrey')
-plt.text(-5.2,14.35,r'\textbf{Difference (m)}',fontsize=15,
+plt.text(0,2.8,r'\textbf{BARENTS-KARA SEAS}',fontsize=11,color='darkgrey')
+plt.text(-5.35,15.25,r'\textbf{Difference (m)}',fontsize=15,
                           color='k',rotation=90)
 
-plt.yticks(np.arange(-2,3,1),map(str,np.arange(-2,3,1))) 
-plt.ylim([-2,2])
+plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1))) 
+plt.ylim([-1,3])
+
+########################################################################### 
+
+ax = plt.subplot(611)
+adjust_spines(ax, ['left', 'bottom'])
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
+ax.spines['left'].set_color('darkgrey')
+ax.spines['bottom'].set_color('none')
+ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
+ax.tick_params('x',length=0,width=0,which='major',color='none')
+ax.xaxis.set_visible(False)
+
+plt.plot(sityrcab-sitppyrcab,color='dimgrey',alpha=0.55,linewidth=0.2)
+plt.plot([0]*len(sitmeang),color='k',linewidth=1.5,linestyle='--')
+plt.plot(sitmeancab - sitppyrcab,color='r',linewidth=2,linestyle='-',
+         zorder=8,label=r'Central Arctic Basin',marker='o',markersize=4,
+         markeredgecolor='r')
+         
+#xlabels = map(str,np.arange(1979,2006,5))
+#plt.xticks(np.arange(0,28,5),xlabels)
+plt.xlim([0,36])
+
+plt.text(0,2.8,r'\textbf{CENTRAL ARCTIC BASIN}',fontsize=11,color='darkgrey')
+
+plt.yticks(np.arange(-3,4,1),map(str,np.arange(-3,4,1))) 
+plt.ylim([-1,3])
 
 plt.savefig(directoryfigure + 'SIT_regions_diff_sat_sep.png',dpi=300)

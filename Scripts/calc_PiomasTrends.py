@@ -20,7 +20,7 @@ from matplotlib.colors import Normalize
 import nclcmaps as ncm
 
 ### Define directories
-directorydata = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/'  
+directorydata = '/surtsey/zlabe/seaice_obs/PIOMAS/'  
 directoryfigure = '/home/zlabe/Desktop/'
 
 ### Define time           
@@ -274,8 +274,8 @@ meridians = np.arange(-180,180,30)
 m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
 
 # Make the plot continuous
-barlim = np.arange(-1,2,1)
-values = np.arange(-1,1.1,0.1)
+barlim = np.arange(-0.6,0.7,0.3)
+values = np.arange(-0.6,0.7,0.1)
 
 cs = m.contourf(lons,lats,var,
                 values,latlon=True,extend='both')
@@ -283,7 +283,7 @@ cs1 = m.contour(lons,lats,var,
                 values,linewidths=0.2,colors='darkgrey',
                 linestyles='-',latlon=True)
         
-cmap = ncm.cmap('BlueDarkOrange18')         
+cmap = ncm.cmap('NCV_blu_red')         
 cs.set_cmap(cmap)
 ax.annotate(r'\textbf{JFM}', xy=(0, 0), xytext=(-0.23, 0.9),
             xycoords='axes fraction',fontsize=22,color='darkgrey')
@@ -314,7 +314,7 @@ cs1 = m.contour(lons,lats,var,
                 values,linewidths=0.2,colors='darkgrey',
                 linestyles='-',latlon=True)
         
-cmap = ncm.cmap('BlueDarkOrange18')         
+cmap = ncm.cmap('NCV_blu_red')         
 cs.set_cmap(cmap)
 ax.annotate(r'\textbf{AMJ}', xy=(0, 0), xytext=(0.8, 0.9),
             xycoords='axes fraction',fontsize=22,color='darkgrey')
@@ -345,7 +345,7 @@ cs1 = m.contour(lons,lats,var,
                 values,linewidths=0.2,colors='darkgrey',
                 linestyles='-',latlon=True)
         
-cmap = ncm.cmap('BlueDarkOrange18')         
+cmap = ncm.cmap('NCV_blu_red')         
 cs.set_cmap(cmap)
 ax.annotate(r'\textbf{JAS}', xy=(0, 0), xytext=(-0.23, 0.9),
             xycoords='axes fraction',fontsize=22,color='darkgrey')
@@ -376,7 +376,7 @@ cs1 = m.contour(lons,lats,var,
                 values,linewidths=0.2,colors='darkgrey',
                 linestyles='-',latlon=True)
         
-cmap = ncm.cmap('BlueDarkOrange18')         
+cmap = ncm.cmap('NCV_blu_red')         
 cs.set_cmap(cmap)
 ax.annotate(r'\textbf{OND}', xy=(0, 0), xytext=(0.8, 0.9),
             xycoords='axes fraction',fontsize=22,color='darkgrey')

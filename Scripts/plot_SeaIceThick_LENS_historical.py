@@ -36,7 +36,7 @@ print '\n' '----LENS Historical Mean Sea Ice Thickness - %s----' % titletime
 
 ### Alott time series
 yearmin = 1920
-yearmax = 2005
+yearmax = 2080
 years = np.arange(yearmin,yearmax+1,1)
 yearf = np.arange(2006,2080+1,1)
 
@@ -69,8 +69,10 @@ def readPIOMAS(directorydata,threshold):
 
 #### Call functions
 sit,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
-#sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
+sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
 lons2,lats2 = np.meshgrid(lons,lats)
+
+sitall = np.append(sit,sitf,axis=1)
 
 sitp = readPIOMAS(directorydatap,0.15)
 
@@ -107,8 +109,10 @@ def weightThick(var,lats,types):
 
 #### Call functions     
 sitave = weightThick(sit,lats2,'lens')
-#sitavef = weightThick(sitf,lats2,'lens')
+sitavef = weightThick(sitf,lats2,'lens')
 sitavep = weightThick(sitp,lats2,'piomas')
+
+sitaveall = np.append(sitave,sitavef,axis=1)
 
 #### Plot Figure
 plt.rc('text',usetex=True)
@@ -213,9 +217,9 @@ def adjust_spines(ax, spines):
 ############################################################################
 ############################################################################
 ############################################################################
-yearlq = np.where((years >= 1979) & (years <= 2005))[0]
-yearpq = np.where((yearp >= 1979) & (yearp <= 2005))[0]
-sitcycle = np.nanmean(sitave[:,yearlq,:],axis=1)
+yearlq = np.where((years >= 1979) & (years <= 2015))[0]
+yearpq = np.where((yearp >= 1979) & (yearp <= 2015))[0]
+sitcycle = np.nanmean(sitaveall[:,yearlq,:],axis=1)
 sitcyclep = np.nanmean(sitavep[yearpq,:],axis=0)
 
 #yearlqf = np.where((yearf >= 2006) & (yearf <= 2015))[0]
@@ -224,7 +228,7 @@ sitcyclep = np.nanmean(sitavep[yearpq,:],axis=0)
 #sitcyclefp = np.nanmean(sitavep[yearpqf,:],axis=0)
 
 fig = plt.figure()
-ax = plt.subplot(111)
+ax = plt.subplot(121)
 
 ### Adjust axes spines
 adjust_spines(ax, ['left', 'bottom'])
@@ -237,27 +241,27 @@ ax.tick_params('both',length=4,width=1.5,which='major',color='darkgrey')
 for i in xrange(sitcycle.shape[0]):
     plt.plot(sitcycle[i],color='cornflowerblue',alpha=0.3,linewidth=0.7,
              zorder=2)
-plt.plot(np.nanmean(sitcycle,axis=0),color='darkorchid',linewidth=2,
-         marker='o',markeredgecolor='darkorchid',zorder=3,
+plt.plot(np.nanmean(sitcycle,axis=0),color='darkblue',linewidth=2,
+         marker='o',markeredgecolor='darkblue',zorder=3,
          label=r'Mean LENS',markersize=4)
          
-plt.plot(sitcyclep,color='seagreen',linewidth=2,
-         marker='^',markeredgecolor='seagreen',
+plt.plot(sitcyclep,color='darkorchid',linewidth=2,
+         marker='^',markeredgecolor='darkorchid',
          zorder=4,label=r'PIOMAS',markersize=4)
 
-plt.xticks(np.arange(0,12,1),months) 
+plt.xticks(np.arange(0,12,1),months,rotation=40,fontsize=8) 
 plt.yticks(np.arange(0,5,1),map(str,np.arange(0,5,1))) 
 plt.xlim([0,11]) 
 plt.ylim([0,4])
 
-plt.ylabel(r'\textbf{Sea Ice Thickness (m)}')
+plt.ylabel(r'\textbf{Sea Ice Thickness (m)}',fontsize=8)
 
-plt.legend(shadow=False,fontsize=9,loc='upper right',
-           fancybox=True,frameon=False,bbox_to_anchor=(1.03,1.06),
+plt.legend(shadow=False,fontsize=7,loc='upper right',
+           fancybox=True,frameon=False,bbox_to_anchor=(0.415,1),
             ncol=1)
            
-plt.annotate(r'\textbf{HISTORICAL}', xy=(0, 0), xytext=(0.01,0.95),
-            xycoords='axes fraction',fontsize=22,color='darkgrey')    
+plt.annotate(r'\textbf{HISTORICAL}', xy=(0, 0), xytext=(0.01,0.01),
+            xycoords='axes fraction',fontsize=20,color='darkgrey')    
 
 ### Create 2nd subplot
 def colormapSIT():
@@ -270,10 +274,11 @@ def colormapSIT():
     cms_sit = c.ListedColormap(cmaplist1 + cmaplist2 + cmaplist3)
     return cms_sit
 
-a2 = plt.axes([.095, .15, .29, .29], axisbg='w')   
+#a2 = plt.axes([.095, .15, .29, .29], axisbg='w')   
+ax2 = plt.subplot(122)
 
 compsitp = np.apply_over_axes(np.nanmean,sitp[yearpq,:,:,:],[0,1]).squeeze()
-compsith = np.apply_over_axes(np.nanmean,sit[:,yearlq,:,:,:],[0,1,2]).squeeze()
+compsith = np.apply_over_axes(np.nanmean,sitall[:,yearlq,:,:,:],[0,1,2]).squeeze()
 var = compsith - compsitp
 
 var, lons_cyclic = addcyclic(var, lons)
@@ -282,8 +287,8 @@ lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
 
 m = Basemap(projection='npstere',boundinglat=66,lon_0=-90,resolution='l',round=True)
 m.drawmapboundary(fill_color = 'white')
-m.drawcoastlines(color = 'dimgrey',linewidth=0.1)
-m.drawlsmask(land_color='dimgrey',ocean_color='snow')
+m.drawcoastlines(color='k',linewidth=0.3)
+m.drawlsmask(land_color='darkgrey',ocean_color='snow')
 parallels = np.arange(50,90,10)
 meridians = np.arange(-180,180,30)
 x, y = m(lon2d, lat2d) 
@@ -292,23 +297,24 @@ def setcolor(x, color):
          for t in x[m][1]:
              t.set_color(color)
 
-#m.drawparallels(parallels,labels=[False,False,False,False],linewidth=0.2,
-#                fontsize=0)
-#mer = m.drawmeridians(meridians,labels=[False,False,False,False],linewidth=0.2,
-#                fontsize=0)
-#setcolor(mer,'darkgrey')
+m.drawparallels(parallels,labels=[False,False,False,False],linewidth=0.2,
+                fontsize=4)
+mer = m.drawmeridians(meridians,labels=[False,False,True,True],linewidth=0.2,
+                fontsize=4)
+setcolor(mer,'k')
 
 values = np.arange(-1,1.1,0.1) 
 cs = m.contourf(x,y,var,values,extend='both')
 cmap = ncm.cmap('BrownBlue12')  
 cs.set_cmap(cmap)
 
-cbar = plt.colorbar(cs,orientation='vertical',
-                    extend='both',extendfrac=0.07,pad=0.05)  
+cbar = plt.colorbar(cs,orientation='horizontal',
+                    extend='both',extendfrac=0.06,pad=0.05,
+                    drawedges=True)  
 cbar.set_ticks(np.arange(-1,2,1))
 cbar.set_ticklabels(map(str,np.arange(-1,2,1)))
 cbar.set_label(r'\textbf{Difference (m)}',fontsize=8,
-                         color='darkgrey',labelpad=1) 
-cbar.ax.tick_params(labelsize=6.5)                              
+                         color='k',labelpad=1) 
+cbar.ax.tick_params(labelsize=8)                              
 
 plt.savefig(directoryfigure + 'seasonalcycle_lens.png',dpi=300)
