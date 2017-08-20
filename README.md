@@ -28,7 +28,7 @@ Changes in Arctic sea ice extent and concentration are well documented within th
 ican Geophysical Union, 91 (44), 405, doi:10.1029/2010EO440001, [[Publication]](http://doi.wiley.com/10.1029/2010EO440001)
 
 ## Publications
-+ **Labe, Z.M.**, G. Magnusdottir, and H.S. Stern, 2017. Variability of Arctic sea ice thickness using PIOMAS and the CESM Large Ensemble Project, *submitted to Journal of Climate*
++ **Labe, Z.M.**, G. Magnusdottir, and H.S. Stern, 2017. Variability of Arctic sea ice thickness using PIOMAS and the CESM Large Ensemble Project, *in revision*
 
 ## Conferences
 + [2] **Labe, Z.M.**, G. Magnusdottir, and H.S. Stern. Variability and future projections of Arctic sea ice thickness. *Understanding the Causes and Consequences of Polar Amplification Workshop*, Aspen Global Change Institute, Aspen, CO (Jun 2017).
