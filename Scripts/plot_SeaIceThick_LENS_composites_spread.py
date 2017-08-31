@@ -18,10 +18,11 @@ import statsmodels.api as sm
 from mpl_toolkits.basemap import Basemap, addcyclic, shiftgrid
 import nclcmaps as ncm
 from netCDF4 import Dataset
+import calc_significance as P
 
 ### Define directories
-directorydatal = '/home/zlabe/Surtsey3/'
-directorydatap = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/Thickness/'  
+directorydatal = '/surtsey/ypeings/'
+directorydatap = '/surtsey/zlabe/seaice_obs/PIOMAS/Thickness/'  
 directoryfigure = '/home/zlabe/Desktop/'
 #directoryfigure = '/home/zlabe/Documents/Research/SeaIceVariability/Figures/'
 
@@ -76,70 +77,81 @@ def weightThick(var,lats,types):
     return sityr
 
 ### Call functions   
-#sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
-#sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
-#lons2,lats2 = np.meshgrid(lons,lats)
-#  
-#sitaveh = weightThick(sith,lats2,'lens')
-#sitavef = weightThick(sitf,lats2,'lens')
-#
-#yearp1 = np.where((years >= 1980) & (years <= 1997))[0]
-#yearp2 = np.where((years >= 1998) & (years <= 2015))[0]
-#yearqh1 = np.where((years >= 1920) & (years <= 1962))[0]
-#yearqh2 = np.where((years >= 1963) & (years <= 2005))[0]
-#yearqf1 = np.where((years2 >= 2006) & (years2 <= 2042))[0]
-#yearqf2 = np.where((years2 >= 2043) & (years2 <= 2080))[0]
-#
-#### Calculate sit_max and sit_min
-#sith_mo = sitaveh[:,:,8]
-#sitf_mo = sitavef[:,:,8]
-#sitall_mo = np.append(sith_mo,sitf_mo,axis=1)
-#
-#sitaveh1 = np.nanmean(sith_mo[:,yearqh1],axis=1)
-#sitaveh2 = np.nanmean(sith_mo[:,yearqh2],axis=1)
-#sitaveh3 = np.nanmean(sitall_mo[:,yearp1],axis=1)
-#
-#sitavef1 = np.nanmean(sitf_mo[:,yearqf1],axis=1)
-#sitavef2 = np.nanmean(sitf_mo[:,yearqf2],axis=1)
-#sitavef3 = np.nanmean(sitall_mo[:,yearp2],axis=1)
-#
-#maxh1 = np.where(sitaveh1 == np.nanmax(sitaveh1))[0]
-#maxh2 = np.where(sitaveh2 == np.nanmax(sitaveh2))[0]
-#maxh3 = np.where(sitaveh3 == np.nanmax(sitaveh3))[0]
-#
-#minh1 = np.where(sitaveh1 == np.nanmin(sitaveh1))[0]
-#minh2 = np.where(sitaveh2 == np.nanmin(sitaveh2))[0]
-#minh3 = np.where(sitaveh3 == np.nanmin(sitaveh3))[0]
-#
-#maxf1 = np.where(sitavef1 == np.nanmax(sitavef1))[0]
-#maxf2 = np.where(sitavef2 == np.nanmax(sitavef2))[0]
-#maxf3 = np.where(sitavef3 == np.nanmax(sitavef3))[0]
-#
-#minf1 = np.where(sitavef1 == np.nanmin(sitavef1))[0]
-#minf2 = np.where(sitavef2 == np.nanmin(sitavef2))[0]
-#minf3 = np.where(sitavef3 == np.nanmin(sitavef3))[0]
-#
-##### September 
-#sith_mo2 = sith[:,:,8,:,:]
-#sitf_mo2 = sitf[:,:,8,:,:]
-#sitall_mo2 = np.append(sith[:,:,8,:,:],sitf[:,:,8,:,:],axis=1)
-#
-#sith1 = np.nanmean(sith_mo2[:,yearqh1],axis=1)
-#sith2 = np.nanmean(sith_mo2[:,yearqh2],axis=1)
-#sith3 = np.nanmean(sitall_mo2[:,yearp1],axis=1)
-#
-#sitf1 = np.nanmean(sitf_mo2[:,yearqf1,:,:],axis=1)
-#sitf2 = np.nanmean(sitf_mo2[:,yearqf2,:,:],axis=1)
-#sitf3 = np.nanmean(sitall_mo2[:,yearp2,:,:],axis=1)
-#
-#### Max/min ensembles
-#sith1diff = np.squeeze(sith1[maxh1] - sith1[minh1])
-#sith2diff = np.squeeze(sith2[maxh2] - sith2[minh2])
-#sith3diff = np.squeeze(sith3[maxh3] - sith3[minh3])
-#
-#sitf1diff = np.squeeze(sitf1[maxf1] - sitf1[minf1])
-#sitf2diff = np.squeeze(sitf2[maxf2] - sitf2[minf2])
-#sitf3diff = np.squeeze(sitf3[maxf3] - sitf3[minf3])
+sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
+sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
+lons2,lats2 = np.meshgrid(lons,lats)
+  
+sitaveh = weightThick(sith,lats2,'lens')
+sitavef = weightThick(sitf,lats2,'lens')
+
+yearp1 = np.where((years >= 1980) & (years <= 1997))[0]
+yearp2 = np.where((years >= 1998) & (years <= 2015))[0]
+yearqh1 = np.where((years >= 1920) & (years <= 1962))[0]
+yearqh2 = np.where((years >= 1963) & (years <= 2005))[0]
+yearqf1 = np.where((years2 >= 2006) & (years2 <= 2042))[0]
+yearqf2 = np.where((years2 >= 2043) & (years2 <= 2080))[0]
+
+### Calculate sit_max and sit_min
+sith_mo = sitaveh[:,:,8]
+sitf_mo = sitavef[:,:,8]
+sitall_mo = np.append(sith_mo,sitf_mo,axis=1)
+
+sitaveh1 = np.nanmean(sith_mo[:,yearqh1],axis=1)
+sitaveh2 = np.nanmean(sith_mo[:,yearqh2],axis=1)
+sitaveh3 = np.nanmean(sitall_mo[:,yearp1],axis=1)
+
+sitavef1 = np.nanmean(sitf_mo[:,yearqf1],axis=1)
+sitavef2 = np.nanmean(sitf_mo[:,yearqf2],axis=1)
+sitavef3 = np.nanmean(sitall_mo[:,yearp2],axis=1)
+
+maxh1 = np.where(sitaveh1 == np.nanmax(sitaveh1))[0]
+maxh2 = np.where(sitaveh2 == np.nanmax(sitaveh2))[0]
+maxh3 = np.where(sitaveh3 == np.nanmax(sitaveh3))[0]
+
+minh1 = np.where(sitaveh1 == np.nanmin(sitaveh1))[0]
+minh2 = np.where(sitaveh2 == np.nanmin(sitaveh2))[0]
+minh3 = np.where(sitaveh3 == np.nanmin(sitaveh3))[0]
+
+maxf1 = np.where(sitavef1 == np.nanmax(sitavef1))[0]
+maxf2 = np.where(sitavef2 == np.nanmax(sitavef2))[0]
+maxf3 = np.where(sitavef3 == np.nanmax(sitavef3))[0]
+
+minf1 = np.where(sitavef1 == np.nanmin(sitavef1))[0]
+minf2 = np.where(sitavef2 == np.nanmin(sitavef2))[0]
+minf3 = np.where(sitavef3 == np.nanmin(sitavef3))[0]
+
+#### September 
+sith_mo2 = sith[:,:,8,:,:]
+sitf_mo2 = sitf[:,:,8,:,:]
+sitall_mo2 = np.append(sith[:,:,8,:,:],sitf[:,:,8,:,:],axis=1)
+
+sith1 = np.nanmean(sith_mo2[:,yearqh1],axis=1)
+sith2 = np.nanmean(sith_mo2[:,yearqh2],axis=1)
+sith3 = np.nanmean(sitall_mo2[:,yearp1],axis=1)
+
+sitf1 = np.nanmean(sitf_mo2[:,yearqf1,:,:],axis=1)
+sitf2 = np.nanmean(sitf_mo2[:,yearqf2,:,:],axis=1)
+sitf3 = np.nanmean(sitall_mo2[:,yearp2,:,:],axis=1)
+
+### Max/min ensembles
+sith1diff = np.squeeze(sith1[maxh1] - sith1[minh1])
+sith2diff = np.squeeze(sith2[maxh2] - sith2[minh2])
+sith3diff = np.squeeze(sith3[maxh3] - sith3[minh3])
+
+sitf1diff = np.squeeze(sitf1[maxf1] - sitf1[minf1])
+sitf2diff = np.squeeze(sitf2[maxf2] - sitf2[minf2])
+sitf3diff = np.squeeze(sitf3[maxf3] - sitf3[minf3])
+
+### Statistical significance
+ssh1,stath1 = P.calc_indttest(sith1[maxh1],sith1[minh1])
+ssh2,stath2 = P.calc_indttest(sith1[maxh2],sith1[minh2])
+ssh3,stath3 = P.calc_indttest(sith1[maxh3],sith1[minh3])
+
+ssf1,statf1 = P.calc_indttest(sitf1[maxh1],sitf1[minh1])
+ssf2,statf2 = P.calc_indttest(sitf1[maxh2],sitf2[minh1])
+ssf3,statf3 = P.calc_indttest(sitf1[maxh3],sitf3[minh1])
+
+pvals = [stath1,stath2,stath3,statf1,statf2,statf3] 
 
 ####
 ####
@@ -299,6 +311,7 @@ for i in xrange(len(composites)):
     
     ### Select variable
     var = composites[i]
+    varscat = pvals[i]
     
     m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
                 resolution='l',round =True)
@@ -306,7 +319,10 @@ for i in xrange(len(composites)):
     var, lons_cyclic = addcyclic(var, lons)
     var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
     lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
-    x, y = m(lon2d, lat2d)      
+    x, y = m(lon2d, lat2d)    
+    
+    varscat,lons_cyclic = addcyclic(varscat, lons)
+    varscat,lons_cyclic = shiftgrid(180.,varscat,lons_cyclic,start=False)
       
     m.drawmapboundary(fill_color='white')
     m.drawcoastlines(color='k',linewidth=0.2)
@@ -327,6 +343,8 @@ for i in xrange(len(composites)):
     cs1 = m.contour(x,y,var,
                     values,linewidths=0.2,colors='darkgrey',
                     linestyles='-')
+    cs2 = ax.scatter(x,y,varscat,color='k',marker='.',alpha=0.5,
+                edgecolor='k',linewidth=0.2)
                     
     ### Set colormap  
     cmap = ncm.cmap('temp_19lev')        

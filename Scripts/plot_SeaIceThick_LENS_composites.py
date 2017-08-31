@@ -20,8 +20,8 @@ import nclcmaps as ncm
 from netCDF4 import Dataset
 
 ### Define directories
-directorydatal = '/home/zlabe/Surtsey3/'
-directorydatap = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/Thickness/'  
+directorydatal = '/surtsey/ypeings/'
+directorydatap = '/surtsey/zlabe/seaice_obs/PIOMAS/Thickness/'  
 directoryfigure = '/home/zlabe/Desktop/'
 #directoryfigure = '/home/zlabe/Documents/Research/SeaIceVariability/Figures/'
 
@@ -79,8 +79,8 @@ yearqf2 = np.where((years2 >= 2043) & (years2 <= 2080))[0]
 sitp = readPIOMAS(directorydatap,0.15)
 
 ### September 
-sith_mo = np.squeeze(np.apply_over_axes(np.nanmean,sith[:,:,-1,:,:],[0]))
-sitf_mo = np.squeeze(np.apply_over_axes(np.nanmean,sitf[:,:,-1,:,:],[0]))
+sith_mo = np.squeeze(np.apply_over_axes(np.nanmean,sith[:,:,2,:,:],[0]))
+sitf_mo = np.squeeze(np.apply_over_axes(np.nanmean,sitf[:,:,2,:,:],[0]))
 sitall_mo = np.append(sith_mo,sitf_mo,axis=0)
 
 sith1 = np.nanmean(sith_mo[yearqh1,:,:],axis=0)
@@ -91,7 +91,7 @@ sitf1 = np.nanmean(sitf_mo[yearqf1,:,:],axis=0)
 sitf2 = np.nanmean(sitf_mo[yearqf2,:,:],axis=0)
 sitf3 = np.nanmean(sitall_mo[yearp2,:,:],axis=0)
 
-sitp_mo = sitp[:,-1,:,:]
+sitp_mo = sitp[:,2,:,:]
 
 sitp1 = np.nanmean(sitp_mo[1:19],axis=0)
 sitp2 = np.nanmean(sitp_mo[19:37],axis=0)
@@ -206,11 +206,9 @@ plt.annotate(r'\textbf{2006-2042}', xy=(0, 0), xytext=(0.174, 0.495),
 plt.annotate(r'\textbf{2043-2080}', xy=(0, 0), xytext=(0.374, 0.495),
             xycoords='figure fraction',fontsize=7,color='k',
             rotation=0)  
-                            
-            
-    
+                                
 ### Save figure
-plt.savefig(directoryfigure +'sit_rcp_composites_december',dpi=500)
+plt.savefig(directoryfigure +'sit_rcp_composites_march',dpi=500)
 
 
 

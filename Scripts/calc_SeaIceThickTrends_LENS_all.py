@@ -21,8 +21,8 @@ from netCDF4 import Dataset
 import scipy.stats as sts
 
 ### Define directories
-directorydatal = '/home/zlabe/Surtsey3/'
-directorydatap = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/Thickness/'  
+directorydatal = '/surtsey/ypeings/'
+directorydatap = '/home/surtsey/zlabe/seaice_obs/PIOMAS/Thickness/'  
 directoryfigure = '/home/zlabe/Desktop/'
 #directoryfigure = '/home/zlabe/Documents/Research/SeaIceVariability/Figures/'
 directorydata2 = '/home/zlabe/Documents/Research/SeaIceVariability/Data/'
