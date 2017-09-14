@@ -1,4 +1,4 @@
-# SeaIceVariability https://zenodo.org/badge/68020882.svg
+# SeaIceVariability [![DOI](https://zenodo.org/badge/68020882.svg)](https://zenodo.org/badge/latestdoi/68020882)
 Arctic sea ice interannual variability and change
 
 ###### Under construction... ```[Python 2.7]```
