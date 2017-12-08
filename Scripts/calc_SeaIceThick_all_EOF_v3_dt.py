@@ -48,15 +48,15 @@ ense = ['02','03','04','05','06','07','08','09'] + \
     map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
           
 ### Read in functions
-sith,lat2,lon2 = lens.readLENSEnsemble(directorydatal,0.15,'historical')
+sithq,lat2,lon2 = lens.readLENSEnsemble(directorydatal,0.15,'historical')
 sitf,lat2,lon2 = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
 lats = np.unique(lat2)
 lons = np.unique(lon2)
 
-sitalln = np.append(sith,sitf,axis=1)
+sitalln = np.append(sithq,sitf,axis=1)
 yearsq = np.where((yearslens >= 1979) & (yearslens <= 2015))[0]
 
-sitall = sitalln[:,yearsq,:,:,:]
+sitallq = sitalln[:,yearsq,:,:,:]
 
 def readPIOMAS(directorydata,threshold):
     files = 'piomas_regrid_sit_LENS_19792015.nc'
@@ -81,7 +81,42 @@ def readPIOMAS(directorydata,threshold):
     return sitp,lats,lons
     
 ### Read in functions
-sitp,lat2,lon2 = readPIOMAS(directorydatap,0.15)
+sitpq,lat2,lon2 = readPIOMAS(directorydatap,0.15)
+
+def deTrend(y):
+    x = np.arange(y.shape[0])
+    
+    slopes = np.empty((y.shape[1],y.shape[2]))
+    intercepts = np.empty((y.shape[1],y.shape[2]))
+    for i in xrange(y.shape[1]):
+        for j in xrange(y.shape[2]):
+            mask = np.isfinite(y[:,i,j])
+            yy = y[:,i,j]           
+            
+            if np.isfinite(np.nanmean(yy)):
+                slopes[i,j], intercepts[i,j], r_value, p_value, std_err = sts.linregress(x[mask],yy[mask])
+            else:
+                slopes[i,j] = np.nan
+                intercepts[i,j] = np.nan
+    
+    y_detrend = np.empty(y.shape)        
+    for i in xrange(y.shape[0]):
+        y_detrend[i,:,:] = y[i,:,:] - (slopes*x[i] + intercepts)
+        print 'Detrended over year %s!' % (i)
+     
+    print 'Completed: Detrended SIT data!' 
+    return y_detrend,slopes
+
+sitall = np.empty((sitallq.shape))
+sith = np.empty((sithq.shape))
+for i in range(sitallq.shape[0]):   
+    for j in range(12):
+        sitall[i,:,j,:,:],trend1 = deTrend(sitallq[i,:,j,:,:])
+        sith[i,:,j,:,:],trend2 = deTrend(sithq[i,:,j,:,:])
+
+sitp = np.empty((sitpq.shape))        
+for j in range(12):
+    sitp[:,j,:,:],trend3 = deTrend(sitpq[:,j,:,:])
 
 ### calculate climo
 def climo(var,years,yearmin,yearmax):
@@ -175,18 +210,6 @@ def calcSeasonalEOF(anomsit,years,year1,year2,monthind,eoftype,pctype):
     print '*Completed: EOF and PC Calculated!\n'
     
     return eof,pc,var
-    
-### Climatology
-#eofn = []
-#pcn = []    
-#for i in xrange(sit.shape[0]):
-#    eofq,pcq = calcSeasonalEOF(sit[i],yearslens,1920,2005,
-#                                       np.asarray([0,1,2,10,11]),2,2)
-#    eofn.append(eofq)
-#    pcn.append(pcq)
-#    
-#eoff = np.asarray(eofn)
-#pcc = np.asarray(pcn)
 
 sitn = np.reshape(sitall,(39*37,12,24,360))
 sitnl = np.reshape(sith,(39*86,12,24,360))
@@ -198,12 +221,7 @@ eofql,pcql,variil = calcSeasonalEOF(sitnl,yearslens,1920,2005,
                                    
 eofp,pcp,varpii = calcSeasonalEOF(sitp,years,1979,2015,
                                        np.asarray([0,1,2,3,4,5,6,7,8,9,10,11]),2,2)
-                                       
-#eofq,pcq,varii = calcSeasonalEOF(sitn,yearslens,1920,2005,
-#                                   np.asarray([3,4,5]),2,2)
-#                                   
-#eofp,pcp,varpii = calcSeasonalEOF(sitp,years,1979,2015,
-#                                       np.asarray([3,4,5]),2,2)                                       
+                                                                            
 ###########################################################################
 ###########################################################################
 ### Plot figure
@@ -245,8 +263,8 @@ var1, lons_cyclic = shiftgrid(180., var1, lons_cyclic, start=False)
 lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
 x, y = m(lon2d, lat2d)
 
-cs = m.contourf(x,y,var1,values,extend='both')
-cs1 = m.contour(x,y,var1,values,linewidths=0.2,colors='darkgrey',linestyles='-')
+cs = m.contourf(x,y,var1*-1,values,extend='both')
+cs1 = m.contour(x,y,var1*-1,values,linewidths=0.2,colors='darkgrey',linestyles='-')
                 
 cmap = ncm.cmap('nrl_sirkes')         
 cs.set_cmap(cmap)   
@@ -444,7 +462,7 @@ plt.annotate(r'\textbf{EOF2}', xy=(0, 0), xytext=(0.08, 0.36),
             xycoords='figure fraction',fontsize=20,color='darkgrey',
             rotation=90)
 
-plt.savefig(directoryfigure + 'eofs_lenspiomas79152005.png',dpi=300)
+plt.savefig(directoryfigure + 'eofs_lenspiomas79152005_dt.png',dpi=300)
 
 ###########################################################################
 ###########################################################################

@@ -224,7 +224,7 @@ cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])
 cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
                     extend='max',extendfrac=0.07,drawedges=True)
 
-cbar.set_label(r'\textbf{Thickness (meters)}')
+cbar.set_label(r'\textbf{std. dev. (meters)}')
 cbar.set_ticks(barlim)
 cbar.set_ticklabels(map(str,barlim)) 
 plt.setp(ax.get_xticklabels(),visible=False)

@@ -39,9 +39,9 @@ years = np.arange(yearmin,yearmax+1,1)
 months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',r'Sep',
           r'Oct',r'Nov',r'Dec']
           
-yearmin2 = 2005
-yearmax2 = 2015
-years2 = np.arange(yearmin2,yearmax2+1,1)
+#yearmin2 = 2005
+#yearmax2 = 2015
+#years2 = np.arange(yearmin2,yearmax2+1,1)
 
 ### Call functions
 lats,lons,sitq1 = CT.readPiomas(directorydata,years,0.15)
@@ -385,7 +385,7 @@ cbar_ax = fig.add_axes([0.312,0.1,0.4,0.03])
 cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
                     extend='Both',extendfrac=0.07,drawedges=True)
 
-cbar.set_label(r'\textbf{SIT( m decade$^{-1}$ )}')
+cbar.set_label(r'\textbf{$\Delta$SIT( m decade$^{-1}$ )}')
 cbar.set_ticks(barlim)
 cbar.set_ticklabels(map(str,barlim)) 
 plt.setp(ax.get_xticklabels(),visible=False)

@@ -22,10 +22,10 @@ from eofs.standard import Eof
 import nclcmaps as ncm
 
 ### Define directories
-directorydatap = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/Thickness/' 
-directorydatal = '/home/zlabe/Surtsey3/' 
+directorydatap = '/surtsey/zlabe/seaice_obs/PIOMAS/Thickness/' 
+directorydatal = '/surtsey/ypeings/' 
 directorydata = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/'  
-directoryfigure = '/home/zlabe/Desktop/eofs_sit/'
+directoryfigure = '/home/zlabe/Desktop/'
 
 ### Define time           
 now = datetime.datetime.now()
@@ -37,8 +37,8 @@ titletime = currentmn + '/' + currentdy + '/' + currentyr
 print '\n' '----Plot SIT EOF LENS - %s----' % titletime 
 
 ### Alott time series
-yearmin = 1979
-yearmax = 2015
+yearmin = 2006
+yearmax = 2080
 years = np.arange(yearmin,yearmax+1,1)
 months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
           r'Sep',r'Oct',r'Nov',r'Dec']
@@ -48,9 +48,42 @@ ense = ['02','03','04','05','06','07','08','09'] + \
     map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
           
 ### Read in functions
-sit,lat2,lon2 = lens.readLENSEnsemble(directorydatal,0.15,'historical')
+sitqq,lat2,lon2 = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
 lats = np.unique(lat2)
 lons = np.unique(lon2)
+
+trendd = True
+if trendd == True:
+    def deTrend(y):
+        x = np.arange(y.shape[0])
+        
+        slopes = np.empty((y.shape[1],y.shape[2]))
+        intercepts = np.empty((y.shape[1],y.shape[2]))
+        for i in xrange(y.shape[1]):
+            for j in xrange(y.shape[2]):
+                mask = np.isfinite(y[:,i,j])
+                yy = y[:,i,j]           
+                
+                if np.isfinite(np.nanmean(yy)):
+                    slopes[i,j], intercepts[i,j], r_value, p_value, std_err = sts.linregress(x[mask],yy[mask])
+                else:
+                    slopes[i,j] = np.nan
+                    intercepts[i,j] = np.nan
+        
+        y_detrend = np.empty(y.shape)        
+        for i in xrange(y.shape[0]):
+            y_detrend[i,:,:] = y[i,:,:] - (slopes*x[i] + intercepts)
+            print 'Detrended over year %s!' % (i)
+         
+        print 'Completed: Detrended SIT data!' 
+        return y_detrend,slopes
+    
+    sit = np.empty((sitqq.shape))
+    for i in range(sitqq.shape[0]):   
+        for j in range(12):
+            sit[i,:,j,:,:],trend1 = deTrend(sitqq[i,:,j,:,:])
+else:
+    sit = sitqq
 
 def calcSeasonalEOF(anomsit,years,year1,year2,monthind,eoftype,pctype):
     """
@@ -130,12 +163,9 @@ def calcSeasonalEOF(anomsit,years,year1,year2,monthind,eoftype,pctype):
 #eoff = np.asarray(eofn)
 #pcc = np.asarray(pcn)
 
-sitn = np.nanmean(sit,axis=0)
-#sitn = np.reshape(sit,(39*86,12,24,360))
-eofq,pcq,var = calcSeasonalEOF(sitn,yearslens,1920,2005,
+sitn = np.reshape(sit,(39*75,12,24,360))
+eofq,pcq,var = calcSeasonalEOF(sitn,yearslens,2006,2040,
                                    np.asarray([0,1,2,3,4,5,6,7,8,9,10,11]),2,2)
-
-
 
 ### Seasons
 #year1 = 1920
@@ -219,9 +249,9 @@ eofq,pcq,var = calcSeasonalEOF(sitn,yearslens,1920,2005,
 ########################################################################### 
 ###########################################################################            
 ### Plot figure
-#plt.rc('text',usetex=True)
-#plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
-#
+plt.rc('text',usetex=True)
+plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
+
 #fig = plt.figure()
 #
 #for i in xrange(eoff.shape[0]):
@@ -286,6 +316,8 @@ eofq,pcq,var = calcSeasonalEOF(sitn,yearslens,1920,2005,
 var1 = eofq[0]
 var2 = eofq[1]
 
+perc = r'$\bf{\%}$' 
+
 fig = plt.figure()
 ax = plt.subplot(121)
 
@@ -310,14 +342,17 @@ var1, lons_cyclic = shiftgrid(180., var1, lons_cyclic, start=False)
 lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
 x, y = m(lon2d, lat2d)
 
-cs = m.contourf(x,y,var1,values,extend='both')
-cs1 = m.contour(x,y,var1,values,linewidths=0.2,colors='darkgrey',linestyles='-')
+cs = m.contourf(x,y,var1*-1,values,extend='both')
+cs1 = m.contour(x,y,var1*-1,values,linewidths=0.2,colors='darkgrey',linestyles='-')
                 
 cmap = ncm.cmap('nrl_sirkes')         
 cs.set_cmap(cmap)   
 
 ax.annotate(r'\textbf{EOF1}',xy=(0,0),xytext=(0.35,1.05),
-            textcoords='axes fraction',fontsize=20,color='darkgrey')            
+            textcoords='axes fraction',fontsize=20,color='dimgrey')  
+ax.annotate(r'\textbf{%s}%s' % (round(var[0]*100,1),perc),xy=(0, 0),
+            xytext=(0.79, 0.935),xycoords='axes fraction',fontsize=8,
+            color='k') 
                 
 ########################################################################### 
                                
@@ -349,16 +384,19 @@ cbar_ax = fig.add_axes([0.312,0.2,0.4,0.03])
 cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
                     extend='both',extendfrac=0.07,drawedges=True,cmap=cmap)
 
-cbar.set_label(r'\textbf{m}',color='k')
+#cbar.set_label(r'\textbf{m}',color='k')
 cbar.set_ticks(barlim)
 cbar.set_ticklabels(map(str,barlim))
 
 ax.annotate(r'\textbf{EOF2}',xy=(0,0),xytext=(0.35,1.05),
-            textcoords='axes fraction',fontsize=20,color='darkgrey')
+            textcoords='axes fraction',fontsize=20,color='dimgrey')
+ax.annotate(r'\textbf{%s}%s' % (round(var[1]*100,1),perc),xy=(0, 0),
+            xytext=(0.79, 0.935),xycoords='axes fraction',fontsize=8,
+            color='k') 
 
 fig.subplots_adjust(bottom=0.2)
 
-plt.savefig(directoryfigure + 'eofs_lensmean_2005.png',dpi=300)
+plt.savefig(directoryfigure + 'eofs_lens_20062040_dt.png',dpi=300)
 
 ###########################################################################
 ###########################################################################

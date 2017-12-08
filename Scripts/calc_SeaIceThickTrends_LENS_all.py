@@ -227,10 +227,10 @@ def weightThick(var,lats,types):
     print '\nCompleted: Yearly weighted SIT average!' 
     return sityr
     
-trendmeanf_w = weightThick(trendp_w,lats,'lens')
-trendmeanf_sp = weightThick(trendp_sp,lats,'lens')
-trendmeanf_su = weightThick(trendp_su,lats,'lens')
-trendmeanf_f = weightThick(trendp_f,lats,'lens')
+trendmeanf_w = weightThick(trendf_w,lats,'lens')
+trendmeanf_sp = weightThick(trendf_sp,lats,'lens')
+trendmeanf_su = weightThick(trendf_su,lats,'lens')
+trendmeanf_f = weightThick(trendf_f,lats,'lens')
 
 trendmeanpio_w = weightThick(trendpio_w,lats,'piomas')
 trendmeanpio_sp = weightThick(trendpio_sp,lats,'piomas')
@@ -342,7 +342,7 @@ plt.ylim([0,40])
 
 plt.text(-0.4,40,r'\textbf{OND}',fontsize=20,color='darkgrey')
 
-ax.text(-1.6,-6,r'\textbf{LENS SIT( m decade$^{-1}$ )}')
+ax.text(-1.6,-6,r'\textbf{$\Delta$SIT( m decade$^{-1}$ )}')
 
 fig.subplots_adjust(wspace=0.3)
 plt.savefig(directoryfigure+'satellite_lens_sittrends.png',dpi=300)
