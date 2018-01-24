@@ -81,11 +81,11 @@ yearqf2 = np.where((years2 >= 2043) & (years2 <= 2080))[0]
 yearpp = np.where((years >= 1980) & (years <= 2015))[0]
 
 ### September 
-sith_mo2 = np.nanmean(sith[:,:,9:12,:,:],axis=2)
-sitf_mo2 = np.nanmean(sitf[:,:,9:12,:,:],axis=2)
+sith_mo2 = np.nanmean(sith[:,:,6:9,:,:],axis=2)
+sitf_mo2 = np.nanmean(sitf[:,:,6:9,:,:],axis=2)
 #sitall_mo2 = np.append(sith[:,:,8,:,:],sitf[:,:,8,:,:],axis=1)
-sitall_mo3 = np.append(np.nanmean(sith[:,:,9:12,:,:],axis=2),
-                       np.nanmean(sitf[:,:,9:12,:,:],axis=2),axis=1)
+sitall_mo3 = np.append(np.nanmean(sith[:,:,6:9,:,:],axis=2),
+                       np.nanmean(sitf[:,:,6:9,:,:],axis=2),axis=1)
 
 sith1 = sith_mo2[:,yearqh1,:,:]
 sith2 = sith_mo2[:,yearqh2,:,:]
@@ -97,7 +97,7 @@ sitf3 = sitall_mo3[:,yearp2,:,:]
 
 sitpp = sitall_mo3[:,yearpp,:,:]
 
-sitp_mo = np.nanmean(sitp[:,9:12,:,:],axis=1)
+sitp_mo = np.nanmean(sitp[:,6:9,:,:],axis=1)
 sitp1 = sitp_mo[1:19]
 sitp2 = sitp_mo[19:37]
 
@@ -152,14 +152,6 @@ for i in xrange(sith.shape[0]):
     sitf2dt[i,:,:,:],slopesf2[i] = deTrend(sitf2[i])
     sitf3dt[i,:,:,:],slopesf3[i] = deTrend(sitf3[i])
     sitppdt[i,:,:,:],slopespp[i] = deTrend(sitpp[i])
-#    
-#compositetrends = [np.nanmean(slopesh1,axis=0),np.nanmean(slopesh2,axis=0),
-#                   np.nanmean(slopesh3,axis=0),sitptrend1, 
-#                    np.nanmean(slopesf1,axis=0), 
-#                    np.nanmean(slopesf2,axis=0), 
-#                    np.nanmean(slopesf3,axis=0),sitptrend2]
-                    
-                    
 
 sith1std = np.empty((sith.shape[0],sith.shape[3],sith.shape[4]))
 sith2std = np.empty((sith.shape[0],sith.shape[3],sith.shape[4]))
@@ -170,12 +162,12 @@ sitf3std = np.empty((sith.shape[0],sith.shape[3],sith.shape[4]))
 for i in xrange(sith.shape[0]):
     for j in xrange(sith.shape[3]):
         for k in xrange(sith.shape[4]):
-            sith1std[i,j,k] = np.nanstd(sith1dt[i,:,j,k])
-            sith2std[i,j,k] = np.nanstd(sith2dt[i,:,j,k])
-            sith3std[i,j,k] = np.nanstd(sith3dt[i,:,j,k])
-            sitf1std[i,j,k] = np.nanstd(sitf1dt[i,:,j,k])
-            sitf2std[i,j,k] = np.nanstd(sitf2dt[i,:,j,k])
-            sitf3std[i,j,k] = np.nanstd(sitf3dt[i,:,j,k])
+            sith1std[i,j,k] = (np.nanstd(sith1dt[i,:,j,k])/np.nanmean(sith1[i,:,j,k]))*100.
+            sith2std[i,j,k] = (np.nanstd(sith2dt[i,:,j,k])/np.nanmean(sith2[i,:,j,k]))*100.
+            sith3std[i,j,k] = (np.nanstd(sith3dt[i,:,j,k])/np.nanmean(sith3[i,:,j,k]))*100.
+            sitf1std[i,j,k] = (np.nanstd(sitf1dt[i,:,j,k])/np.nanmean(sitf1[i,:,j,k]))*100.
+            sitf2std[i,j,k] = (np.nanstd(sitf2dt[i,:,j,k])/np.nanmean(sitf2[i,:,j,k]))*100.
+            sitf3std[i,j,k] = (np.nanstd(sitf3dt[i,:,j,k])/np.nanmean(sitf3[i,:,j,k]))*100.
             
 sith1std = np.nanmean(sith1std,axis=0)
 sith2std = np.nanmean(sith2std,axis=0)
@@ -218,11 +210,11 @@ for i in xrange(len(composites)):
     m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
     
     ### Adjust maximum limits
-    values = np.arange(0,1.1,0.1)  
+    values = np.arange(0,101,5)  
     
     ### Plot filled contours    
     cs = m.contourf(x,y,var,
-                    values,extend='max')
+                    values)
     cs1 = m.contour(x,y,var,
                     values,linewidths=0.2,colors='darkgrey',
                     linestyles='-')
@@ -232,12 +224,11 @@ for i in xrange(len(composites)):
     cs.set_cmap('cubehelix_r') 
     
 cbar_ax = fig.add_axes([0.313,0.13,0.4,0.03])                
-cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
-                    extend='max',extendfrac=0.07,drawedges=True)  
+cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',drawedges=True)  
                     
-cbar.set_ticks(np.arange(0,1.1,0.5))
-cbar.set_ticklabels(map(str,np.arange(0,1.1,0.5)))    
-cbar.set_label(r'\textbf{std. dev. (meters)}')
+cbar.set_ticks(np.arange(0,101,50))
+cbar.set_ticklabels(map(str,np.arange(0,101,50)))    
+cbar.set_label(r'\textbf{[\%]}')
 
 plt.subplots_adjust(wspace=-0.28)
 plt.subplots_adjust(hspace=0.15)
@@ -275,153 +266,4 @@ plt.annotate(r'\textbf{2043-2080}', xy=(0, 0), xytext=(0.468, 0.517),
             rotation=0) 
     
 ### Save figure
-plt.savefig(directoryfigure +'sit_rcp_composites_std_OND.png',dpi=500)
-
-###########################################################################
-###########################################################################
-###########################################################################
-###########################################################################
-### Plot Composites
-#plt.rc('text',usetex=True)
-#plt.rc('font',**{'family':'sans-serif','sans-serif':['Avant Garde']}) 
-#
-#fig = plt.figure()
-#ax = plt.subplot(111)
-#
-#m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
-#            resolution='l',round =True)
-#            
-#var = np.nanmean(slopespp,axis=0)*10.
-#
-#var, lons_cyclic = addcyclic(var, lons)
-#var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
-#lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
-#x, y = m(lon2d, lat2d)    
-#
-#m.drawmapboundary(fill_color='white')
-#m.drawcoastlines(color='k',linewidth=0.3)
-#parallels = np.arange(50,90,10)
-#meridians = np.arange(-180,180,30)
-##m.drawparallels(parallels,labels=[False,False,False,False],
-##                linewidth=0.3,color='k',fontsize=6)
-##m.drawmeridians(meridians,labels=[False,False,False,False],
-##                linewidth=0.3,color='k',fontsize=6)
-#m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
-#
-## Make the plot continuous
-#barlim = np.arange(-0.6,0.7,0.3)
-#values = np.arange(-0.6,0.7,0.1)
-#
-#cs = m.contourf(x,y,var,
-#                values,extend='both')
-#cs1 = m.contour(x,y,var,
-#                values,linewidths=0.2,colors='darkgrey',
-#                linestyles='-')
-#        
-#cmap = ncm.cmap('NCV_blu_red')         
-#cs.set_cmap(cmap)
-#
-#cbar = plt.colorbar(cs,drawedges=True)
-#cbar.set_label(r'\textbf{SIT( m decade$^{-1}$ )}')
-#cbar.set_ticks(barlim)
-#cbar.set_ticklabels(map(str,barlim)) 
-#plt.setp(ax.get_xticklabels(),visible=False)
-#            
-#plt.savefig(directoryfigure + 'LENS_trends.png',dpi=500)
-
-###########################################################################
-###########################################################################
-###########################################################################
-### Plot trends
-#fig = plt.figure()
-#
-#for i in xrange(len(compositetrends)):
-#    ax = plt.subplot(2,4,i+1)
-#    
-#    ### Select variable
-#    var = compositetrends[i] * 10. # decadal trend
-#    
-#    m = Basemap(projection='npstere',boundinglat=66,lon_0=270,
-#                resolution='l',round =True)
-#                
-#    var, lons_cyclic = addcyclic(var, lons)
-#    var, lons_cyclic = shiftgrid(180., var, lons_cyclic, start=False)
-#    lon2d, lat2d = np.meshgrid(lons_cyclic, lats)
-#    x, y = m(lon2d, lat2d)      
-#      
-#    m.drawmapboundary(fill_color='white')
-#    m.drawcoastlines(color='k',linewidth=0.2)
-#    parallels = np.arange(50,90,10)
-#    meridians = np.arange(-180,180,30)
-##    m.drawparallels(parallels,labels=[False,False,False,False],
-##                    linewidth=0.35,color='k',fontsize=1)
-##    m.drawmeridians(meridians,labels=[False,False,False,False],
-##                    linewidth=0.35,color='k',fontsize=1)
-#    m.drawlsmask(land_color='darkgrey',ocean_color='mintcream')
-#    
-#    ### Adjust maximum limits
-#    values = np.arange(-0.6,0.7,0.1)  
-#    
-#    ### Plot filled contours    
-#    cs = m.contourf(x,y,var,
-#                    values,extend='both')
-#    cs1 = m.contour(x,y,var,
-#                    values,linewidths=0.2,colors='darkgrey',
-#                    linestyles='-')
-#                    
-#    ### Set colormap  
-#    cmap = ncm.cmap('NCV_blu_red')         
-#    cs.set_cmap(cmap)                            
-#    
-#cbar_ax = fig.add_axes([0.313,0.13,0.4,0.03])                
-#cbar = fig.colorbar(cs,cax=cbar_ax,orientation='horizontal',
-#                    extend='both',extendfrac=0.07,drawedges=True)  
-#                    
-#cbar.set_ticks(np.arange(-0.6,0.7,0.3))
-#cbar.set_ticklabels(map(str,np.arange(-0.6,0.7,0.3)))    
-#cbar.set_label('\textbf{SIT( m decade$^{-1}$ )}')
-#
-#plt.subplots_adjust(hspace=-0.3)
-#plt.subplots_adjust(wspace=0.1)
-#            
-#plt.annotate(r'\textbf{LENS}', xy=(0, 0), xytext=(0.318, 0.87),
-#            xycoords='figure fraction',fontsize=20,color='darkgrey',
-#            rotation=0,ha='center')
-#plt.annotate(r'\textbf{LENS}', xy=(0, 0), xytext=(0.595, 0.87),
-#            xycoords='figure fraction',fontsize=20,color='darkgrey',
-#            rotation=0,ha='center')
-#plt.annotate(r'\textbf{PIOMAS}', xy=(0, 0), xytext=(0.635, 0.847),
-#            xycoords='figure fraction',fontsize=7,color='darkgrey',
-#            rotation=0,ha='center')
-#plt.annotate(r'\textbf{PIOMAS}', xy=(0, 0), xytext=(0.72, 0.87),
-#            xycoords='figure fraction',fontsize=20,color='k',
-#            rotation=0)
-#            
-#plt.annotate(r'\textbf{1980-1997}', xy=(0, 0), xytext=(0.845, 0.815),
-#            xycoords='figure fraction',fontsize=7,color='k',
-#            rotation=-40)
-#plt.annotate(r'\textbf{1998-2015}', xy=(0, 0), xytext=(0.845, 0.495),
-#            xycoords='figure fraction',fontsize=7,color='k',
-#            rotation=-40)
-#plt.annotate(r'\textbf{1980-1997}', xy=(0, 0), xytext=(0.645, 0.815),
-#            xycoords='figure fraction',fontsize=7,color='k',
-#            rotation=-40)                  
-#plt.annotate(r'\textbf{1998-2015}', xy=(0, 0), xytext=(0.645, 0.495),
-#            xycoords='figure fraction',fontsize=7,color='k',
-#            rotation=-40)
-#
-#plt.annotate(r'\textbf{1920-1962}', xy=(0, 0), xytext=(0.174, 0.815),
-#            xycoords='figure fraction',fontsize=7,color='k',
-#            rotation=0)                               
-#plt.annotate(r'\textbf{1963-2005}', xy=(0, 0), xytext=(0.374, 0.815),
-#            xycoords='figure fraction',fontsize=7,color='k',
-#            rotation=0)
-#plt.annotate(r'\textbf{2006-2042}', xy=(0, 0), xytext=(0.174, 0.495),
-#            xycoords='figure fraction',fontsize=7,color='k',
-#            rotation=0)                     
-#plt.annotate(r'\textbf{2043-2080}', xy=(0, 0), xytext=(0.374, 0.495),
-#            xycoords='figure fraction',fontsize=7,color='k',
-#            rotation=0)  
-#    
-#### Save figure
-#plt.savefig(directoryfigure +'sit_rcp_composites_trends.png',dpi=500)
+plt.savefig(directoryfigure +'sit_rcp_composites_coeffvari_JAS.png',dpi=500)

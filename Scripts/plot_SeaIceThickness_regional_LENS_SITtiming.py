@@ -45,132 +45,132 @@ months = [r'Jan',r'Feb',r'Mar',r'Apr',r'May',r'Jun',r'Jul',r'Aug',
 ensemble = ['02','03','04','05','06','07','08','09'] + \
         map(str,np.arange(10,36,1)) + map(str,np.arange(101,106,1))
     
-#### Call functions   
-##sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
-##sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
-##lons2,lats2 = np.meshgrid(lons,lats)
-#
-#### Slice regions
-#def RegionalSlice(sith,sitf,region,lats,lons):
-#    """
-#    Mask out selected marginal seas and their time series
-#    """
-#
-#    if region == 'BeaufortSea':
-#        latmin = 68
-#        latmax = 85
-#        lonmin = 185
-#        lonmax = 235
-#    elif region == 'Greenland':
-#        latmin = 76
-#        latmax = 85
-#        lonmin = 235
-#        lonmax = 370
-#        lonmin2 = 0
-#        lonmax2 = 10
-#    elif region == 'EastSiberianSea':
-#        latmin = 68
-#        latmax = 85
-#        lonmin = 146
-#        lonmax = 185
-#    elif region == 'LaptevSea':
-#        latmin = 70
-#        latmax = 85
-#        lonmin = 100
-#        lonmax = 146
-#    elif region == 'KaraSea':
-#        latmin = 68
-#        latmax = 85
-#        lonmin = 50
-#        lonmax = 100
-#    elif region == 'BarentsSea':
-#        latmin = 68
-#        latmax = 85
-#        lonmin = 10
-#        lonmax = 50
-#    elif region == 'CAB':
-#        latmin = 85
-#        latmax = 90
-#        lonmin = 0
-#        lonmax = 360
-#    elif region == 'KB':
-#        latmin = 68
-#        latmax = 85
-#        lonmin = 10
-#        lonmax = 100
-#    
-#    if region == 'Greenland':
-#        latq = np.where((lats >= latmin) & (lats <= latmax))[0]
-#        latsn = lats[latq]
-#        lonq1 = np.where((lons >= lonmin) & (lons <= lonmax))[0]
-#        lonq2 = np.where((lons >= lonmin2) & (lons <= lonmax2))[0]
-#        lonq = np.append(lonq2,lonq1,axis=0)
-#        lonsn = lons[lonq]
-#        lons2n,lats2n = np.meshgrid(lonsn,latsn)
-#        
-#    else:
-#        latq = np.where((lats >= latmin) & (lats <= latmax))[0]
-#        latsn = lats[latq]
-#        lonq = np.where((lons >= lonmin) & (lons <= lonmax))[0]
-#        lonsn = lons[lonq]
-#        lons2n,lats2n = np.meshgrid(lonsn,latsn)
-#
-#    # Slice lats
-#    sitmh = sith[:,:,:,latq,:]
-#    sitmf = sitf[:,:,:,latq,:]
-#    
-#    # Slice lons
-#    sitmmh = sitmh[:,:,:,:,lonq]
-#    sitmmf = sitmf[:,:,:,:,lonq]
-#    
-#    sitall = np.append(sitmmh,sitmmf,axis=1)
-#    
-#    return sitall,lats2n,lons2n
-#    
-##### Regions sliced   
-#sitallg,lats2ng,lons2ng = RegionalSlice(sith,sitf,'Greenland',lats,lons)
-#sitallb,lats2nb,lons2nb = RegionalSlice(sith,sitf,'BeaufortSea',lats,lons)
-#sitalle,lats2ne,lons2ne = RegionalSlice(sith,sitf,'EastSiberianSea',lats,lons)
-#sitalll,lats2nl,lons2nl = RegionalSlice(sith,sitf,'LaptevSea',lats,lons)
-#sitallkb,lats2nkb,lons2nkb = RegionalSlice(sith,sitf,'KB',lats,lons)
-#sitallcab,lats2ncab,lons2ncab = RegionalSlice(sith,sitf,'CAB',lats,lons)
-#
-#def weightThick(var,lats,types):
-#    """
-#    Area weights sit array 5d [ens,year,month,lat,lon] into [ens,year,month]
-#    """
-#    
-#    if types == 'lens':
-#        sityr = np.empty((var.shape[0],var.shape[1],var.shape[2]))
-#        for ens in xrange(var.shape[0]):
-#            for i in xrange(var.shape[1]):
-#                for j in xrange(var.shape[2]):
-#                    varq = var[ens,i,j,:,:]
-#                    mask = np.isfinite(varq) & np.isfinite(lats)
-#                    varmask = varq[mask]
-#                    areamask = np.cos(np.deg2rad(lats[mask]))
-#                    sityr[ens,i,j] = np.nansum(varmask*areamask)/np.sum(areamask)
-#            
-#            print 'Completed: Weighting per ensemble #%s!' % ensemble[ens]
-#    
-#    elif types == 'piomas':
-#        varq = var[:,:]
-#        mask = np.isfinite(varq) & np.isfinite(lats)
-#        varmask = varq[mask]
-#        areamask = np.cos(np.deg2rad(lats[mask]))
-#        sityr = np.nansum(varmask*areamask)/np.sum(areamask)
-#     
-#    print '\nCompleted: Yearly weighted SIT average!' 
-#    return sityr
-#
-#### Calculate time series per region  
-#sityrg = weightThick(sitallg,lats2ng,'lens')    
-#sityrb = weightThick(sitallb,lats2nb,'lens') 
-#sityre = weightThick(sitalle,lats2ne,'lens') 
-#sityrl = weightThick(sitalll,lats2nl,'lens') 
-#sityrkb = weightThick(sitallkb,lats2nkb,'lens') 
-#sityrcab = weightThick(sitallcab,lats2ncab,'lens')     
-#
+### Call functions   
+sith,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'historical')
+sitf,lats,lons = lens.readLENSEnsemble(directorydatal,0.15,'rcp85')
+lons2,lats2 = np.meshgrid(lons,lats)
+
+### Slice regions
+def RegionalSlice(sith,sitf,region,lats,lons):
+    """
+    Mask out selected marginal seas and their time series
+    """
+
+    if region == 'BeaufortSea':
+        latmin = 68
+        latmax = 85
+        lonmin = 185
+        lonmax = 235
+    elif region == 'Greenland':
+        latmin = 76
+        latmax = 85
+        lonmin = 235
+        lonmax = 370
+        lonmin2 = 0
+        lonmax2 = 10
+    elif region == 'EastSiberianSea':
+        latmin = 68
+        latmax = 85
+        lonmin = 146
+        lonmax = 185
+    elif region == 'LaptevSea':
+        latmin = 70
+        latmax = 85
+        lonmin = 100
+        lonmax = 146
+    elif region == 'KaraSea':
+        latmin = 68
+        latmax = 85
+        lonmin = 50
+        lonmax = 100
+    elif region == 'BarentsSea':
+        latmin = 68
+        latmax = 85
+        lonmin = 10
+        lonmax = 50
+    elif region == 'CAB':
+        latmin = 85
+        latmax = 90
+        lonmin = 0
+        lonmax = 360
+    elif region == 'KB':
+        latmin = 68
+        latmax = 85
+        lonmin = 10
+        lonmax = 100
+    
+    if region == 'Greenland':
+        latq = np.where((lats >= latmin) & (lats <= latmax))[0]
+        latsn = lats[latq]
+        lonq1 = np.where((lons >= lonmin) & (lons <= lonmax))[0]
+        lonq2 = np.where((lons >= lonmin2) & (lons <= lonmax2))[0]
+        lonq = np.append(lonq2,lonq1,axis=0)
+        lonsn = lons[lonq]
+        lons2n,lats2n = np.meshgrid(lonsn,latsn)
+        
+    else:
+        latq = np.where((lats >= latmin) & (lats <= latmax))[0]
+        latsn = lats[latq]
+        lonq = np.where((lons >= lonmin) & (lons <= lonmax))[0]
+        lonsn = lons[lonq]
+        lons2n,lats2n = np.meshgrid(lonsn,latsn)
+
+    # Slice lats
+    sitmh = sith[:,:,:,latq,:]
+    sitmf = sitf[:,:,:,latq,:]
+    
+    # Slice lons
+    sitmmh = sitmh[:,:,:,:,lonq]
+    sitmmf = sitmf[:,:,:,:,lonq]
+    
+    sitall = np.append(sitmmh,sitmmf,axis=1)
+    
+    return sitall,lats2n,lons2n
+    
+#### Regions sliced   
+sitallg,lats2ng,lons2ng = RegionalSlice(sith,sitf,'Greenland',lats,lons)
+sitallb,lats2nb,lons2nb = RegionalSlice(sith,sitf,'BeaufortSea',lats,lons)
+sitalle,lats2ne,lons2ne = RegionalSlice(sith,sitf,'EastSiberianSea',lats,lons)
+sitalll,lats2nl,lons2nl = RegionalSlice(sith,sitf,'LaptevSea',lats,lons)
+sitallkb,lats2nkb,lons2nkb = RegionalSlice(sith,sitf,'KB',lats,lons)
+sitallcab,lats2ncab,lons2ncab = RegionalSlice(sith,sitf,'CAB',lats,lons)
+
+def weightThick(var,lats,types):
+    """
+    Area weights sit array 5d [ens,year,month,lat,lon] into [ens,year,month]
+    """
+    
+    if types == 'lens':
+        sityr = np.empty((var.shape[0],var.shape[1],var.shape[2]))
+        for ens in xrange(var.shape[0]):
+            for i in xrange(var.shape[1]):
+                for j in xrange(var.shape[2]):
+                    varq = var[ens,i,j,:,:]
+                    mask = np.isfinite(varq) & np.isfinite(lats)
+                    varmask = varq[mask]
+                    areamask = np.cos(np.deg2rad(lats[mask]))
+                    sityr[ens,i,j] = np.nansum(varmask*areamask)/np.sum(areamask)
+            
+            print 'Completed: Weighting per ensemble #%s!' % ensemble[ens]
+    
+    elif types == 'piomas':
+        varq = var[:,:]
+        mask = np.isfinite(varq) & np.isfinite(lats)
+        varmask = varq[mask]
+        areamask = np.cos(np.deg2rad(lats[mask]))
+        sityr = np.nansum(varmask*areamask)/np.sum(areamask)
+     
+    print '\nCompleted: Yearly weighted SIT average!' 
+    return sityr
+
+### Calculate time series per region  
+sityrg = weightThick(sitallg,lats2ng,'lens')    
+sityrb = weightThick(sitallb,lats2nb,'lens') 
+sityre = weightThick(sitalle,lats2ne,'lens') 
+sityrl = weightThick(sitalll,lats2nl,'lens') 
+sityrkb = weightThick(sitallkb,lats2nkb,'lens') 
+sityrcab = weightThick(sitallcab,lats2ncab,'lens')     
+
 ##### Select month (mar/sep)
 monthqs = 8
 sityrgs = sityrg[:,:,monthqs]
@@ -296,6 +296,7 @@ for i in range(len(meansep)):
                  yerr=np.array([[meansep[i]-perc05sep[i],perc95sep[i]-meansep[i]]]).T,
                  color=ccc[i],linewidth=1.5,capthick=3,capsize=10)
     print([meansep[i]-perc05sep[i],perc95sep[i]-meansep[i]])
+    print([perc05sep[i],perc95sep[i]])
     
     plt.text(i,perc95sep[i]+3,r'\textbf{%s}' % xlabels[i],
              color='dimgrey',fontsize=9,ha='center',

@@ -21,9 +21,9 @@ from eofs.standard import Eof
 import nclcmaps as ncm
 
 ### Define directories
-directorydatap = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/Thickness/'  
-directorydata = '/home/zlabe/Surtsey/seaice_obs/PIOMAS/'  
-directoryfigure = '/home/zlabe/Desktop/eofs_sit/'
+directorydatap = '/surtsey/zlabe/seaice_obs/PIOMAS/Thickness/'  
+directorydata = '/surtsey/zlabe/seaice_obs/PIOMAS/'  
+directoryfigure = '/home/zlabe/Desktop/'
 
 ### Define time           
 now = datetime.datetime.now()
@@ -168,13 +168,13 @@ def calcSeasonalEOF(anomsit,years,year1,year2,monthind,eoftype,pctype):
     return eof,pc,var
     
 ### Climatology
-eofpattern,pcpattern,varpattern = calcSeasonalEOF(anomsit,years,1979,2008,
+eofpattern,pcpattern,varpattern = calcSeasonalEOF(anomsit,years,1979,1988,
                                        np.asarray([0,1,2,3,4,5,6,7,8,9,10,11]),2,2)
 
 ### Seasons
 year1 = 1979
-year2 = 2005  
-years2 = np.arange(year1,year2+1,1) 
+year2 = 2005 
+years = np.arange(year1,year2+1,1) 
 eof_w,pc_w,var_w = calcSeasonalEOF(anomsit,years,year1,year2,
                 np.asarray([0,1,2]),2,2)
 eofclimo_w,pcclimo_w,varclimo_w = calcSeasonalEOF(anomsit,years,1981,2010,
